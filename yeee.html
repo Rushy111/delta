@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Umbrafiles | Unblocked Games</title>
+    <meta name="description" content="Umbrafiles is the ultimate destination for unblocked online games. Play the best arcade, puzzle, action, and racing games for free.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =========================================
+           1. CSS VARIABLES & RESET
+           ========================================= */
+        :root {
+            --bg-dark: #0a0b10;
+            --bg-card: #14161f;
+            --bg-glass: rgba(20, 22, 31, 0.85);
+            --primary: #7b2cbf;
+            --primary-glow: #9d4edd;
+            --secondary: #00f0ff;
+            --secondary-glow: #00b8c4;
+            --text-main: #e0e6ed;
+            --text-muted: #94a3b8;
+            --success: #00ff9d;
+            --danger: #ff0055;
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 20px rgba(123, 44, 191, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-glow);
+        }
+
+        /* =========================================
+           2. BACKGROUND ANIMATION
+           ========================================= */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        /* =========================================
+           3. NAVIGATION
+           ========================================= */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--primary-glow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--secondary);
+        }
+
+        .search-container {
+            position: relative;
+            width: 40%;
+            max-width: 500px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            padding-left: 45px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            color: var(--text-main);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-btn:hover {
+            color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        /* =========================================
+           4. HERO SECTION
+           ========================================= */
+        .hero {
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--text-main), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            animation: fadeInUp 1s ease-out 0.2s backwards;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 2rem;
+            animation: fadeInUp 1s ease-out 0.4s backwards;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-box span {
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        /* =========================================
+           5. FILTERS
+           ========================================= */
+        .filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 0 2rem 2rem;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(123, 44, 191, 0.4);
+        }
+
+        /* =========================================
+           6. GAME GRID
+           ========================================= */
+        .game-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .game-card {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--transition);
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--shadow-glow);
+            border-color: var(--primary);
+            z-index: 10;
+        }
+
+        .card-image-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 60%; /* 16:9 Aspect Ratio */
+            overflow: hidden;
+        }
+
+        .card-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .game-card:hover .card-image {
+            transform: scale(1.1);
+        }
+
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .game-card:hover .card-overlay {
+            opacity: 1;
+        }
+
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 3rem;
+            color: var(--secondary);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 2;
+            text-shadow: 0 0 20px var(--secondary);
+        }
+
+        .game-card:hover .play-icon {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .card-content {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: auto;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+        }
+
+        .tag.highlight {
+            background: rgba(123, 44, 191, 0.2);
+            color: var(--primary-glow);
+        }
+
+        /* =========================================
+           7. GAME MODAL / PLAYER
+           ========================================= */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            width: 90%;
+            height: 90%;
+            background: #000;
+            border-radius: var(--border-radius);
+            position: relative;
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.2);
+            border: 1px solid var(--primary);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 10px 20px;
+            background: var(--bg-card);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--secondary);
+        }
+
+        .modal-controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .control-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .control-btn:hover {
+            color: var(--text-main);
+        }
+
+        .control-btn.close:hover {
+            color: var(--danger);
+        }
+
+        .game-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* =========================================
+           8. FOOTER
+           ========================================= */
+        footer {
+            background: #050508;
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .footer-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover {
+            color: var(--secondary);
+        }
+
+        .copyright {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.9rem;
+        }
+
+        /* =========================================
+           9. ANIMATIONS
+           ========================================= */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =========================================
+           10. MEDIA QUERIES
+           ========================================= */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 1rem;
+            }
+            .search-container {
+                width: 100%;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .modal-content {
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Particles -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-gamepad"></i> Umbrafiles
+        </div>
+        <div class="search-container">
+            <i class="fa-solid fa-search search-icon"></i>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search for games...">
+        </div>
+        <div class="nav-links">
+            <button class="nav-btn" title="Favorites"><i class="fa-solid fa-heart"></i></button>
+            <button class="nav-btn" title="History"><i class="fa-solid fa-clock-rotate-left"></i></button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <h1>UNBLOCK YOUR FUN</h1>
+        <p>Welcome to Umbrafiles. The sleek, high-speed platform for the best unblocked online games. No downloads, just play.</p>
+        <div class="hero-stats">
+            <div class="stat-box">Games: <span>100+</span></div>
+            <div class="stat-box">Uptime: <span>99.9%</span></div>
+            <div class="stat-box">Speed: <span>Ultra</span></div>
+        </div>
+    </header>
+
+    <!-- Filters -->
+    <div class="filters" id="filterContainer">
+        <button class="filter-btn active" data-filter="all">All Games</button>
+        <button class="filter-btn" data-filter="action">Action</button>
+        <button class="filter-btn" data-filter="puzzle">Puzzle</button>
+        <button class="filter-btn" data-filter="racing">Racing</button>
+        <button class="filter-btn" data-filter="arcade">Arcade</button>
+        <button class="filter-btn" data-filter="io">IO Games</button>
+    </div>
+
+    <!-- Game Grid -->
+    <main class="game-container" id="gameGrid">
+        <!-- Games will be injected here via JS -->
+    </main>
+
+    <!-- Game Modal -->
+    <div class="modal" id="gameModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Game Title</h2>
+                <div class="modal-controls">
+                    <button class="control-btn" id="fullscreenBtn" title="Fullscreen"><i class="fa-solid fa-expand"></i></button>
+                    <button class="control-btn close" id="closeModalBtn" title="Close Game"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <iframe src="" class="game-frame" id="gameFrame" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">UMBRAFILES</div>
+        <div class="footer-links">
+            <a href="#" class="footer-link">Home</a>
+            <a href="#" class="footer-link">About</a>
+            <a href="#" class="footer-link">Request Game</a>
+            <a href="#" class="footer-link">Contact</a>
+        </div>
+        <div class="copyright">
+            &copy; 2024 Umbrafiles. All rights reserved. <br>
+            Designed for performance and fun.
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // =========================================
+        // 1. GAME DATA (From Citations)
+        // =========================================
+        const games = [
+            {
+                id: 1,
+                title: "Julie Beauty Salon",
+                embed: "https://cloud.onlinegames.io/games/2021/1/julie-beauty-salon/index-og.html",
+                image: "https://www.onlinegames.io/media/posts/1011/responsive/Julie-Beauty-Salon-xs.jpg",
+                tags: ["makeup", "girl", "beauty", "puzzle"],
+                desc: "Glam up makeover game where you run a beauty salon."
+            },
+            {
+                id: 2,
+                title: "Mahjong",
+                embed: "https://cloud.onlinegames.io/games/2025/unity/mahjong/index-og.html",
+                image: "https://www.onlinegames.io/media/posts/966/responsive/Mahjong-xs.jpg",
+                tags: ["puzzle", "brain", "logic", "strategy"],
+                desc: "Match identical tiles to remove them from the board."
+            },
+            {
+                id: 3,
+                title: "Sniper Elite",
+                embed: "https://www.onlinegames.io/games/2021/1/sniper-elite/index.html",
+                image: "https://www.onlinegames.io/media/posts/127/responsive/Sniper-Elite-Online-xs.jpg",
+                tags: ["action", "shooter", "sniper", "stealth"],
+                desc: "Take precision long-range shots in stealth sniper missions."
+            },
+            {
+                id: 4,
+                title: "Dark Ninja Hanjo",
+                embed: "https://www.onlinegames.io/games/2023/unity/dark-ninja-hanjo/index.html",
+                image: "https://www.onlinegames.io/media/posts/451/responsive/Dark-Ninja-Hanjo-xs.jpg",
+                tags: ["action", "adventure", "ninja", "3d"],
+                desc: "Explore and try to recover a ruined city as Dark Ninja Hanjo."
+            },
+            {
+                id: 5,
+                title: "Skibidi Toilet io",
+                embed: "https://www.onlinegames.io/games/2023/construct/242/skibidi-toilet-io/index.html",
+                image: "https://www.onlinegames.io/media/posts/540/responsive/Skibidi-Toilet-xs.jpg",
+                tags: ["io", "funny", "multiplayer", "arcade"],
+                desc: "Battle royale where toilets compete by eating toilet paper."
+            },
+            {
+                id: 6,
+                title: "Draw The Bridge",
+                embed: "https://www.onlinegames.io/games/2021/4/draw-the-bridge/index.html",
+                image: "https://www.onlinegames.io/media/posts/164/responsive/Draw-the-Bridge-Game-xs.jpg",
+                tags: ["physics", "puzzle", "drawing", "logic"],
+                desc: "Draw a bridge to help the car cross the gap."
+            },
+            {
+                id: 7,
+                title: "Neon Racer",
+                embed: "https://www.onlinegames.io/games/2021/4/neon-racer/index.html",
+                image: "https://www.onlinegames.io/media/posts/173/responsive/Neon-Racer-2-xs.jpg",
+                tags: ["racing", "bike", "physics", "arcade"],
+                desc: "High-speed bike racing with a striking neon visual style."
+            },
+            {
+                id: 8,
+                title: "Draw the Car Path",
+                embed: "https://cloud.onlinegames.io/games/2021/4/draw-the-car-path/index-og.html",
+                image: "https://www.onlinegames.io/media/posts/936/responsive/draw-the-car-path-xs.jpg",
+                tags: ["logic", "drawing", "car", "physics"],
+                desc: "Guide cars to their parking spots by drawing their paths."
+            },
+            {
+                id: 9,
+                title: "Pinball Simulator",
+                embed: "https://www.onlinegames.io/games/2021/unity2/pinball-simulator/index.html",
+                image: "https://via.placeholder.com/600x338/1a1a2e/00f0ff?text=Pinball+Simulator", // Placeholder as specific URL wasn't found
+                tags: ["arcade", "pinball", "simulation", "physics"],
+                desc: "The closest to a physical arcade machine. Includes dual flippers."
+            }
+        ];
+
+        // =========================================
+        // 2. DOM ELEMENTS
+        // =========================================
+        const gameGrid = document.getElementById('gameGrid');
+        const filterContainer = document.getElementById('filterContainer');
+        const searchInput = document.getElementById('searchInput');
+        const modal = document.getElementById('gameModal');
+        const gameFrame = document.getElementById('gameFrame');
+        const modalTitle = document.getElementById('modalTitle');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+        // =========================================
+        // 3. RENDER FUNCTIONS
+        // =========================================
+        function renderGames(gamesToRender) {
+            gameGrid.innerHTML = '';
+
+            if(gamesToRender.length === 0) {
+                gameGrid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 2rem; color: var(--text-muted);">No games found matching your criteria.</div>';
+                return;
+            }
+
+            gamesToRender.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                card.onclick = () => openGame(game);
+
+                // Create tags HTML
+                const tagsHtml = game.tags.map(tag =>
+                    `<span class="tag">${tag}</span>`
+                ).join('');
+
+                card.innerHTML = `
+                    <div class="card-image-wrapper">
+                        <img src="${game.image}" alt="${game.title}" class="card-image" loading="lazy">
+                        <div class="card-overlay"></div>
+                        <i class="fa-solid fa-play play-icon"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">${game.title}</h3>
+                        <div class="card-tags">
+                            ${tagsHtml}
+                        </div>
+                    </div>
+                `;
+                gameGrid.appendChild(card);
+            });
+        }
+
+        // =========================================
+        // 4. FILTERING & SEARCH LOGIC
+        // =========================================
+
+        // Initial Render
+        renderGames(games);
+
+        // Filter Buttons
+        filterContainer.addEventListener('click', (e) => {
+            if(e.target.classList.contains('filter-btn')) {
+                // Remove active class from all
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                // Add active to clicked
+                e.target.classList.add('active');
+
+                const filterValue = e.target.getAttribute('data-filter');
+
+                if(filterValue === 'all') {
+                    renderGames(games);
+                } else {
+                    const filtered = games.filter(game =>
+                        game.tags.some(tag => tag.toLowerCase().includes(filterValue))
+                    );
+                    renderGames(filtered);
+                }
+            }
+        });
+
+        // Search Input
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = games.filter(game =>
+                game.title.toLowerCase().includes(searchTerm) ||
+                game.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+            );
+            renderGames(filtered);
+        });
+
+        // =========================================
+        // 5. MODAL & GAME PLAYER LOGIC
+        // =========================================
+        function openGame(game) {
+            modalTitle.textContent = game.title;
+            gameFrame.src = game.embed;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeGame() {
+            modal.classList.remove('active');
+            gameFrame.src = ''; // Stop game audio/process
+            document.body.style.overflow = '';
+        }
+
+        closeModalBtn.addEventListener('click', closeGame);
+
+        // Close on clicking outside content
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) {
+                closeGame();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape' && modal.classList.contains('active')) {
+                closeGame();
+            }
+        });
+
+        // Fullscreen Toggle
+        fullscreenBtn.addEventListener('click', () => {
+            const modalContent = document.querySelector('.modal-content');
+            if (!document.fullscreenElement) {
+                if (modalContent.requestFullscreen) {
+                    modalContent.requestFullscreen();
+                } else if (modalContent.webkitRequestFullscreen) { /* Safari */
+                    modalContent.webkitRequestFullscreen();
+                } else if (modalContent.msRequestFullscreen) { /* IE11 */
+                    modalContent.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
+        // =========================================
+        // 6. BACKGROUND PARTICLE SYSTEM (CANVAS)
+        // =========================================
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray;
+
+        // Resize Canvas
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = (Math.random() * 1) - 0.5;
+                this.speedY = (Math.random() * 1) - 0.5;
+                this.color = Math.random() > 0.5 ? '#7b2cbf' : '#00f0ff'; // Purple or Cyan
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 15000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+
+                // Draw connections
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(123, 44, 191, ${1 - distance/100})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+    </script>
+</body>
+</html>
