@@ -1812,17 +1812,15 @@ const state = {
   connectionStartTime: null,
   connectionTimerInterval: null,
   files: [],
-  receivedFiles: [],
+  receivedFiles: {},
+  currentReceivingFileId: null,
   webcamStream: null,
   mirrorStream: null,
-  remoteMirrorStream: null,
-  remoteWebcamStream: null,
   mirrorQuality: 'high',
   mirrorDurationInterval: null,
   mirrorSeconds: 0,
   cameraFacingMode: 'user',
-  pendingFiles: new Map(),
-  fileTransferStats: { bytesSent: 0, bytesReceived: 0, startTime: 0 }
+  transferQueue: []
 };
 
 const ICE_SERVERS = {
@@ -1839,12 +1837,11 @@ const ICE_SERVERS = {
    UTILITY FUNCTIONS
    ============================================ */
 function getTimestamp() {
-  const now = new Date();
-  return now.toTimeString().split(' ')[0];
+  return new Date().toTimeString().split(' ')[0];
 }
 
 function formatFileSize(bytes) {
-  if (bytes === 0) return '0 B';
+  if (!bytes) return '0 B';
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -1863,110 +1860,51 @@ function showToast(message, type = 'info') {
 
 function copyToClipboard(elementId) {
   const el = document.getElementById(elementId);
-  if (!el.value) {
-    showToast('Nothing to copy', 'warning');
-    return;
-  }
-  navigator.clipboard.writeText(el.value).then(() => {
-    showToast('Copied to clipboard!', 'success');
-  }).catch(() => {
-    el.select();
-    document.execCommand('copy');
-    showToast('Copied to clipboard!', 'success');
-  });
+  if (!el.value) { showToast('Nothing to copy', 'warning'); return; }
+  navigator.clipboard.writeText(el.value).then(() => showToast('Copied!', 'success'))
+    .catch(() => { el.select(); document.execCommand('copy'); showToast('Copied!', 'success'); });
 }
 
 function generateQR(textId) {
   const text = document.getElementById(textId).value;
-  if (!text) {
-    showToast('Nothing to generate QR for', 'warning');
-    return;
-  }
-  // Simple QR code modal
+  if (!text) { showToast('Nothing to generate QR for', 'warning'); return; }
   const modal = document.createElement('div');
   modal.className = 'modal-overlay active';
   modal.innerHTML = `
     <div class="modal" style="max-width:400px; text-align:center;">
       <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">✕</button>
       <h3 style="margin-top:0;">📱 QR Code</h3>
-      <p class="text-sm text-muted mb-2">Scan to copy connection data</p>
+      <p class="text-sm text-muted mb-2">Scan or copy manually</p>
       <div style="background:white; padding:20px; border-radius:12px; display:inline-block; margin:1rem 0;">
         <canvas id="qrCanvas"></canvas>
       </div>
-      <p class="text-sm text-muted">Or copy the text manually below</p>
       <textarea id="qrText" style="min-height:60px; font-size:0.7rem; margin-top:1rem;" readonly>${text}</textarea>
       <button class="btn btn-primary btn-sm mt-2" onclick="copyToClipboard('qrText')">📋 Copy Text</button>
     </div>
   `;
   document.body.appendChild(modal);
-
-  // Generate simple QR using a lightweight approach
-  // For a production app, you'd use a QR library. Here we create a visual representation.
   setTimeout(() => {
     const canvas = document.getElementById('qrCanvas');
     if (canvas) {
-      generateSimpleQR(canvas, text);
-    }
-  }, 100);
-}
-
-// Simple QR-like visual generator (for demo purposes)
-function generateSimpleQR(canvas, text) {
-  const size = 200;
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext('2d');
-
-  // Create a deterministic pattern from the text
-  const hash = simpleHash(text);
-  const gridSize = 25;
-  const cellSize = size / gridSize;
-
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, size, size);
-
-  // Draw finder patterns
-  drawFinderPattern(ctx, 0, 0, cellSize);
-  drawFinderPattern(ctx, (gridSize - 7) * cellSize, 0, cellSize);
-  drawFinderPattern(ctx, 0, (gridSize - 7) * cellSize, cellSize);
-
-  // Draw data based on hash
-  let seed = hash;
-  function nextRandom() {
-    seed = (seed * 16807 + 0) % 2147483647;
-    return seed / 2147483647;
-  }
-
-  ctx.fillStyle = '#000000';
-  for (let y = 0; y < gridSize; y++) {
-    for (let x = 0; x < gridSize; x++) {
-      // Skip finder pattern areas
-      if ((x < 8 && y < 8) || (x >= gridSize - 8 && y < 8) || (x < 8 && y >= gridSize - 8)) continue;
-      if (nextRandom() > 0.5) {
-        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+      const size = 200; canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, size, size);
+      const gridSize = 25, cellSize = size / gridSize;
+      function drawFinder(x, y) {
+        ctx.fillStyle = '#000'; ctx.fillRect(x, y, 7*cellSize, 7*cellSize);
+        ctx.fillStyle = '#fff'; ctx.fillRect(x+cellSize, y+cellSize, 5*cellSize, 5*cellSize);
+        ctx.fillStyle = '#000'; ctx.fillRect(x+2*cellSize, y+2*cellSize, 3*cellSize, 3*cellSize);
+      }
+      drawFinder(0, 0); drawFinder((gridSize-7)*cellSize, 0); drawFinder(0, (gridSize-7)*cellSize);
+      let seed = 0; for(let i=0;i<text.length;i++) seed = ((seed<<5)-seed)+text.charCodeAt(i) | 0;
+      function next() { seed = (seed * 16807) % 2147483647; return seed/2147483647; }
+      ctx.fillStyle = '#000';
+      for(let y=0; y<gridSize; y++) for(let x=0; x<gridSize; x++) {
+        if((x<8&&y<8)||(x>=gridSize-8&&y<8)||(x<8&&y>=gridSize-8)) continue;
+        if(next() > 0.5) ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
       }
     }
-  }
-}
-
-function drawFinderPattern(ctx, x, y, cellSize) {
-  const size = 7 * cellSize;
-  ctx.fillStyle = '#000000';
-  ctx.fillRect(x, y, size, size);
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(x + cellSize, y + cellSize, size - 2 * cellSize, size - 2 * cellSize);
-  ctx.fillStyle = '#000000';
-  ctx.fillRect(x + 2 * cellSize, y + 2 * cellSize, size - 4 * cellSize, size - 4 * cellSize);
-}
-
-function simpleHash(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash;
-  }
-  return Math.abs(hash);
+  }, 50);
 }
 
 /* ============================================
@@ -1976,96 +1914,50 @@ function addLog(message, type = '') {
   const consoleBody = document.getElementById('consoleBody');
   const entry = document.createElement('div');
   entry.className = 'log-entry';
-  entry.innerHTML = `
-    <span class="log-time">[${getTimestamp()}]</span>
-    <span class="log-msg ${type}">${message}</span>
-  `;
+  entry.innerHTML = `<span class="log-time">[${getTimestamp()}]</span><span class="log-msg ${type}">${message}</span>`;
   consoleBody.appendChild(entry);
   consoleBody.scrollTop = consoleBody.scrollHeight;
 }
 
 function clearLogs() {
-  document.getElementById('consoleBody').innerHTML = `
-    <div class="log-entry">
-      <span class="log-time">[${getTimestamp()}]</span>
-      <span class="log-msg info">Logs cleared.</span>
-    </div>
-  `;
+  document.getElementById('consoleBody').innerHTML = `<div class="log-entry"><span class="log-time">[${getTimestamp()}]</span><span class="log-msg info">Logs cleared.</span></div>`;
 }
 
 /* ============================================
-   PAGE NAVIGATION
+   PAGE & TAB NAVIGATION
    ============================================ */
 function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-link[data-page]').forEach(l => l.classList.remove('active'));
-
   const pageEl = document.getElementById(`page-${page}`);
   if (pageEl) pageEl.classList.add('active');
-
   const navLink = document.querySelector(`.nav-link[data-page="${page}"]`);
   if (navLink) navLink.classList.add('active');
 }
 
-/* ============================================
-   TAB NAVIGATION
-   ============================================ */
 function switchTab(tab) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-
   document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
   document.getElementById(`panel-${tab}`).classList.add('active');
 }
 
-/* ============================================
-   MODAL HANDLING
-   ============================================ */
-function openModal(id) {
-  document.getElementById(id).classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
+function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = ''; }
 
-function closeModal(id) {
-  document.getElementById(id).classList.remove('active');
-  document.body.style.overflow = '';
-}
-
-// Close modal on overlay click
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) {
-      overlay.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-  });
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) { closeModal(overlay.id); } });
 });
-
-// Close modal on Escape key
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.modal-overlay.active').forEach(m => {
-      m.classList.remove('active');
-    });
-    document.body.style.overflow = '';
-  }
-});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { document.querySelectorAll('.modal-overlay.active').forEach(m => { m.classList.remove('active'); }); document.body.style.overflow = ''; } });
 
 /* ============================================
-   WEBRTC CONNECTION
+   WEBRTC PEER CONNECTION
    ============================================ */
 function createPeerConnection() {
   const pc = new RTCPeerConnection(ICE_SERVERS);
 
-  pc.oniceconnectionstatechange = () => {
-    addLog(`ICE state: ${pc.iceConnectionState}`, pc.iceConnectionState === 'connected' ? 'success' : '');
-    updateConnectionStatus();
-  };
-
-  pc.onconnectionstatechange = () => {
-    addLog(`Connection state: ${pc.connectionState}`, pc.connectionState === 'connected' ? 'success' : '');
-    updateConnectionStatus();
-  };
+  pc.oniceconnectionstatechange = () => updateConnectionStatus();
+  pc.onconnectionstatechange = () => updateConnectionStatus();
 
   pc.ondatachannel = (event) => {
     addLog('Received data channel', 'success');
@@ -2074,550 +1966,23 @@ function createPeerConnection() {
   };
 
   pc.ontrack = (event) => {
-    addLog('Received media track', 'success');
-    handleRemoteMedia(event);
+    addLog(`Received ${event.track.kind} track`, 'success');
+    const stream = event.streams[0];
+    if (!stream) return;
+
+    const video = document.getElementById('remoteWebcamVideo');
+    video.srcObject = stream;
+    video.style.display = 'block';
+    const placeholder = video.parentElement.querySelector('.mirror-placeholder');
+    if (placeholder) placeholder.style.display = 'none';
+    showToast('Remote camera/screen feed received!', 'success');
   };
 
   return pc;
 }
 
 function setupDataChannel() {
-  state.dataChannel.onopen = () => {
-    addLog('Data channel opened!', 'success');
-    state.isConnected = true;
-    state.connectionStartTime = Date.now();
-    state.connectionTimerInterval = setInterval(updateConnectionTimer, 1000);
-    showToast('Connected! Ready to transfer files.', 'success');
-    updateConnectionStatus();
-  };
-
-  state.dataChannel.onclose = () => {
-    addLog('Data channel closed', 'warn');
-    state.isConnected = false;
-    clearInterval(state.connectionTimerInterval);
-    updateConnectionStatus();
-  };
-
-  state.dataChannel.onmessage = (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      handleIncomingData(data);
-    } catch (e) {
-      addLog(`Raw message received: ${event.data.substring(0, 50)}...`, 'info');
-    }
-  };
-
-  state.dataChannel.onerror = (error) => {
-    addLog(`Data channel error: ${error.message || error}`, 'error');
-  };
-}
-
-function handleIncomingData(data) {
-  switch (data.type) {
-    case 'file-metadata':
-      handleFileMetadata(data);
-      break;
-    case 'file-chunk':
-      handleFileChunk(data);
-      break;
-    case 'file-complete':
-      handleFileComplete(data);
-      break;
-    case 'file-progress':
-      handleFileProgress(data);
-      break;
-    case 'screen-share-start':
-      addLog('Remote screen share started', 'info');
-      break;
-    case 'screen-share-stop':
-      addLog('Remote screen share stopped', 'warn');
-      break;
-    case 'webcam-start':
-      addLog('Remote webcam started', 'info');
-      break;
-    case 'webcam-stop':
-      addLog('Remote webcam stopped', 'warn');
-      break;
-    default:
-      addLog(`Unknown message type: ${data.type}`, 'info');
-  }
-}
-
-function updateConnectionStatus() {
-  const dot = document.getElementById('statusDot');
-  const text = document.getElementById('statusText');
-  const banner = document.getElementById('connectionBanner');
-  const transferBanner = document.getElementById('transferBanner');
-
-  if (state.isConnected) {
-    dot.className = 'status-dot connected';
-    text.textContent = 'Connected';
-    banner.className = 'status-banner connected';
-    banner.innerHTML = '<span>✅ Connected — P2P link active</span><span id="connectionTimer">00:00:00</span>';
-    transferBanner.className = 'status-banner connected';
-    transferBanner.innerHTML = '<span>✅ Connected — File transfer ready</span>';
-  } else if (state.peerConnection && (state.peerConnection.iceConnectionState === 'checking' || state.peerConnection.iceConnectionState === 'new')) {
-    dot.className = 'status-dot connecting';
-    text.textContent = 'Connecting...';
-    banner.className = 'status-banner connecting';
-    banner.innerHTML = '<span>⏳ Establishing connection...</span><span>00:00:00</span>';
-    transferBanner.className = 'status-banner disconnected';
-    transferBanner.innerHTML = '<span>⏳ Connecting...</span>';
-  } else {
-    dot.className = 'status-dot';
-    text.textContent = 'Disconnected';
-    banner.className = 'status-banner disconnected';
-    banner.innerHTML = '<span>⚠ Not Connected — Set up a peer connection below</span><span id="connectionTimer">00:00:00</span>';
-    transferBanner.className = 'status-banner disconnected';
-    transferBanner.innerHTML = '<span>⚠ Connect first to transfer files</span>';
-  }
-}
-
-function updateConnectionTimer() {
-  if (!state.connectionStartTime) return;
-  const elapsed = Date.now() - state.connectionStartTime;
-  const hours = String(Math.floor(elapsed / 3600000)).padStart(2, '0');
-  const minutes = String(Math.floor((elapsed % 3600000) / 60000)).padStart(2, '0');
-  const seconds = String(Math.floor((elapsed % 60000) / 1000)).padStart(2, '0');
-  const timerEl = document.getElementById('connectionTimer');
-  if (timerEl) timerEl.textContent = `${hours}:${minutes}:${seconds}`;
-}
-
-/* ============================================
-   HOST FLOW (PC)
-   ============================================ */
-async function createOffer() {
-  try {
-    addLog('Creating peer connection as host...', 'info');
-    state.peerConnection = createPeerConnection();
-    state.isHost = true;
-
-    state.dataChannel = state.peerConnection.createDataChannel('umbrafiles', {
-      ordered: true,
-      maxRetransmits: 3
-    });
-    setupDataChannel();
-
-    addLog('Data channel created', 'info');
-
-    const offer = await state.peerConnection.createOffer();
-    await state.peerConnection.setLocalDescription(offer);
-
-    // Wait for ICE candidates
-    addLog('Gathering ICE candidates...', 'info');
-    await new Promise((resolve) => {
-      const checkState = () => {
-        if (state.peerConnection.iceGatheringState === 'complete') {
-          resolve();
-        } else if (state.peerConnection.iceGatheringState === 'gathering') {
-          setTimeout(checkState, 500);
-        }
-      };
-      checkState();
-      // Fallback timeout
-      setTimeout(resolve, 5000);
-    });
-
-    const offerData = btoa(JSON.stringify(state.peerConnection.localDescription));
-    document.getElementById('hostOffer').value = offerData;
-    addLog('Offer generated! Send this to your phone.', 'success');
-    showToast('Connection code generated!', 'success');
-
-  } catch (error) {
-    addLog(`Error creating offer: ${error.message}`, 'error');
-    showToast('Failed to create connection code', 'error');
-  }
-}
-
-async function hostAcceptAnswer() {
-  try {
-    const answerText = document.getElementById('hostAnswer').value.trim();
-    if (!answerText) {
-      showToast('Please paste the answer code from your phone', 'warning');
-      return;
-    }
-
-    addLog('Attempting to accept answer...', 'info');
-    const answer = JSON.parse(atob(answerText));
-    await state.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-
-    addLog('Remote description set. Waiting for connection...', 'info');
-    showToast('Connection being established...', 'info');
-
-  } catch (error) {
-    addLog(`Error accepting answer: ${error.message}`, 'error');
-    showToast('Invalid answer code. Try again.', 'error');
-  }
-}
-
-/* ============================================
-   CLIENT FLOW (PHONE)
-   ============================================ */
-async function clientCreateAnswer() {
-  try {
-    const offerText = document.getElementById('clientOffer').value.trim();
-    if (!offerText) {
-      showToast('Please paste the offer code from your PC', 'warning');
-      return;
-    }
-
-    document.getElementById('clientStatus').innerHTML = '<span style="color: var(--warning);">⏳ Processing offer...</span>';
-    addLog('Creating peer connection as client...', 'info');
-
-    state.peerConnection = createPeerConnection();
-    state.isHost = false;
-
-    state.peerConnection.ondatachannel = (event) => {
-      addLog('Received data channel', 'success');
-      state.dataChannel = event.channel;
-      setupDataChannel();
-    };
-
-    const offer = JSON.parse(atob(offerText));
-    await state.peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-
-    addLog('Remote description set. Creating answer...', 'info');
-
-    const answer = await state.peerConnection.createAnswer();
-    await state.peerConnection.setLocalDescription(answer);
-
-    // Wait for ICE candidates
-    addLog('Gathering ICE candidates...', 'info');
-    await new Promise((resolve) => {
-      const checkState = () => {
-        if (state.peerConnection.iceGatheringState === 'complete') {
-          resolve();
-        } else if (state.peerConnection.iceGatheringState === 'gathering') {
-          setTimeout(checkState, 500);
-        }
-      };
-      checkState();
-      setTimeout(resolve, 5000);
-    });
-
-    const answerData = btoa(JSON.stringify(state.peerConnection.localDescription));
-    document.getElementById('clientAnswer').value = answerData;
-    document.getElementById('clientStatus').innerHTML = '<span style="color: var(--success);">✅ Answer generated! Send to PC.</span>';
-    addLog('Answer generated! Send this to your PC.', 'success');
-    showToast('Answer code generated!', 'success');
-
-  } catch (error) {
-    document.getElementById('clientStatus').innerHTML = `<span style="color: var(--danger);">❌ Error: ${error.message}</span>`;
-    addLog(`Client error: ${error.message}`, 'error');
-    showToast('Failed to generate answer', 'error');
-  }
-}
-
-/* ============================================
-   FILE TRANSFER
-   ============================================ */
-const CHUNK_SIZE = 16384; // 16KB chunks
-
-// Drag and drop setup
-const dropZone = document.getElementById('dropZone');
-const fileInput = document.getElementById('fileInput');
-
-dropZone.addEventListener('click', () => fileInput.click());
-
-dropZone.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  dropZone.classList.add('dragover');
-});
-
-dropZone.addEventListener('dragleave', () => {
-  dropZone.classList.remove('dragover');
-});
-
-dropZone.addEventListener('drop', (e) => {
-  e.preventDefault();
-  dropZone.classList.remove('dragover');
-  handleFiles(e.dataTransfer.files);
-});
-
-fileInput.addEventListener('change', (e) => {
-  handleFiles(e.target.files);
-  fileInput.value = '';
-});
-
-function handleFiles(fileList) {
-  if (!state.isConnected) {
-    showToast('Not connected! Establish a P2P connection first.', 'warning');
-    return;
-  }
-
-  Array.from(fileList).forEach(file => {
-    const fileId = generateFileId();
-    const fileObj = {
-      id: fileId,
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      lastModified: file.lastModified,
-      status: 'pending',
-      progress: 0,
-      file: file
-    };
-    state.files.push(fileObj);
-    renderFileItem(fileObj);
-    addLog(`File queued: ${file.name} (${formatFileSize(file.size)})`, 'info');
-    sendFile(fileObj);
-  });
-}
-
-function generateFileId() {
-  return 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-}
-
-function renderFileItem(fileObj) {
-  const fileList = document.getElementById('fileList');
-  const ext = fileObj.name.split('.').pop().toLowerCase();
-  const iconMap = {
-    pdf: '📄', doc: '📄', docx: '📄', txt: '📝',
-    jpg: '🖼️', jpeg: '🖼️', png: '🖼️', gif: '🖼️', svg: '🖼️', webp: '🖼️',
-    mp4: '🎬', mov: '🎬', avi: '🎬',
-    mp3: '🎵', wav: '🎵', ogg: '🎵',
-    zip: '📦', rar: '📦', '7z': '📦',
-    js: '💻', html: '💻', css: '🎨', json: '📋',
-    apk: '📱', ipa: '📱'
-  };
-  const icon = iconMap[ext] || '📎';
-
-  const item = document.createElement('div');
-  item.className = 'file-item';
-  item.id = `file-${fileObj.id}`;
-  item.innerHTML = `
-    <div class="file-info">
-      <div class="file-icon">${icon}</div>
-      <div class="file-details">
-        <div class="file-name">${fileObj.name}</div>
-        <div class="file-size">${formatFileSize(fileObj.size)} • ${ext.toUpperCase()}</div>
-        <div class="file-progress">
-          <div class="file-progress-bar" id="progress-${fileObj.id}" style="width: ${fileObj.progress}%"></div>
-        </div>
-      </div>
-    </div>
-    <div class="file-status ${fileObj.status}" id="status-${fileObj.id}">${fileObj.status}</div>
-  `;
-  fileList.appendChild(item);
-}
-
-function updateFileStatus(fileId, status, progress = 0) {
-  const statusEl = document.getElementById(`status-${fileId}`);
-  const progressEl = document.getElementById(`progress-${fileId}`);
-  if (statusEl) {
-    statusEl.textContent = status;
-    statusEl.className = `file-status ${status}`;
-  }
-  if (progressEl) progressEl.style.width = `${progress}%`;
-}
-
-async function sendFile(fileObj) {
-  if (!state.dataChannel || state.dataChannel.readyState !== 'open') {
-    updateFileStatus(fileObj.id, 'error');
-    addLog(`Cannot send ${fileObj.name}: data channel not open`, 'error');
-    return;
-  }
-
-  updateFileStatus(fileObj.id, 'sending');
-  state.fileTransferStats.startTime = Date.now();
-
-  // Send metadata
-  const metadata = {
-    type: 'file-metadata',
-    id: fileObj.id,
-    name: fileObj.name,
-    size: fileObj.size,
-    type: fileObj.type,
-    mimeType: fileObj.type
-  };
-  state.dataChannel.send(JSON.stringify(metadata));
-  addLog(`Sending: ${fileObj.name} (${formatFileSize(fileObj.size)})`, 'info');
-
-  // Read and send file in chunks
-  const file = fileObj.file;
-  let offset = 0;
-
-  while (offset < file.size) {
-    if (state.dataChannel.readyState !== 'open') {
-      updateFileStatus(fileObj.id, 'error');
-      break;
-    }
-
-    const chunk = file.slice(offset, offset + CHUNK_SIZE);
-    const chunkArray = await chunk.arrayBuffer();
-
-    // Send as binary with metadata header
-    const header = JSON.stringify({
-      type: 'file-chunk',
-      id: fileObj.id,
-      offset: offset,
-      totalSize: fileObj.size,
-      chunkSize: chunkArray.byteLength
-    });
-
-    // Send header first, then chunk data
-    // For simplicity, we'll use a combined approach
-    const headerBytes = new TextEncoder().encode(header);
-    const combined = new Uint8Array(headerBytes.length + 1 + chunkArray.byteLength);
-    combined.set(headerBytes, 0);
-    combined[headerBytes.length] = 0xFF; // delimiter
-    combined.set(new Uint8Array(chunkArray), headerBytes.length + 1);
-
-    state.dataChannel.send(combined);
-    offset += chunkArray.byteLength;
-
-    const progress = Math.round((offset / fileObj.size) * 100);
-    updateFileStatus(fileObj.id, 'sending', progress);
-
-    // Small delay to prevent overwhelming the channel
-    if (offset % (CHUNK_SIZE * 10) === 0) {
-      await new Promise(r => setTimeout(r, 10));
-    }
-  }
-
-  // Send completion signal
-  state.dataChannel.send(JSON.stringify({
-    type: 'file-complete',
-    id: fileObj.id
-  }));
-
-  updateFileStatus(fileObj.id, 'complete', 100);
-  addLog(`Sent: ${fileObj.name}`, 'success');
-  showToast(`Sent: ${fileObj.name}`, 'success');
-
-  // Update transfer speed
-  updateTransferSpeed(fileObj.size);
-}
-
-function updateTransferSpeed(bytes) {
-  const elapsed = (Date.now() - state.fileTransferStats.startTime) / 1000;
-  if (elapsed > 0) {
-    const speed = (bytes / elapsed) / 1024; // KB/s
-    const speedEl = document.getElementById('transferSpeed');
-    if (speedEl) speedEl.textContent = `${speed.toFixed(1)} KB/s`;
-  }
-}
-
-/* ============================================
-   INCOMING FILE HANDLING
-   ============================================ */
-function handleFileMetadata(data) {
-  state.pendingFiles.set(data.id, {
-    id: data.id,
-    name: data.name,
-    size: data.size,
-    type: data.type,
-    mimeType: data.mimeType,
-    receivedSize: 0,
-    chunks: [],
-    status: 'receiving'
-  });
-
-  addLog(`Receiving: ${data.name} (${formatFileSize(data.size)})`, 'info');
-  showToast(`Receiving: ${data.name}`, 'info');
-
-  // Render in received files list
-  renderReceivedFile(data);
-}
-
-function handleFileChunk(data) {
-  const pending = state.pendingFiles.get(data.id);
-  if (!pending) return;
-
-  // Parse the combined data from the message
-  const message = data; // Already parsed JSON
-  // The chunk data comes as a separate binary message, handled in onmessage
-}
-
-function handleFileComplete(data) {
-  const pending = state.pendingFiles.get(data.id);
-  if (!pending) return;
-
-  // Combine all chunks
-  const totalLength = pending.chunks.reduce((sum, chunk) => sum + chunk.byteLength, 0);
-  const combined = new Uint8Array(totalLength);
-  let offset = 0;
-  for (const chunk of pending.chunks) {
-    combined.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
-
-  // Create blob and download
-  const blob = new Blob([combined], { type: pending.mimeType || 'application/octet-stream' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = pending.name;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-
-  pending.status = 'complete';
-  state.pendingFiles.delete(data.id);
-
-  addLog(`Received complete: ${pending.name}`, 'success');
-  showToast(`Received: ${pending.name}`, 'success');
-
-  // Update received files list
-  updateReceivedFileStatus(data.id, 'complete');
-}
-
-function handleFileProgress(data) {
-  // Progress updates handled via UI
-}
-
-function renderReceivedFile(data) {
-  const list = document.getElementById('receivedFilesList');
-  if (list.querySelector('p')) list.innerHTML = '';
-
-  const ext = data.name.split('.').pop().toLowerCase();
-  const iconMap = {
-    pdf: '📄', doc: '📄', docx: '📄', txt: '📝',
-    jpg: '🖼️', jpeg: '🖼️', png: '🖼️', gif: '🖼️',
-    mp4: '🎬', mp3: '🎵', zip: '📦', js: '💻'
-  };
-  const icon = iconMap[ext] || '📎';
-
-  const item = document.createElement('div');
-  item.className = 'file-item';
-  item.id = `received-${data.id}`;
-  item.innerHTML = `
-    <div class="file-info">
-      <div class="file-icon">${icon}</div>
-      <div class="file-details">
-        <div class="file-name">${data.name}</div>
-        <div class="file-size">${formatFileSize(data.size)}</div>
-      </div>
-    </div>
-    <div class="file-status pending" id="received-status-${data.id}">receiving</div>
-  `;
-  list.appendChild(item);
-}
-
-function updateReceivedFileStatus(fileId, status) {
-  const statusEl = document.getElementById(`received-status-${fileId}`);
-  if (statusEl) {
-    statusEl.textContent = status;
-    statusEl.className = `file-status ${status}`;
-  }
-}
-
-function clearReceivedFiles() {
-  document.getElementById('receivedFilesList').innerHTML =
-    '<p class="text-center text-muted text-sm" style="padding: 2rem;">No files received yet</p>';
-}
-
-/* ============================================
-   HANDLE INCOMING BINARY DATA
-   ============================================ */
-// Override the data channel message handler for binary data
-const originalSetupDataChannel = setupDataChannel;
-
-// We need to enhance the onmessage handler
-function setupDataChannelEnhanced() {
   state.dataChannel.binaryType = 'arraybuffer';
-
   state.dataChannel.onopen = () => {
     addLog('Data channel opened!', 'success');
     state.isConnected = true;
@@ -2625,6 +1990,7 @@ function setupDataChannelEnhanced() {
     state.connectionTimerInterval = setInterval(updateConnectionTimer, 1000);
     showToast('Connected! Ready to transfer files.', 'success');
     updateConnectionStatus();
+    processTransferQueue();
   };
 
   state.dataChannel.onclose = () => {
@@ -2637,16 +2003,13 @@ function setupDataChannelEnhanced() {
   state.dataChannel.onmessage = (event) => {
     try {
       if (typeof event.data === 'string') {
-        // JSON message
-        const data = JSON.parse(event.data);
-        handleIncomingData(data);
+        const msg = JSON.parse(event.data);
+        handleJsonMessage(msg);
       } else {
-        // Binary data - file chunk
-        const buffer = new Uint8Array(event.data);
-        handleBinaryChunk(buffer);
+        handleBinaryMessage(event.data);
       }
     } catch (e) {
-      addLog(`Message error: ${e.message}`, 'error');
+      addLog(`Message parse error: ${e.message}`, 'error');
     }
   };
 
@@ -2655,66 +2018,261 @@ function setupDataChannelEnhanced() {
   };
 }
 
-function handleBinaryChunk(buffer) {
-  // Find the delimiter
-  const delimiter = 0xFF;
-  let delimiterIndex = -1;
-  for (let i = 0; i < buffer.length; i++) {
-    if (buffer[i] === delimiter) {
-      delimiterIndex = i;
+function handleJsonMessage(msg) {
+  switch (msg.type) {
+    case 'file-start':
+      state.currentReceivingFileId = msg.id;
+      state.receivedFiles[msg.id] = { name: msg.name, size: msg.size, mimeType: msg.mimeType || 'application/octet-stream', chunks: [], receivedSize: 0 };
+      addLog(`Receiving: ${msg.name} (${formatFileSize(msg.size)})`, 'info');
+      showToast(`Receiving: ${msg.name}`, 'info');
+      renderReceivedFile(msg);
       break;
-    }
-  }
-
-  if (delimiterIndex === -1) return; // Incomplete or no delimiter
-
-  const headerBytes = buffer.slice(0, delimiterIndex);
-  const dataBytes = buffer.slice(delimiterIndex + 1);
-  const header = new TextDecoder().decode(headerBytes);
-
-  try {
-    const metadata = JSON.parse(header);
-    if (metadata.type === 'file-chunk') {
-      const pending = state.pendingFiles.get(metadata.id);
-      if (pending) {
-        pending.chunks.push(dataBytes);
-        pending.receivedSize += dataBytes.byteLength;
-        const progress = Math.round((pending.receivedSize / pending.size) * 100);
-        updateFileStatus(metadata.id, 'receiving', progress);
-      }
-    }
-  } catch (e) {
-    // Not a valid chunk, ignore
+    case 'file-end':
+      const file = state.receivedFiles[msg.currentReceivingFileId || msg.id];
+      if (!file) return;
+      const blob = new Blob(file.chunks, { type: file.mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = file.name;
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a); URL.revokeObjectURL(url);
+      delete state.receivedFiles[msg.id];
+      state.currentReceivingFileId = null;
+      updateReceivedFileStatus(msg.id, 'complete');
+      addLog(`Received complete: ${file.name}`, 'success');
+      showToast(`Received: ${file.name}`, 'success');
+      break;
+    default:
+      addLog(`Unknown JSON type: ${msg.type}`, 'info');
   }
 }
 
-// Replace the original setupDataChannel call
-const _origCreatePeerConnection = createPeerConnection;
-createPeerConnection = function() {
-  const pc = _origCreatePeerConnection();
-  // Store original handler
-  pc._originalOnDataChannel = pc.ondatachannel;
-  return pc;
-};
-
-// Update the host flow to use enhanced setup
-const _origCreateOffer = createOffer;
-createOffer = async function() {
-  await _origCreateOffer();
-  // Replace the data channel handler
-  if (state.dataChannel) {
-    state.dataChannel.binaryType = 'arraybuffer';
+function handleBinaryMessage(buffer) {
+  if (!state.currentReceivingFileId) {
+    addLog('Received binary data but no file is pending', 'warn');
+    return;
   }
-};
-
-// For client flow
-const _origClientCreateAnswer = clientCreateAnswer;
-clientCreateAnswer = async function() {
-  await _origClientCreateAnswer();
-  if (state.dataChannel) {
-    state.dataChannel.binaryType = 'arraybuffer';
+  const file = state.receivedFiles[state.currentReceivingFileId];
+  if (file) {
+    file.chunks.push(new Uint8Array(buffer));
+    file.receivedSize += buffer.byteLength;
+    const progress = Math.round((file.receivedSize / file.size) * 100);
+    updateFileStatus(state.currentReceivingFileId, 'receiving', progress);
   }
-};
+}
+
+function updateConnectionStatus() {
+  const dot = document.getElementById('statusDot');
+  const text = document.getElementById('statusText');
+  const banner = document.getElementById('connectionBanner');
+  const transferBanner = document.getElementById('transferBanner');
+  const pc = state.peerConnection;
+
+  if (state.isConnected) {
+    dot.className = 'status-dot connected'; text.textContent = 'Connected';
+    banner.className = 'status-banner connected'; banner.innerHTML = '<span>✅ Connected — P2P link active</span><span id="connectionTimer">00:00:00</span>';
+    transferBanner.className = 'status-banner connected'; transferBanner.innerHTML = '<span>✅ Connected — File transfer ready</span>';
+  } else if (pc && (pc.iceConnectionState === 'checking' || pc.iceConnectionState === 'new')) {
+    dot.className = 'status-dot connecting'; text.textContent = 'Connecting...';
+    banner.className = 'status-banner connecting'; banner.innerHTML = '<span>⏳ Establishing connection...</span><span>00:00:00</span>';
+    transferBanner.className = 'status-banner disconnected'; transferBanner.innerHTML = '<span>⏳ Connecting...</span>';
+  } else {
+    dot.className = 'status-dot'; text.textContent = 'Disconnected';
+    banner.className = 'status-banner disconnected'; banner.innerHTML = '<span>⚠ Not Connected — Set up a peer connection below</span><span id="connectionTimer">00:00:00</span>';
+    transferBanner.className = 'status-banner disconnected'; transferBanner.innerHTML = '<span>⚠ Connect first to transfer files</span>';
+  }
+}
+
+function updateConnectionTimer() {
+  if (!state.connectionStartTime) return;
+  const elapsed = Date.now() - state.connectionStartTime;
+  const h = String(Math.floor(elapsed / 3600000)).padStart(2, '0');
+  const m = String(Math.floor((elapsed % 3600000) / 60000)).padStart(2, '0');
+  const s = String(Math.floor((elapsed % 60000) / 1000)).padStart(2, '0');
+  const t = document.getElementById('connectionTimer');
+  if (t) t.textContent = `${h}:${m}:${s}`;
+}
+
+/* ============================================
+   HOST FLOW
+   ============================================ */
+async function createOffer() {
+  try {
+    addLog('Creating peer connection as host...', 'info');
+    state.peerConnection = createPeerConnection();
+    state.isHost = true;
+    state.dataChannel = state.peerConnection.createDataChannel('umbrafiles', { ordered: true, maxRetransmits: 3 });
+    setupDataChannel();
+
+    const offer = await state.peerConnection.createOffer();
+    await state.peerConnection.setLocalDescription(offer);
+    addLog('Gathering ICE candidates...', 'info');
+    await new Promise(r => setTimeout(r, 3000)); // Allow ICE gathering
+
+    document.getElementById('hostOffer').value = btoa(JSON.stringify(state.peerConnection.localDescription));
+    addLog('Offer generated! Send to phone.', 'success');
+    showToast('Connection code generated!', 'success');
+  } catch (error) {
+    addLog(`Error creating offer: ${error.message}`, 'error');
+    showToast('Failed to create connection code', 'error');
+  }
+}
+
+async function hostAcceptAnswer() {
+  try {
+    const answerText = document.getElementById('hostAnswer').value.trim();
+    if (!answerText) { showToast('Paste the answer code from your phone', 'warning'); return; }
+    addLog('Accepting answer...', 'info');
+    const answer = JSON.parse(atob(answerText));
+    await state.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+    addLog('Remote description set. Waiting for connection...', 'info');
+    showToast('Connection being established...', 'info');
+  } catch (error) {
+    addLog(`Error: ${error.message}`, 'error');
+    showToast('Invalid answer code', 'error');
+  }
+}
+
+/* ============================================
+   CLIENT FLOW
+   ============================================ */
+async function clientCreateAnswer() {
+  try {
+    const offerText = document.getElementById('clientOffer').value.trim();
+    if (!offerText) { showToast('Paste the offer code from your PC', 'warning'); return; }
+    document.getElementById('clientStatus').innerHTML = '<span style="color: var(--warning);">⏳ Processing...</span>';
+    addLog('Creating client connection...', 'info');
+    state.peerConnection = createPeerConnection();
+    state.isHost = false;
+
+    const offer = JSON.parse(atob(offerText));
+    await state.peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+    const answer = await state.peerConnection.createAnswer();
+    await state.peerConnection.setLocalDescription(answer);
+    addLog('Gathering ICE candidates...', 'info');
+    await new Promise(r => setTimeout(r, 3000));
+
+    document.getElementById('clientAnswer').value = btoa(JSON.stringify(state.peerConnection.localDescription));
+    document.getElementById('clientStatus').innerHTML = '<span style="color: var(--success);">✅ Answer generated! Send to PC.</span>';
+    addLog('Answer generated!', 'success');
+    showToast('Answer code ready!', 'success');
+  } catch (error) {
+    document.getElementById('clientStatus').innerHTML = `<span style="color: var(--danger);">❌ ${error.message}</span>`;
+    addLog(`Client error: ${error.message}`, 'error');
+  }
+}
+
+/* ============================================
+   FILE TRANSFER
+   ============================================ */
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+fileInput.addEventListener('change', (e) => { handleFiles(e.target.files); fileInput.value = ''; });
+
+function handleFiles(fileList) {
+  if (!state.isConnected) { showToast('Not connected!', 'warning'); return; }
+  Array.from(fileList).forEach(file => {
+    const id = 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    state.files.push({ id, name: file.name, size: file.size, type: file.type, file });
+    renderFileItem({ id, name: file.name, size: file.size, status: 'pending', progress: 0 });
+    addLog(`Queued: ${file.name}`, 'info');
+    state.transferQueue.push({ id, file });
+  });
+  processTransferQueue();
+}
+
+function processTransferQueue() {
+  if (state.transferQueue.length === 0 || !state.dataChannel || state.dataChannel.readyState !== 'open') return;
+  const next = state.transferQueue.shift();
+  sendFile(next.file, next.id);
+}
+
+function sendFile(file, id) {
+  if (!state.dataChannel || state.dataChannel.readyState !== 'open') return;
+  updateFileStatus(id, 'sending');
+
+  state.dataChannel.send(JSON.stringify({
+    type: 'file-start', id, name: file.name, size: file.size, mimeType: file.type
+  }));
+
+  const chunkSize = 16384;
+  let offset = 0;
+  function sendChunk() {
+    if (offset >= file.size) {
+      state.dataChannel.send(JSON.stringify({ type: 'file-end', id }));
+      updateFileStatus(id, 'complete', 100);
+      addLog(`Sent: ${file.name}`, 'success');
+      processTransferQueue();
+      return;
+    }
+    const chunk = file.slice(offset, offset + chunkSize);
+    chunk.arrayBuffer().then(buffer => {
+      state.dataChannel.send(buffer);
+      offset += buffer.byteLength;
+      updateFileStatus(id, 'sending', Math.round((offset / file.size) * 100));
+      setTimeout(sendChunk, 15);
+    });
+  }
+  sendChunk();
+}
+
+function renderFileItem(f) {
+  const list = document.getElementById('fileList');
+  const ext = f.name.split('.').pop().toLowerCase();
+  const icons = {pdf:'📄',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',gif:'🖼️',mp4:'🎬',mp3:'🎵',zip:'📦',js:'💻'};
+  const icon = icons[ext] || '📎';
+  const item = document.createElement('div');
+  item.className = 'file-item'; item.id = `file-${f.id}`;
+  item.innerHTML = `
+    <div class="file-info">
+      <div class="file-icon">${icon}</div>
+      <div class="file-details">
+        <div class="file-name">${f.name}</div>
+        <div class="file-size">${formatFileSize(f.size)} • ${ext.toUpperCase()}</div>
+        <div class="file-progress"><div class="file-progress-bar" id="progress-${f.id}" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="file-status ${f.status}" id="status-${f.id}">${f.status}</div>`;
+  list.appendChild(item);
+}
+
+function updateFileStatus(id, status, progress = 0) {
+  const s = document.getElementById(`status-${id}`);
+  const p = document.getElementById(`progress-${id}`);
+  if (s) { s.textContent = status; s.className = `file-status ${status}`; }
+  if (p) p.style.width = `${progress}%`;
+}
+
+function renderReceivedFile(data) {
+  const list = document.getElementById('receivedFilesList');
+  if (list.querySelector('p')) list.innerHTML = '';
+  const ext = data.name.split('.').pop().toLowerCase();
+  const icons = {pdf:'📄',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',gif:'🖼️',mp4:'🎬',mp3:'🎵',zip:'📦',js:'💻'};
+  const icon = icons[ext] || '📎';
+  const item = document.createElement('div');
+  item.className = 'file-item'; item.id = `received-${data.id}`;
+  item.innerHTML = `
+    <div class="file-info">
+      <div class="file-icon">${icon}</div>
+      <div class="file-details"><div class="file-name">${data.name}</div><div class="file-size">${formatFileSize(data.size)}</div></div>
+    </div>
+    <div class="file-status pending" id="received-status-${data.id}">receiving</div>`;
+  list.appendChild(item);
+}
+
+function updateReceivedFileStatus(id, status) {
+  const s = document.getElementById(`received-status-${id}`);
+  if (s) { s.textContent = status; s.className = `file-status ${status}`; }
+}
+
+function clearReceivedFiles() {
+  document.getElementById('receivedFilesList').innerHTML = '<p class="text-center text-muted text-sm" style="padding: 2rem;">No files received yet</p>';
+}
 
 /* ============================================
    SCREEN MIRRORING
@@ -2722,127 +2280,53 @@ clientCreateAnswer = async function() {
 async function startScreenShare() {
   try {
     addLog('Requesting screen share...', 'info');
-    const stream = await navigator.mediaDevices.getDisplayMedia({
-      video: {
-        cursor: 'always',
-        displaySurface: 'monitor'
-      },
-      audio: false
-    });
-
+    const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
     state.mirrorStream = stream;
-
-    // Show the video
     const video = document.getElementById('mirrorVideo');
-    video.srcObject = stream;
-    video.style.display = 'block';
+    video.srcObject = stream; video.style.display = 'block';
     document.getElementById('mirrorPlaceholder').style.display = 'none';
-
     document.getElementById('mirrorStartBtn').style.display = 'none';
     document.getElementById('mirrorStopBtn').style.display = 'inline-flex';
     document.getElementById('mirrorInfo').style.display = 'flex';
-
-    // Track resolution
     const track = stream.getVideoTracks()[0];
     const settings = track.getSettings();
     document.getElementById('mirrorRes').textContent = `${settings.width}x${settings.height}`;
-
-    // FPS tracking
-    let frameCount = 0;
-    let lastTime = performance.now();
-    function countFrames() {
-      frameCount++;
-      const now = performance.now();
-      if (now - lastTime >= 1000) {
-        document.getElementById('mirrorFps').textContent = frameCount;
-        frameCount = 0;
-        lastTime = now;
-      }
-      if (state.mirrorStream) requestAnimationFrame(countFrames);
-    }
-    countFrames();
-
-    // Duration tracking
+    let frames = 0, last = performance.now();
+    function countFps() { frames++; const now = performance.now(); if(now-last>=1000){document.getElementById('mirrorFps').textContent=frames;frames=0;last=now;} if(state.mirrorStream) requestAnimationFrame(countFps); }
+    countFps();
     state.mirrorSeconds = 0;
     state.mirrorDurationInterval = setInterval(() => {
       state.mirrorSeconds++;
-      const m = String(Math.floor(state.mirrorSeconds / 60)).padStart(2, '0');
-      const s = String(state.mirrorSeconds % 60).padStart(2, '0');
+      const m = String(Math.floor(state.mirrorSeconds/60)).padStart(2,'0');
+      const s = String(state.mirrorSeconds%60).padStart(2,'0');
       document.getElementById('mirrorDuration').textContent = `${m}:${s}`;
     }, 1000);
-
-    // Stop when user stops sharing
-    track.onended = () => {
-      stopScreenShare();
-    };
-
-    // Send to remote peer
-    if (state.peerConnection) {
-      state.peerConnection.addTrack(track, stream);
-    }
-
+    track.onended = stopScreenShare;
+    if (state.peerConnection) stream.getTracks().forEach(t => state.peerConnection.addTrack(t, stream));
     addLog('Screen share started', 'success');
     showToast('Screen sharing started!', 'success');
-
-  } catch (error) {
-    if (error.name !== 'NotAllowedError') {
-      addLog(`Screen share error: ${error.message}`, 'error');
-      showToast('Failed to start screen share', 'error');
-    }
+  } catch (e) {
+    if (e.name !== 'NotAllowedError') { addLog(`Screen share error: ${e.message}`, 'error'); showToast('Failed to start', 'error'); }
   }
 }
 
 function stopScreenShare() {
-  if (state.mirrorStream) {
-    state.mirrorStream.getTracks().forEach(t => t.stop());
-    state.mirrorStream = null;
-  }
-
-  const video = document.getElementById('mirrorVideo');
-  video.srcObject = null;
-  video.style.display = 'none';
+  if (state.mirrorStream) { state.mirrorStream.getTracks().forEach(t => t.stop()); state.mirrorStream = null; }
+  const video = document.getElementById('mirrorVideo'); video.srcObject = null; video.style.display = 'none';
   document.getElementById('mirrorPlaceholder').style.display = 'block';
-
   document.getElementById('mirrorStartBtn').style.display = 'inline-flex';
   document.getElementById('mirrorStopBtn').style.display = 'none';
   document.getElementById('mirrorInfo').style.display = 'none';
-
   clearInterval(state.mirrorDurationInterval);
-
   addLog('Screen share stopped', 'warn');
 }
 
 function toggleMirrorQuality() {
   const qualities = ['low', 'medium', 'high'];
-  const currentIndex = qualities.indexOf(state.mirrorQuality);
-  state.mirrorQuality = qualities[(currentIndex + 1) % qualities.length];
+  const idx = qualities.indexOf(state.mirrorQuality);
+  state.mirrorQuality = qualities[(idx + 1) % qualities.length];
   document.getElementById('mirrorQualityBtn').textContent = state.mirrorQuality.toUpperCase();
   addLog(`Mirror quality: ${state.mirrorQuality}`, 'info');
-  showToast(`Quality: ${state.mirrorQuality.toUpperCase()}`, 'info');
-}
-
-function handleRemoteMedia(event) {
-  // Determine if it's a screen share or webcam
-  const track = event.track;
-  const settings = track.getSettings();
-
-  if (settings.displaySurface === 'monitor' || settings.cursor === 'always') {
-    // Screen share
-    const video = document.getElementById('receiveMirrorVideo');
-    video.srcObject = new MediaStream([track]);
-    video.style.display = 'block';
-    video.parentElement.querySelector('.mirror-placeholder') &&
-      (video.parentElement.querySelector('.mirror-placeholder').style.display = 'none');
-    addLog('Remote screen share received', 'success');
-  } else if (settings.sourceId || settings.deviceId) {
-    // Could be webcam
-    const video = document.getElementById('remoteWebcamVideo');
-    video.srcObject = new MediaStream([track]);
-    video.style.display = 'block';
-    video.parentElement.querySelector('.mirror-placeholder') &&
-      (video.parentElement.querySelector('.mirror-placeholder').style.display = 'none');
-    addLog('Remote camera feed received', 'success');
-  }
 }
 
 /* ============================================
@@ -2852,140 +2336,65 @@ async function startWebcam() {
   try {
     addLog('Starting camera...', 'info');
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode: state.cameraFacingMode,
-        width: { ideal: 1920 },
-        height: { ideal: 1080 }
-      },
-      audio: false
+      video: { facingMode: state.cameraFacingMode, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false
     });
-
     state.webcamStream = stream;
-
     const video = document.getElementById('webcamVideo');
-    video.srcObject = stream;
-    video.style.display = 'block';
+    video.srcObject = stream; video.style.display = 'block';
     document.getElementById('webcamPlaceholder').style.display = 'none';
     document.getElementById('webcamOverlay').style.display = 'flex';
-
     document.getElementById('webcamStartBtn').style.display = 'none';
     document.getElementById('webcamStopBtn').style.display = 'inline-flex';
-
-    // Send to remote peer
-    if (state.peerConnection) {
-      stream.getTracks().forEach(track => {
-        state.peerConnection.addTrack(track, stream);
-      });
-    }
-
+    if (state.peerConnection) stream.getTracks().forEach(t => state.peerConnection.addTrack(t, stream));
     addLog('Camera started', 'success');
     showToast('Camera started!', 'success');
-
-  } catch (error) {
-    addLog(`Camera error: ${error.message}`, 'error');
+  } catch (e) {
+    addLog(`Camera error: ${e.message}`, 'error');
     showToast('Failed to start camera', 'error');
   }
 }
 
 function stopWebcam() {
-  if (state.webcamStream) {
-    state.webcamStream.getTracks().forEach(t => t.stop());
-    state.webcamStream = null;
-  }
-
-  const video = document.getElementById('webcamVideo');
-  video.srcObject = null;
-  video.style.display = 'none';
+  if (state.webcamStream) { state.webcamStream.getTracks().forEach(t => t.stop()); state.webcamStream = null; }
+  const video = document.getElementById('webcamVideo'); video.srcObject = null; video.style.display = 'none';
   document.getElementById('webcamPlaceholder').style.display = 'block';
   document.getElementById('webcamOverlay').style.display = 'none';
-
   document.getElementById('webcamStartBtn').style.display = 'inline-flex';
   document.getElementById('webcamStopBtn').style.display = 'none';
-
   addLog('Camera stopped', 'warn');
 }
 
 function switchCamera() {
   state.cameraFacingMode = state.cameraFacingMode === 'user' ? 'environment' : 'user';
-  if (state.webcamStream) {
-    stopWebcam();
-    startWebcam();
-  }
+  if (state.webcamStream) { stopWebcam(); startWebcam(); }
   showToast(`Camera: ${state.cameraFacingMode === 'user' ? 'Front' : 'Back'}`, 'info');
 }
 
 function captureWebcamPhoto() {
   const video = document.getElementById('webcamVideo');
-  if (!video.srcObject) {
-    showToast('Camera is not active', 'warning');
-    return;
-  }
-
+  if (!video.srcObject) { showToast('Camera is off', 'warning'); return; }
   const canvas = document.createElement('canvas');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(video, 0, 0);
-
-  canvas.toBlob((blob) => {
+  canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  canvas.toBlob(blob => {
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `umbrafiles_${Date.now()}.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    addLog('Photo captured', 'success');
-    showToast('Photo saved!', 'success');
+    const a = document.createElement('a'); a.href = url; a.download = `umbra_${Date.now()}.png`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    addLog('Photo captured', 'success'); showToast('Photo saved!', 'success');
   }, 'image/png');
 }
 
 /* ============================================
-   INITIALIZATION
+   INIT
    ============================================ */
 document.addEventListener('DOMContentLoaded', () => {
   addLog('Umbrafiles v1.0.0 initialized', 'success');
-  addLog('WebRTC support: ' + (typeof RTCPeerConnection !== 'undefined' ? '✅' : '❌'), '');
-
-  // Check WebRTC support
+  addLog('WebRTC: ' + (typeof RTCPeerConnection !== 'undefined' ? '✅' : '❌'), '');
   if (typeof RTCPeerConnection === 'undefined') {
-    addLog('WebRTC is not supported in this browser!', 'error');
-    showToast('WebRTC not supported. Use Chrome, Firefox, or Edge.', 'error');
+    addLog('WebRTC not supported!', 'error');
+    showToast('Use Chrome/Firefox/Edge', 'error');
   }
-
-  // Check media support
-  if (typeof navigator.mediaDevices === 'undefined') {
-    addLog('MediaDevices API not available', 'warn');
-  }
-
-  addLog('Ready. Set up a P2P connection to begin.', 'info');
-});
-
-/* ============================================
-   KEYBOARD SHORTCUTS
-   ============================================ */
-document.addEventListener('keydown', (e) => {
-  // Ctrl+K = Focus connection
-  if (e.ctrlKey && e.key === 'k') {
-    e.preventDefault();
-    switchTab('connect');
-  }
-  // Ctrl+T = Focus transfer
-  if (e.ctrlKey && e.key === 't') {
-    e.preventDefault();
-    switchTab('transfer');
-  }
-  // Ctrl+M = Focus mirror
-  if (e.ctrlKey && e.key === 'm') {
-    e.preventDefault();
-    switchTab('mirror');
-  }
-  // Ctrl+W = Focus webcam
-  if (e.ctrlKey && e.key === 'w') {
-    e.preventDefault();
-    switchTab('webcam');
-  }
+  addLog('Ready. Establish P2P connection.', 'info');
 });
 </script>
 </body>
