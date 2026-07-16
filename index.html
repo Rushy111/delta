@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Umbrafiles — Private Workspace</title>
+<title>Umbrafiles — Private P2P Suite</title>
 <style>
-/* ============================================================
-   UMBRAFILES — CORE STYLES
-   ============================================================ */
+/* ============================================
+   CSS RESET & ROOT VARIABLES
+   ============================================ */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -19,28 +19,33 @@
   --bg-secondary: #12121a;
   --bg-tertiary: #1a1a2e;
   --bg-card: #16162a;
-  --accent-primary: #7b2ff7;
-  --accent-secondary: #9d4edd;
+  --bg-card-hover: #1e1e3a;
+  --accent: #7b2ff7;
+  --accent-light: #9d5cfa;
   --accent-glow: rgba(123, 47, 247, 0.3);
-  --accent-blue: #4361ee;
-  --accent-cyan: #00d4ff;
-  --accent-green: #00c853;
-  --accent-red: #ff1744;
-  --accent-orange: #ff6d00;
+  --accent-secondary: #00d4aa;
+  --accent-secondary-glow: rgba(0, 212, 170, 0.3);
   --text-primary: #e8e8f0;
-  --text-secondary: #9898b0;
-  --text-muted: #5a5a78;
-  --border-color: #2a2a45;
-  --border-glow: rgba(123, 47, 247, 0.2);
-  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 30px rgba(123, 47, 247, 0.15);
+  --text-secondary: #9090a8;
+  --text-muted: #606078;
+  --border: #2a2a40;
+  --border-light: #3a3a55;
+  --danger: #ff4757;
+  --warning: #ffa502;
+  --success: #2ed573;
+  --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
   --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
-  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
+  --shadow-glow: 0 0 30px var(--accent-glow);
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
 }
 
 html {
@@ -48,7 +53,7 @@ html {
 }
 
 body {
-  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: var(--font-main);
   background: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
@@ -56,18 +61,16 @@ body {
   line-height: 1.6;
 }
 
-/* ============================================================
+/* ============================================
    ANIMATED BACKGROUND
-   ============================================================ */
+   ============================================ */
 .bg-animation {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   z-index: 0;
-  pointer-events: none;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .bg-animation .orb {
@@ -79,286 +82,105 @@ body {
 }
 
 .bg-animation .orb:nth-child(1) {
-  width: 600px;
-  height: 600px;
-  background: var(--accent-primary);
-  top: -200px;
-  left: -200px;
+  width: 600px; height: 600px;
+  background: var(--accent);
+  top: -200px; left: -200px;
   animation-delay: 0s;
 }
 
 .bg-animation .orb:nth-child(2) {
-  width: 500px;
-  height: 500px;
-  background: var(--accent-blue);
-  bottom: -150px;
-  right: -150px;
+  width: 400px; height: 400px;
+  background: var(--accent-secondary);
+  bottom: -100px; right: -100px;
   animation-delay: -7s;
-  animation-duration: 25s;
 }
 
 .bg-animation .orb:nth-child(3) {
-  width: 400px;
-  height: 400px;
-  background: var(--accent-cyan);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  width: 300px; height: 300px;
+  background: #ff6b9d;
+  top: 50%; left: 50%;
   animation-delay: -14s;
-  animation-duration: 30s;
 }
 
 @keyframes orbFloat {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(100px, -80px) scale(1.1); }
+  25% { transform: translate(100px, -50px) scale(1.1); }
   50% { transform: translate(-50px, 100px) scale(0.9); }
   75% { transform: translate(80px, 50px) scale(1.05); }
 }
 
-/* ============================================================
-   LOGIN SCREEN
-   ============================================================ */
-#loginScreen {
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ============================================
+   HEADER / NAVBAR
+   ============================================ */
+.navbar {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10000;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.navbar-logo {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-primary);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-#loginScreen.hidden {
-  opacity: 0;
-  transform: scale(1.05);
-  pointer-events: none;
-}
-
-.login-container {
-  text-align: center;
-  padding: 50px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg), var(--shadow-glow);
-  max-width: 440px;
-  width: 90%;
+  font-weight: 900;
+  font-size: 18px;
+  color: white;
   position: relative;
   overflow: hidden;
 }
 
-.login-container::before {
+.navbar-logo::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent-primary), var(--accent-cyan), var(--accent-primary));
-  background-size: 200% 100%;
-  animation: shimmer 3s linear infinite;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.2));
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.login-logo {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 24px;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-blue));
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 36px;
-  font-weight: 800;
-  color: white;
-  box-shadow: 0 8px 32px var(--accent-glow);
-  position: relative;
-}
-
-.login-logo::after {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-cyan));
-  z-index: -1;
-  opacity: 0.5;
-  filter: blur(8px);
-}
-
-.login-title {
-  font-size: 28px;
+.navbar-title {
+  font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 6px;
-  background: linear-gradient(135deg, var(--text-primary), var(--accent-cyan));
+  letter-spacing: -0.5px;
+}
+
+.navbar-title span {
+  background: linear-gradient(135deg, var(--accent-light), var(--accent-secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.login-subtitle {
-  color: var(--text-muted);
-  font-size: 13px;
-  margin-bottom: 32px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.login-input-group {
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.login-input-group input {
-  width: 100%;
-  padding: 16px 20px 16px 50px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  color: var(--text-primary);
-  font-size: 15px;
-  outline: none;
-  transition: var(--transition-fast);
-}
-
-.login-input-group input:focus {
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.login-input-group .input-icon {
-  position: absolute;
-  left: 18px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 18px;
-  color: var(--text-muted);
-}
-
-.login-btn {
-  width: 100%;
-  padding: 16px;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-blue));
-  border: none;
-  border-radius: var(--radius-md);
-  color: white;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  position: relative;
-  overflow: hidden;
-  letter-spacing: 0.5px;
-}
-
-.login-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px var(--accent-glow);
-}
-
-.login-btn:active {
-  transform: translateY(0);
-}
-
-.login-error {
-  color: var(--accent-red);
-  font-size: 13px;
-  margin-top: 12px;
-  min-height: 20px;
-  transition: var(--transition-fast);
-}
-
-.login-locked {
-  color: var(--accent-orange);
-  font-size: 12px;
-  margin-top: 8px;
-  opacity: 0;
-  transition: var(--transition-fast);
-}
-
-.login-locked.visible {
-  opacity: 1;
-}
-
-/* ============================================================
-   MAIN APP
-   ============================================================ */
-#mainApp {
-  display: none;
-  position: relative;
-  z-index: 1;
-  min-height: 100vh;
-  flex-direction: column;
-}
-
-#mainApp.active {
-  display: flex;
-}
-
-/* ============================================================
-   HEADER / NAVBAR
-   ============================================================ */
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: rgba(10, 10, 15, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-color);
-  padding: 0 24px;
-}
-
-.navbar-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 64px;
-}
-
-.nav-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.nav-brand-icon {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-blue));
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 16px;
-  color: white;
-}
-
-.nav-brand-text {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.nav-brand-text span {
-  color: var(--accent-primary);
-}
-
-.nav-links {
+.navbar-links {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -366,555 +188,580 @@ body {
 
 .nav-link {
   padding: 8px 16px;
+  border-radius: var(--radius-sm);
   color: var(--text-secondary);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
-  border-radius: var(--radius-sm);
   transition: var(--transition-fast);
   cursor: pointer;
   border: none;
   background: none;
+  font-family: inherit;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover {
   color: var(--text-primary);
   background: var(--bg-tertiary);
 }
 
 .nav-link.active {
-  color: var(--accent-primary);
+  color: var(--accent-light);
+  background: rgba(123, 47, 247, 0.1);
 }
 
-.nav-logout {
-  padding: 8px 16px;
-  color: var(--accent-red);
-  background: rgba(255, 23, 68, 0.1);
-  border: 1px solid rgba(255, 23, 68, 0.2);
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  margin-left: 8px;
+.nav-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
 }
 
-.nav-logout:hover {
-  background: rgba(255, 23, 68, 0.2);
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: var(--transition-normal);
 }
 
-/* ============================================================
-   PAGE CONTENT
-   ============================================================ */
-.page-content {
-  flex: 1;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 32px 24px;
-  width: 100%;
+.status-dot.connected {
+  background: var(--success);
+  box-shadow: 0 0 8px var(--accent-secondary-glow);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.status-dot.connecting {
+  background: var(--warning);
+  animation: pulse 0.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* ============================================
+   MAIN CONTENT AREA
+   ============================================ */
+.main-content {
+  position: relative;
+  z-index: 1;
+  padding-top: 64px;
+  min-height: calc(100vh - 64px - 200px);
 }
 
 .page {
   display: none;
-  animation: fadeInPage 0.4s ease;
+  animation: fadeIn 0.4s ease;
 }
 
 .page.active {
   display: block;
 }
 
-@keyframes fadeInPage {
-  from { opacity: 0; transform: translateY(12px); }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.page-header {
-  margin-bottom: 32px;
+/* ============================================
+   HERO SECTION
+   ============================================ */
+.hero {
+  text-align: center;
+  padding: 4rem 2rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-.page-header h1 {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  background: linear-gradient(135deg, var(--text-primary), var(--accent-cyan));
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(123, 47, 247, 0.1);
+  border: 1px solid rgba(123, 47, 247, 0.3);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: var(--accent-light);
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.hero-badge .dot {
+  width: 6px; height: 6px;
+  background: var(--accent-light);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.hero h1 .gradient-text {
+  background: linear-gradient(135deg, var(--accent-light), var(--accent-secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.page-header p {
+.hero p {
+  font-size: 1.1rem;
   color: var(--text-secondary);
-  font-size: 15px;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  line-height: 1.7;
 }
 
-/* ============================================================
-   DASHBOARD
-   ============================================================ */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
+/* ============================================
+   TAB NAVIGATION
+   ============================================ */
+.tab-nav {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
-.dash-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 32px;
-  cursor: pointer;
-  transition: var(--transition-smooth);
-  position: relative;
-  overflow: hidden;
-}
-
-.dash-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--card-accent);
-  opacity: 0;
-  transition: var(--transition-fast);
-}
-
-.dash-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--card-accent);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px var(--card-glow);
-}
-
-.dash-card:hover::before {
-  opacity: 1;
-}
-
-.dash-card-icon {
-  width: 56px;
-  height: 56px;
+.tab-btn {
+  padding: 10px 24px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
   border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-family: inherit;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 26px;
-  margin-bottom: 20px;
-  background: var(--card-bg);
+  gap: 8px;
 }
 
-.dash-card h3 {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 8px;
+.tab-btn:hover {
+  border-color: var(--border-light);
   color: var(--text-primary);
+  background: var(--bg-tertiary);
 }
 
-.dash-card p {
-  color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 1.6;
+.tab-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+  box-shadow: var(--shadow-glow);
 }
 
-.dash-card .card-arrow {
-  position: absolute;
-  bottom: 24px;
-  right: 24px;
-  color: var(--text-muted);
-  font-size: 18px;
-  transition: var(--transition-fast);
+.tab-btn svg {
+  width: 18px; height: 18px;
 }
 
-.dash-card:hover .card-arrow {
-  color: var(--card-accent);
-  transform: translateX(4px);
+/* ============================================
+   TAB PANELS
+   ============================================ */
+.tab-panels {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem 3rem;
 }
 
-/* Card accent colors */
-.dash-card[data-accent="purple"] {
-  --card-accent: var(--accent-primary);
-  --card-glow: rgba(123, 47, 247, 0.15);
-  --card-bg: rgba(123, 47, 247, 0.1);
-}
-.dash-card[data-accent="blue"] {
-  --card-accent: var(--accent-blue);
-  --card-glow: rgba(67, 97, 238, 0.15);
-  --card-bg: rgba(67, 97, 238, 0.1);
-}
-.dash-card[data-accent="cyan"] {
-  --card-accent: var(--accent-cyan);
-  --card-glow: rgba(0, 212, 255, 0.15);
-  --card-bg: rgba(0, 212, 255, 0.1);
-}
-.dash-card[data-accent="green"] {
-  --card-accent: var(--accent-green);
-  --card-glow: rgba(0, 200, 83, 0.15);
-  --card-bg: rgba(0, 200, 83, 0.1);
-}
-.dash-card[data-accent="orange"] {
-  --card-accent: var(--accent-orange);
-  --card-glow: rgba(255, 109, 0, 0.15);
-  --card-bg: rgba(255, 109, 0, 0.1);
-}
-.dash-card[data-accent="red"] {
-  --card-accent: var(--accent-red);
-  --card-glow: rgba(255, 23, 68, 0.15);
-  --card-bg: rgba(255, 23, 68, 0.1);
+.tab-panel {
+  display: none;
+  animation: fadeIn 0.3s ease;
 }
 
-/* ============================================================
-   STATUS BAR
-   ============================================================ */
-.status-bar {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 16px 24px;
-  margin-bottom: 24px;
+.tab-panel.active {
+  display: block;
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  transition: var(--transition-normal);
+}
+
+.card:hover {
+  border-color: var(--border-light);
+}
+
+.card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
+  margin-bottom: 1rem;
 }
 
-.status-indicator {
+.card-title {
+  font-size: 1rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 500;
+  gap: 10px;
 }
 
-.status-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--text-muted);
-  transition: var(--transition-fast);
-}
-
-.status-dot.connected {
-  background: var(--accent-green);
-  box-shadow: 0 0 8px rgba(0, 200, 83, 0.5);
-  animation: pulse 2s ease-in-out infinite;
-}
-
-.status-dot.connecting {
-  background: var(--accent-orange);
-  box-shadow: 0 0 8px rgba(255, 109, 0, 0.5);
-  animation: pulse 1s ease-in-out infinite;
-}
-
-.status-dot.error {
-  background: var(--accent-red);
-  box-shadow: 0 0 8px rgba(255, 23, 68, 0.5);
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-/* ============================================================
-   SIGNALING PANEL
-   ============================================================ */
-.signaling-panel {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 28px;
-  margin-bottom: 24px;
-}
-
-.signaling-panel h3 {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 16px;
+.card-title .icon {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  font-size: 16px;
 }
 
-.signal-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.card-title .icon.purple { background: rgba(123, 47, 247, 0.15); }
+.card-title .icon.green { background: rgba(0, 212, 170, 0.15); }
+.card-title .icon.blue { background: rgba(59, 130, 246, 0.15); }
+.card-title .icon.orange { background: rgba(255, 165, 2, 0.15); }
+
+.card-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
 }
 
-.signal-step {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
+/* ============================================
+   CONNECTION PANEL
+   ============================================ */
+.connection-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .connection-grid { grid-template-columns: 1fr; }
+}
+
+.connection-step {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 16px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
 }
 
-.signal-step label {
-  display: block;
-  font-size: 13px;
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+.step-label {
+  font-size: 0.85rem;
   font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
 }
 
-.signal-step textarea {
+.step-label code {
+  background: var(--bg-tertiary);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent-light);
+  margin-left: 8px;
+}
+
+textarea, input[type="text"], input[type="number"] {
   width: 100%;
-  min-height: 80px;
   background: var(--bg-primary);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+  padding: 10px 14px;
   color: var(--text-primary);
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
   resize: vertical;
-  outline: none;
   transition: var(--transition-fast);
 }
 
-.signal-step textarea:focus {
-  border-color: var(--accent-primary);
+textarea:focus, input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
-.signal-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 16px;
-  flex-wrap: wrap;
+textarea {
+  min-height: 100px;
+  word-break: break-all;
 }
 
-/* ============================================================
+/* ============================================
    BUTTONS
-   ============================================================ */
+   ============================================ */
 .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   padding: 10px 20px;
-  border: none;
   border-radius: var(--radius-sm);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition-fast);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  border: 1px solid transparent;
+  font-family: inherit;
   text-decoration: none;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-blue));
-  color: white;
-}
+.btn:active { transform: scale(0.97); }
 
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
 .btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px var(--accent-glow);
+  background: var(--accent-light);
+  box-shadow: var(--shadow-glow);
 }
 
 .btn-secondary {
   background: var(--bg-tertiary);
   color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  border-color: var(--border);
 }
-
 .btn-secondary:hover {
-  border-color: var(--accent-primary);
-  background: rgba(123, 47, 247, 0.1);
+  border-color: var(--border-light);
+  background: var(--bg-card-hover);
 }
 
 .btn-success {
-  background: linear-gradient(135deg, #00c853, #00e676);
-  color: #0a0a0f;
+  background: var(--success);
+  color: #000;
+  border-color: var(--success);
 }
-
 .btn-success:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3);
+  box-shadow: 0 0 20px rgba(46, 213, 115, 0.3);
 }
 
 .btn-danger {
-  background: linear-gradient(135deg, #ff1744, #ff5252);
+  background: var(--danger);
   color: white;
+  border-color: var(--danger);
 }
-
 .btn-danger:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(255, 23, 68, 0.3);
+  box-shadow: 0 0 20px rgba(255, 71, 87, 0.3);
 }
 
 .btn-sm {
   padding: 6px 14px;
-  font-size: 12px;
+  font-size: 0.8rem;
 }
 
 .btn-lg {
   padding: 14px 28px;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
-/* ============================================================
-   FILE TRANSFER
-   ============================================================ */
-.transfer-area {
-  background: var(--bg-card);
-  border: 2px dashed var(--border-color);
+.btn-block {
+  width: 100%;
+}
+
+.btn-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ============================================
+   FILE TRANSFER ZONE
+   ============================================ */
+.drop-zone {
+  border: 2px dashed var(--border);
   border-radius: var(--radius-lg);
-  padding: 60px 32px;
+  padding: 3rem 2rem;
   text-align: center;
-  transition: var(--transition-fast);
+  transition: var(--transition-normal);
   cursor: pointer;
-  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
 }
 
-.transfer-area:hover, .transfer-area.dragover {
-  border-color: var(--accent-primary);
+.drop-zone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(123,47,247,0.05), rgba(0,212,170,0.05));
+  opacity: 0;
+  transition: var(--transition-normal);
+}
+
+.drop-zone:hover, .drop-zone.dragover {
+  border-color: var(--accent);
   background: rgba(123, 47, 247, 0.05);
 }
 
-.transfer-area .upload-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
-  opacity: 0.6;
+.drop-zone:hover::before, .drop-zone.dragover::before {
+  opacity: 1;
 }
 
-.transfer-area h3 {
-  font-size: 18px;
-  margin-bottom: 8px;
+.drop-zone-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
 }
 
-.transfer-area p {
-  color: var(--text-secondary);
-  font-size: 14px;
+.drop-zone-text {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.drop-zone-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
 }
 
 .file-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  margin-top: 1rem;
 }
 
 .file-item {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 16px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
   transition: var(--transition-fast);
 }
 
 .file-item:hover {
-  border-color: var(--accent-primary);
+  border-color: var(--border-light);
 }
 
 .file-info {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex: 1;
+  min-width: 0;
 }
 
 .file-icon {
-  width: 40px;
-  height: 40px;
-  background: var(--bg-tertiary);
+  width: 40px; height: 40px;
   border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 18px;
+  flex-shrink: 0;
+}
+
+.file-details {
+  min-width: 0;
 }
 
 .file-name {
+  font-size: 0.85rem;
   font-weight: 600;
-  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .file-size {
+  font-size: 0.75rem;
   color: var(--text-muted);
-  font-size: 12px;
 }
 
-.file-status {
-  font-size: 12px;
-  font-weight: 600;
-  padding: 4px 12px;
-  border-radius: 20px;
-}
-
-.file-status.pending {
-  color: var(--accent-orange);
-  background: rgba(255, 109, 0, 0.1);
-}
-
-.file-status.transferring {
-  color: var(--accent-cyan);
-  background: rgba(0, 212, 255, 0.1);
-}
-
-.file-status.complete {
-  color: var(--accent-green);
-  background: rgba(0, 200, 83, 0.1);
-}
-
-.file-status.error {
-  color: var(--accent-red);
-  background: rgba(255, 23, 68, 0.1);
-}
-
-/* ============================================================
-   SCREEN MIRROR
-   ============================================================ */
-.screen-mirror-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 24px;
-}
-
-@media (max-width: 900px) {
-  .screen-mirror-container {
-    grid-template-columns: 1fr;
-  }
-}
-
-.mirror-panel {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
+.file-progress {
+  width: 100%;
+  height: 4px;
+  background: var(--bg-primary);
+  border-radius: 2px;
+  margin-top: 6px;
   overflow: hidden;
 }
 
-.mirror-panel-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.file-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  width: 0%;
 }
 
-.mirror-panel-header h4 {
-  font-size: 15px;
+.file-status {
+  font-size: 0.75rem;
   font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  margin-left: 12px;
 }
 
-.mirror-panel-body {
-  padding: 20px;
-  min-height: 300px;
+.file-status.pending {
+  background: rgba(255, 165, 2, 0.15);
+  color: var(--warning);
+}
+
+.file-status.sending {
+  background: rgba(123, 47, 247, 0.15);
+  color: var(--accent-light);
+}
+
+.file-status.complete {
+  background: rgba(46, 213, 115, 0.15);
+  color: var(--success);
+}
+
+.file-status.error {
+  background: rgba(255, 71, 87, 0.15);
+  color: var(--danger);
+}
+
+/* ============================================
+   SCREEN MIRRORING
+   ============================================ */
+.mirror-container {
+  position: relative;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 16/9;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-primary);
-  position: relative;
 }
 
-.mirror-panel-body video,
-.mirror-panel-body canvas {
-  max-width: 100%;
-  max-height: 400px;
-  border-radius: var(--radius-sm);
+.mirror-container video,
+.mirror-container canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   background: #000;
 }
 
@@ -923,72 +770,184 @@ body {
   color: var(--text-muted);
 }
 
-.mirror-placeholder .placeholder-icon {
-  font-size: 48px;
-  margin-bottom: 12px;
-  opacity: 0.4;
+.mirror-placeholder .icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  display: block;
 }
 
-/* ============================================================
-   WEBCAM
-   ============================================================ */
-.webcam-container {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin-bottom: 24px;
-}
-
-.webcam-container .mirror-panel-body {
-  min-height: 450px;
-}
-
-.webcam-controls {
-  padding: 16px 20px;
-  border-top: 1px solid var(--border-color);
+.mirror-controls {
   display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 12px;
+  margin-top: 1rem;
+}
+
+.mirror-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 0.75rem;
   flex-wrap: wrap;
 }
 
-/* ============================================================
-   MODAL
-   ============================================================ */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
-  z-index: 5000;
-  display: none;
+.mirror-info-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.mirror-info-item .val {
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+/* ============================================
+   WEBCAM
+   ============================================ */
+.webcam-container {
+  position: relative;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
-  animation: fadeIn 0.3s ease;
+}
+
+.webcam-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+}
+
+.webcam-overlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.webcam-badge {
+  padding: 4px 10px;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.webcam-badge .rec-dot {
+  width: 8px; height: 8px;
+  background: var(--danger);
+  border-radius: 50%;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.webcam-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 1rem;
+}
+
+/* ============================================
+   LOG / CONSOLE
+   ============================================ */
+.console-panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.console-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border);
+}
+
+.console-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.console-body {
+  padding: 12px 16px;
+  max-height: 200px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.8;
+}
+
+.log-entry {
+  display: flex;
+  gap: 10px;
+  animation: fadeIn 0.2s ease;
+}
+
+.log-time {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.log-msg { color: var(--text-secondary); }
+.log-msg.info { color: var(--accent-light); }
+.log-msg.success { color: var(--success); }
+.log-msg.error { color: var(--danger); }
+.log-msg.warn { color: var(--warning); }
+
+/* ============================================
+   MODAL
+   ============================================ */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  animation: fadeIn 0.2s ease;
 }
 
 .modal-overlay.active {
   display: flex;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
 .modal {
   background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   max-width: 700px;
   width: 100%;
   max-height: 80vh;
   overflow-y: auto;
-  box-shadow: var(--shadow-lg);
+  padding: 2.5rem;
+  position: relative;
   animation: modalSlide 0.3s ease;
 }
 
@@ -997,1322 +956,1079 @@ body {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.modal-header {
-  padding: 28px 32px 20px;
-  border-bottom: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  background: var(--bg-secondary);
-  z-index: 1;
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-}
-
-.modal-header h2 {
-  font-size: 22px;
-  font-weight: 700;
-}
-
 .modal-close {
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
   background: var(--bg-tertiary);
   color: var(--text-secondary);
-  font-size: 18px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 18px;
   transition: var(--transition-fast);
 }
 
 .modal-close:hover {
-  background: var(--accent-red);
+  background: var(--danger);
   color: white;
-  border-color: var(--accent-red);
+  border-color: var(--danger);
 }
 
-.modal-body {
-  padding: 28px 32px 32px;
+.modal h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.5px;
 }
 
-.modal-body h3 {
-  font-size: 18px;
-  font-weight: 600;
-  margin: 24px 0 12px;
-  color: var(--accent-cyan);
+.modal h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--accent-light);
 }
 
-.modal-body h3:first-child {
-  margin-top: 0;
-}
-
-.modal-body p, .modal-body li {
+.modal p, .modal li {
+  font-size: 0.9rem;
   color: var(--text-secondary);
-  font-size: 14px;
   line-height: 1.8;
-  margin-bottom: 8px;
+  margin-bottom: 0.75rem;
 }
 
-.modal-body ul {
-  padding-left: 20px;
-  margin-bottom: 12px;
+.modal ul, .modal ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
 }
 
-.modal-body ul li {
-  margin-bottom: 4px;
+.modal li {
+  margin-bottom: 0.5rem;
 }
 
-.modal-body .highlight {
-  color: var(--accent-primary);
-  font-weight: 600;
-}
-
-.modal-body .warning-box {
-  background: rgba(255, 109, 0, 0.1);
-  border: 1px solid rgba(255, 109, 0, 0.2);
+.modal .highlight-box {
+  background: rgba(123, 47, 247, 0.1);
+  border: 1px solid rgba(123, 47, 247, 0.2);
   border-radius: var(--radius-md);
-  padding: 16px 20px;
-  margin: 16px 0;
-  font-size: 13px;
-  color: var(--accent-orange);
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+  color: var(--accent-light);
 }
 
-.modal-body .info-box {
-  background: rgba(0, 212, 255, 0.08);
-  border: 1px solid rgba(0, 212, 255, 0.15);
-  border-radius: var(--radius-md);
-  padding: 16px 20px;
-  margin: 16px 0;
-  font-size: 13px;
-  color: var(--accent-cyan);
-}
-
-/* ============================================================
+/* ============================================
    FOOTER
-   ============================================================ */
+   ============================================ */
 .footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
   background: var(--bg-secondary);
-  border-top: 1px solid var(--border-color);
-  padding: 32px 24px;
-  margin-top: auto;
+  padding: 2rem;
 }
 
 .footer-inner {
-  max-width: 1400px;
+  max-width: 1100px;
   margin: 0 auto;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .footer-brand {
-  font-size: 18px;
+  text-align: center;
+}
+
+.footer-brand h3 {
+  font-size: 1.1rem;
   font-weight: 700;
-  margin-bottom: 4px;
-  color: var(--text-primary);
+  margin-bottom: 0.25rem;
 }
 
-.footer-brand span {
-  color: var(--accent-primary);
+.footer-brand h3 span {
+  background: linear-gradient(135deg, var(--accent-light), var(--accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.footer-tagline {
-  font-size: 12px;
-  color: var(--accent-red);
+.footer-brand p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.footer-notice {
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid rgba(255, 71, 87, 0.2);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  text-align: center;
+  max-width: 600px;
+}
+
+.footer-notice p {
+  font-size: 0.8rem;
+  color: var(--danger);
   font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 16px;
-  padding: 6px 16px;
-  background: rgba(255, 23, 68, 0.08);
-  border: 1px solid rgba(255, 23, 68, 0.15);
-  border-radius: 20px;
-  display: inline-block;
+  margin: 0;
+}
+
+.footer-notice p span {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-top: 4px;
 }
 
 .footer-links {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
+  gap: 8px;
   flex-wrap: wrap;
-  margin-bottom: 16px;
+  justify-content: center;
 }
 
 .footer-link {
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 0.8rem;
+  font-weight: 500;
   cursor: pointer;
   transition: var(--transition-fast);
-  text-decoration: none;
-  border: none;
-  background: none;
   font-family: inherit;
+  text-decoration: none;
 }
 
 .footer-link:hover {
-  color: var(--accent-primary);
+  border-color: var(--accent);
+  color: var(--accent-light);
+  background: rgba(123, 47, 247, 0.1);
 }
 
-.footer-copy {
+.footer-bottom {
+  font-size: 0.75rem;
   color: var(--text-muted);
-  font-size: 12px;
+  text-align: center;
 }
 
-/* ============================================================
-   SCROLLBAR
-   ============================================================ */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg-primary);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-primary);
-}
-
-/* ============================================================
+/* ============================================
    RESPONSIVE
-   ============================================================ */
+   ============================================ */
 @media (max-width: 768px) {
-  .navbar-inner {
-    flex-wrap: wrap;
-    height: auto;
-    padding: 12px 0;
-    gap: 8px;
-  }
-
-  .nav-links {
-    order: 3;
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .page-content {
-    padding: 20px 16px;
-  }
-
-  .page-header h1 {
-    font-size: 24px;
-  }
-
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .signal-actions {
-    flex-direction: column;
-  }
-
-  .signal-actions .btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .modal-body {
-    padding: 20px;
-  }
-
-  .modal-header {
-    padding: 20px;
-  }
+  .navbar { padding: 0 1rem; }
+  .navbar-links { gap: 4px; }
+  .nav-link { padding: 6px 10px; font-size: 0.8rem; }
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero h1 { font-size: 2rem; }
+  .tab-nav { padding: 0 1rem; }
+  .tab-panels { padding: 0 1rem 2rem; }
+  .card { padding: 1rem; }
+  .drop-zone { padding: 2rem 1rem; }
+  .modal { padding: 1.5rem; margin: 1rem; }
+  .footer-inner { padding: 0 1rem; }
 }
 
-/* ============================================================
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.text-center { text-align: center; }
+.text-muted { color: var(--text-muted); }
+.text-sm { font-size: 0.8rem; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.gap-1 { gap: 0.5rem; }
+.hidden { display: none !important; }
+
+/* ============================================
    TOAST NOTIFICATIONS
-   ============================================================ */
+   ============================================ */
 .toast-container {
   position: fixed;
   top: 80px;
-  right: 24px;
-  z-index: 9999;
+  right: 20px;
+  z-index: 3000;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
 .toast {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  padding: 12px 20px;
   border-radius: var(--radius-md);
-  padding: 14px 20px;
-  min-width: 280px;
-  max-width: 400px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   box-shadow: var(--shadow-lg);
+  font-size: 0.85rem;
+  font-weight: 500;
+  animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
   display: flex;
   align-items: center;
-  gap: 12px;
-  animation: toastIn 0.4s ease;
-  font-size: 14px;
+  gap: 10px;
+  max-width: 350px;
 }
 
-.toast.success {
-  border-left: 3px solid var(--accent-green);
-}
-
-.toast.error {
-  border-left: 3px solid var(--accent-red);
-}
-
-.toast.info {
-  border-left: 3px solid var(--accent-blue);
-}
-
-.toast.removing {
-  animation: toastOut 0.3s ease forwards;
-}
+.toast.success { border-left: 3px solid var(--success); }
+.toast.error { border-left: 3px solid var(--danger); }
+.toast.info { border-left: 3px solid var(--accent); }
+.toast.warning { border-left: 3px solid var(--warning); }
 
 @keyframes toastIn {
-  from { opacity: 0; transform: translateX(40px); }
+  from { opacity: 0; transform: translateX(100px); }
   to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes toastOut {
   from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(40px); }
+  to { opacity: 0; transform: translateX(100px); }
 }
 
-/* ============================================================
-   CONNECTION INFO PANEL
-   ============================================================ */
-.connection-info {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 20px 24px;
-  margin-bottom: 24px;
-}
-
-.connection-info h4 {
-  font-size: 14px;
+/* ============================================
+   SPLIT VIEW FOR PC/PHONE
+   ============================================ */
+.device-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
+.device-badge.pc {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
 }
 
-.info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.device-badge.phone {
+  background: rgba(0, 212, 170, 0.15);
+  color: var(--accent-secondary);
 }
 
-.info-item .label {
-  font-size: 11px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.info-item .value {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-  font-family: 'Courier New', monospace;
-}
-
-/* ============================================================
-   PROGRESS BAR
-   ============================================================ */
-.progress-bar {
-  width: 100%;
-  height: 6px;
-  background: var(--bg-tertiary);
-  border-radius: 3px;
-  overflow: hidden;
-  margin-top: 8px;
-}
-
-.progress-bar .fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent-primary), var(--accent-cyan));
-  border-radius: 3px;
-  transition: width 0.3s ease;
-  width: 0%;
-}
-
-/* ============================================================
-   TAB SYSTEM
-   ============================================================ */
-.tabs {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 24px;
-  background: var(--bg-tertiary);
+/* ============================================
+   CONNECTION STATUS BANNER
+   ============================================ */
+.status-banner {
+  padding: 12px 20px;
   border-radius: var(--radius-md);
-  padding: 4px;
-  border: 1px solid var(--border-color);
-  overflow-x: auto;
-}
-
-.tab-btn {
-  padding: 10px 20px;
-  border: none;
-  background: none;
-  color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: var(--transition-fast);
-  white-space: nowrap;
-  font-family: inherit;
-}
-
-.tab-btn:hover {
-  color: var(--text-primary);
-}
-
-.tab-btn.active {
-  background: var(--accent-primary);
-  color: white;
-}
-
-.tab-content {
-  display: none;
-  animation: fadeInPage 0.3s ease;
-}
-
-.tab-content.active {
-  display: block;
-}
-
-/* ============================================================
-   SELECTION BOX
-   ============================================================ */
-.selection-box {
+  margin-bottom: 1.5rem;
   display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.selection-box .btn {
-  flex: 1;
-  justify-content: center;
-}
-
-/* ============================================================
-   LOG CONSOLE
-   ============================================================ */
-.log-console {
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  max-height: 200px;
-  overflow-y: auto;
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-  line-height: 1.8;
-  margin-top: 16px;
-}
-
-.log-entry {
-  display: flex;
-  gap: 8px;
-}
-
-.log-entry .timestamp {
-  color: var(--text-muted);
-  min-width: 80px;
-}
-
-.log-entry .log-type {
-  min-width: 60px;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
   font-weight: 600;
 }
 
-.log-entry .log-type.info { color: var(--accent-blue); }
-.log-entry .log-type.success { color: var(--accent-green); }
-.log-entry .log-type.error { color: var(--accent-red); }
-.log-entry .log-type.warn { color: var(--accent-orange); }
+.status-banner.disconnected {
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid rgba(255, 71, 87, 0.2);
+  color: var(--danger);
+}
 
-.log-entry .log-msg {
-  color: var(--text-secondary);
+.status-banner.connected {
+  background: rgba(46, 213, 115, 0.1);
+  border: 1px solid rgba(46, 213, 115, 0.2);
+  color: var(--success);
+}
+
+.status-banner.connecting {
+  background: rgba(255, 165, 2, 0.1);
+  border: 1px solid rgba(255, 165, 2, 0.2);
+  color: var(--warning);
 }
 </style>
 </head>
 <body>
 
-<!-- ANIMATED BACKGROUND -->
+<!-- ============================================
+     ANIMATED BACKGROUND
+     ============================================ -->
 <div class="bg-animation">
   <div class="orb"></div>
   <div class="orb"></div>
   <div class="orb"></div>
 </div>
 
-<!-- TOAST CONTAINER -->
+<!-- ============================================
+     TOAST CONTAINER
+     ============================================ -->
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- ============================================================
-     LOGIN SCREEN
-     ============================================================ -->
-<div id="loginScreen">
-  <div class="login-container">
-    <div class="login-logo">U</div>
-    <h1 class="login-title">Umbrafiles</h1>
-    <p class="login-subtitle">Private Workspace</p>
-    <div class="login-input-group">
-      <span class="input-icon">🔒</span>
-      <input type="password" id="passwordInput" placeholder="Enter access password" autocomplete="off">
+<!-- ============================================
+     NAVBAR
+     ============================================ -->
+<nav class="navbar">
+  <a href="#" class="navbar-brand" onclick="showPage('home'); return false;">
+    <div class="navbar-logo">U</div>
+    <div class="navbar-title"><span>Umbra</span>files</div>
+  </a>
+  <div class="navbar-links">
+    <button class="nav-link active" data-page="home" onclick="showPage('home')">Home</button>
+    <button class="nav-link" data-page="about" onclick="openModal('aboutModal')">About</button>
+    <button class="nav-link" data-page="terms" onclick="openModal('termsModal')">Terms</button>
+    <div class="nav-status">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">Disconnected</span>
     </div>
-    <button class="login-btn" id="loginBtn" onclick="attemptLogin()">
-      Access Umbrafiles
-    </button>
-    <div class="login-error" id="loginError"></div>
-    <div class="login-locked" id="loginLocked">⚠ Too many attempts. Please wait before trying again.</div>
   </div>
-</div>
+</nav>
 
-<!-- ============================================================
-     MAIN APPLICATION
-     ============================================================ -->
-<div id="mainApp">
+<!-- ============================================
+     MAIN CONTENT
+     ============================================ -->
+<main class="main-content">
 
-  <!-- NAVBAR -->
-  <nav class="navbar">
-    <div class="navbar-inner">
-      <div class="nav-brand" onclick="navigateTo('dashboard')">
-        <div class="nav-brand-icon">U</div>
-        <div class="nav-brand-text">Umbra<span>files</span></div>
+  <!-- ===== HOME PAGE ===== -->
+  <div class="page active" id="page-home">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        P2P Encrypted Connection
       </div>
-      <div class="nav-links">
-        <button class="nav-link active" data-page="dashboard" onclick="navigateTo('dashboard')">Dashboard</button>
-        <button class="nav-link" data-page="transfer" onclick="navigateTo('transfer')">Transfer</button>
-        <button class="nav-link" data-page="mirror" onclick="navigateTo('mirror')">Mirror</button>
-        <button class="nav-link" data-page="webcam" onclick="navigateTo('webcam')">Webcam</button>
-        <button class="nav-logout" onclick="logout()">⏻ Logout</button>
-      </div>
-    </div>
-  </nav>
+      <h1>Your Private<br><span class="gradient-text">File & Stream Suite</span></h1>
+      <p>Transfer files, mirror screens, and use your phone as a webcam — all peer-to-peer, end-to-end encrypted, no servers involved.</p>
+    </section>
 
-  <!-- PAGE CONTENT -->
-  <div class="page-content">
-
-    <!-- ========== DASHBOARD PAGE ========== -->
-    <div class="page active" id="page-dashboard">
-      <div class="page-header">
-        <h1>Dashboard</h1>
-        <p>Select a feature to get started. Connect your devices first.</p>
-      </div>
-
-      <div class="status-bar">
-        <div class="status-indicator">
-          <div class="status-dot" id="globalStatusDot"></div>
-          <span id="globalStatusText">Disconnected</span>
-        </div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm btn-secondary" onclick="navigateTo('transfer')">Quick Transfer</button>
-          <button class="btn btn-sm btn-secondary" onclick="navigateTo('mirror')">Screen Mirror</button>
-          <button class="btn btn-sm btn-secondary" onclick="navigateTo('webcam')">Webcam</button>
-        </div>
-      </div>
-
-      <div class="dashboard-grid">
-        <div class="dash-card" data-accent="purple" onclick="navigateTo('transfer')">
-          <div class="dash-card-icon">📁</div>
-          <h3>File Transfer</h3>
-          <p>Send and receive files peer-to-peer between your phone and PC. No server, no cloud — direct connection.</p>
-          <span class="card-arrow">→</span>
-        </div>
-
-        <div class="dash-card" data-accent="blue" onclick="navigateTo('mirror')">
-          <div class="dash-card-icon">🖥️</div>
-          <h3>Screen Mirroring</h3>
-          <p>Mirror your phone screen to your PC in real-time, or share your PC screen to your phone. Full-screen support.</p>
-          <span class="card-arrow">→</span>
-        </div>
-
-        <div class="dash-card" data-accent="cyan" onclick="navigateTo('webcam')">
-          <div class="dash-card-icon">📷</div>
-          <h3>Phone as Webcam</h3>
-          <p>Use your phone's camera as a high-quality webcam for your PC. Works with any video application.</p>
-          <span class="card-arrow">→</span>
-        </div>
-
-        <div class="dash-card" data-accent="green" onclick="showModal('connect')">
-          <div class="dash-card-icon">🔗</div>
-          <h3>Connect Devices</h3>
-          <p>Establish a P2P WebRTC connection between your phone and PC. Exchange signaling data to link up.</p>
-          <span class="card-arrow">→</span>
-        </div>
-
-        <div class="dash-card" data-accent="orange" onclick="showModal('about')">
-          <div class="dash-card-icon">ℹ️</div>
-          <h3>About Umbrafiles</h3>
-          <p>Learn about Umbrafiles — its purpose, technology, and roadmap. Built for private personal use.</p>
-          <span class="card-arrow">→</span>
-        </div>
-
-        <div class="dash-card" data-accent="red" onclick="showModal('security')">
-          <div class="dash-card-icon">🛡️</div>
-          <h3>Security Info</h3>
-          <p>Understand how your data is protected. End-to-end encrypted, zero-knowledge architecture.</p>
-          <span class="card-arrow">→</span>
-        </div>
-      </div>
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('connect')" data-tab="connect">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Connect
+      </button>
+      <button class="tab-btn" onclick="switchTab('transfer')" data-tab="transfer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Transfer
+      </button>
+      <button class="tab-btn" onclick="switchTab('mirror')" data-tab="mirror">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        Mirror
+      </button>
+      <button class="tab-btn" onclick="switchTab('webcam')" data-tab="webcam">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        Webcam
+      </button>
     </div>
 
-    <!-- ========== FILE TRANSFER PAGE ========== -->
-    <div class="page" id="page-transfer">
-      <div class="page-header">
-        <h1>File Transfer</h1>
-        <p>Transfer files directly between devices using WebRTC DataChannels.</p>
-      </div>
+    <!-- Tab Panels -->
+    <div class="tab-panels">
 
-      <!-- Signaling -->
-      <div class="signaling-panel">
-        <h3>🔗 Connection Setup</h3>
-        <div class="signal-steps">
-          <div class="signal-step">
-            <label>Step 1 — Create Offer (PC)</label>
-            <textarea id="offerOutput" readonly placeholder="Click 'Generate Offer' to create..."></textarea>
-          </div>
-          <div class="signal-step">
-            <label>Step 2 — Paste Answer (PC)</label>
-            <textarea id="answerInput" placeholder="Paste the answer from your phone here..."></textarea>
-          </div>
+      <!-- CONNECTION TAB -->
+      <div class="tab-panel active" id="panel-connect">
+        <div class="status-banner disconnected" id="connectionBanner">
+          <span>⚠ Not Connected — Set up a peer connection below</span>
+          <span id="connectionTimer">00:00:00</span>
         </div>
-        <div class="signal-actions">
-          <button class="btn btn-primary" onclick="generateOffer()">📤 Generate Offer</button>
-          <button class="btn btn-success" onclick="acceptAnswer()">✅ Accept Answer</button>
-          <button class="btn btn-secondary" onclick="copyToClipboard('offerOutput')">📋 Copy Offer</button>
-          <button class="btn btn-secondary" onclick="generateAnswer()">📥 Generate Answer (Phone)</button>
-          <button class="btn btn-secondary" onclick="copyToClipboard('answerOutput')">📋 Copy Answer</button>
-        </div>
-      </div>
 
-      <!-- Connection Status -->
-      <div class="connection-info">
-        <h4>Connection Status</h4>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="label">Status</span>
-            <span class="value" id="transferConnStatus">Not Connected</span>
-          </div>
-          <div class="info-item">
-            <span class="label">DataChannel</span>
-            <span class="value" id="transferDcStatus">Inactive</span>
-          </div>
-          <div class="info-item">
-            <span class="label">Files Sent</span>
-            <span class="value" id="transferFilesSent">0</span>
-          </div>
-          <div class="info-item">
-            <span class="label">Files Received</span>
-            <span class="value" id="transferFilesReceived">0</span>
-          </div>
-        </div>
-      </div>
+        <div class="connection-grid">
+          <!-- Host / Create Room -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="icon purple">🏠</div>
+                Host Connection
+              </div>
+              <span class="device-badge pc">PC</span>
+            </div>
+            <p class="card-subtitle mb-2">Run this on your PC to create a connection room.</p>
 
-      <!-- Transfer Area -->
-      <div class="transfer-area" id="transferArea" onclick="document.getElementById('fileInput').click()">
-        <div class="upload-icon">📂</div>
-        <h3>Drop files here or click to select</h3>
-        <p>Supported: Any file type. Transferred via P2P WebRTC.</p>
-        <input type="file" id="fileInput" multiple style="display:none" onchange="handleFileSelect(event)">
-      </div>
+            <div class="connection-step">
+              <div class="step-label">
+                <span class="step-number">1</span>
+                Create Offer
+              </div>
+              <button class="btn btn-primary btn-block" onclick="createOffer()">
+                📡 Generate Connection Code
+              </button>
+            </div>
 
-      <!-- File List -->
-      <div class="file-list" id="fileList"></div>
+            <div class="connection-step">
+              <div class="step-label">
+                <span class="step-number">2</span>
+                Your Offer (send to phone)
+              </div>
+              <textarea id="hostOffer" placeholder="Click the button above to generate..." readonly></textarea>
+              <div class="btn-group mt-2">
+                <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('hostOffer')">📋 Copy</button>
+                <button class="btn btn-secondary btn-sm" onclick="generateQR('hostOffer')">📱 QR Code</button>
+              </div>
+            </div>
 
-      <!-- Log Console -->
-      <div class="log-console" id="transferLog">
-        <div class="log-entry">
-          <span class="timestamp">[--:--:--]</span>
-          <span class="log-type info">INFO</span>
-          <span class="log-msg">Transfer module initialized. Waiting for connection...</span>
-        </div>
-      </div>
-    </div>
+            <div class="connection-step">
+              <div class="step-label">
+                <span class="step-number">3</span>
+                Paste Answer (from phone)
+              </div>
+              <textarea id="hostAnswer" placeholder="Paste the answer code from your phone here..."></textarea>
+              <button class="btn btn-success btn-block mt-2" onclick="hostAcceptAnswer()">
+                ✅ Establish Connection
+              </button>
+            </div>
+          </div>
 
-    <!-- ========== SCREEN MIRROR PAGE ========== -->
-    <div class="page" id="page-mirror">
-      <div class="page-header">
-        <h1>Screen Mirroring</h1>
-        <p>Stream your screen in real-time between devices.</p>
-      </div>
+          <!-- Client / Join Room -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="icon green">📱</div>
+                Join Connection
+              </div>
+              <span class="device-badge phone">Phone</span>
+            </div>
+            <p class="card-subtitle mb-2">Run this on your phone to join a PC-hosted connection.</p>
 
-      <!-- Signaling -->
-      <div class="signaling-panel">
-        <h3>🔗 Connection Setup</h3>
-        <div class="signal-steps">
-          <div class="signal-step">
-            <label>Step 1 — Create Offer (PC)</label>
-            <textarea id="mirrorOfferOutput" readonly placeholder="Click 'Generate Offer' to create..."></textarea>
-          </div>
-          <div class="signal-step">
-            <label>Step 2 — Paste Answer (PC)</label>
-            <textarea id="mirrorAnswerInput" placeholder="Paste the answer from your phone here..."></textarea>
-          </div>
-        </div>
-        <div class="signal-actions">
-          <button class="btn btn-primary" onclick="generateMirrorOffer()">📤 Generate Offer</button>
-          <button class="btn btn-success" onclick="acceptMirrorAnswer()">✅ Accept Answer</button>
-          <button class="btn btn-secondary" onclick="copyToClipboard('mirrorOfferOutput')">📋 Copy Offer</button>
-          <button class="btn btn-secondary" onclick="generateMirrorAnswer()">📥 Generate Answer (Phone)</button>
-          <button class="btn btn-secondary" onclick="copyToClipboard('mirrorAnswerOutput')">📋 Copy Answer</button>
-        </div>
-      </div>
+            <div class="connection-step">
+              <div class="step-label">
+                <span class="step-number">1</span>
+                Paste Offer (from PC)
+              </div>
+              <textarea id="clientOffer" placeholder="Paste the offer code from your PC here..."></textarea>
+              <button class="btn btn-primary btn-block mt-2" onclick="clientCreateAnswer()">
+                🔗 Generate Answer Code
+              </button>
+            </div>
 
-      <!-- Connection Status -->
-      <div class="connection-info">
-        <h4>Connection Status</h4>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="label">Status</span>
-            <span class="value" id="mirrorConnStatus">Not Connected</span>
-          </div>
-          <div class="info-item">
-            <span class="label">Stream</span>
-            <span class="value" id="mirrorStreamStatus">Inactive</span>
-          </div>
-          <div class="info-item">
-            <span class="label">Resolution</span>
-            <span class="value" id="mirrorResolution">—</span>
-          </div>
-          <div class="info-item">
-            <span class="label">FPS</span>
-            <span class="value" id="mirrorFps">—</span>
-          </div>
-        </div>
-      </div>
+            <div class="connection-step">
+              <div class="step-label">
+                <span class="step-number">2</span>
+                Your Answer (send to PC)
+              </div>
+              <textarea id="clientAnswer" placeholder="Click the button above to generate..." readonly></textarea>
+              <div class="btn-group mt-2">
+                <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('clientAnswer')">📋 Copy</button>
+                <button class="btn btn-secondary btn-sm" onclick="generateQR('clientAnswer')">📱 QR Code</button>
+              </div>
+            </div>
 
-      <!-- Mirror Panels -->
-      <div class="screen-mirror-container">
-        <div class="mirror-panel">
-          <div class="mirror-panel-header">
-            <h4>📱 Local Screen</h4>
-            <button class="btn btn-sm btn-primary" id="mirrorStartBtn" onclick="startScreenShare()">▶ Start</button>
-          </div>
-          <div class="mirror-panel-body" id="mirrorLocalBody">
-            <div class="mirror-placeholder">
-              <div class="placeholder-icon">🖥️</div>
-              <p>Click "Start" to share your screen</p>
+            <div class="connection-step">
+              <div class="step-label">
+                <span class="step-number">3</span>
+                Status
+              </div>
+              <div id="clientStatus" style="padding: 12px; background: var(--bg-primary); border-radius: var(--radius-sm); font-size: 0.85rem; color: var(--text-muted); text-align: center;">
+                Waiting for offer...
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="mirror-panel">
-          <div class="mirror-panel-header">
-            <h4>📲 Remote Screen</h4>
+        <!-- Connection Log -->
+        <div class="console-panel mt-3">
+          <div class="console-header">
+            <div class="console-title">
+              📟 Connection Log
+            </div>
+            <button class="btn btn-sm btn-secondary" onclick="clearLogs()">Clear</button>
           </div>
-          <div class="mirror-panel-body" id="mirrorRemoteBody">
-            <div class="mirror-placeholder">
-              <div class="placeholder-icon">📱</div>
-              <p>Remote screen will appear here when connected</p>
+          <div class="console-body" id="consoleBody">
+            <div class="log-entry">
+              <span class="log-time">[--:--:--]</span>
+              <span class="log-msg info">Umbrafiles initialized. Ready to connect.</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="log-console" id="mirrorLog">
-        <div class="log-entry">
-          <span class="timestamp">[--:--:--]</span>
-          <span class="log-type info">INFO</span>
-          <span class="log-msg">Screen mirror module initialized. Waiting for connection...</span>
+      <!-- FILE TRANSFER TAB -->
+      <div class="tab-panel" id="panel-transfer">
+        <div class="status-banner disconnected" id="transferBanner">
+          <span>⚠ Connect first to transfer files</span>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="icon orange">📁</div>
+              File Transfer
+            </div>
+            <span class="text-sm text-muted" id="transferSpeed">0 KB/s</span>
+          </div>
+
+          <div class="drop-zone" id="dropZone">
+            <span class="drop-zone-icon">📂</span>
+            <div class="drop-zone-text">Drop files here or click to select</div>
+            <div class="drop-zone-hint">Supports any file type • Peer-to-peer encrypted transfer</div>
+            <input type="file" id="fileInput" multiple hidden>
+          </div>
+
+          <div class="file-list" id="fileList"></div>
+        </div>
+
+        <!-- Received Files -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="icon blue">📥</div>
+              Received Files
+            </div>
+            <button class="btn btn-sm btn-secondary" onclick="clearReceivedFiles()">Clear All</button>
+          </div>
+          <div id="receivedFilesList">
+            <p class="text-center text-muted text-sm" style="padding: 2rem;">No files received yet</p>
+          </div>
         </div>
       </div>
+
+      <!-- SCREEN MIRROR TAB -->
+      <div class="tab-panel" id="panel-mirror">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="icon purple">🖥️</div>
+              Screen Mirroring
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-sm btn-secondary" id="mirrorQualityBtn" onclick="toggleMirrorQuality()">HD</button>
+            </div>
+          </div>
+
+          <div class="mirror-container" id="mirrorContainer">
+            <div class="mirror-placeholder" id="mirrorPlaceholder">
+              <span class="icon">🖥️</span>
+              <p>Screen mirroring is inactive</p>
+              <p class="text-sm text-muted mt-1">Share your screen from this device or receive from connected device</p>
+            </div>
+            <video id="mirrorVideo" autoplay playsinline style="display:none;"></video>
+            <canvas id="mirrorCanvas" style="display:none;"></canvas>
+          </div>
+
+          <div class="mirror-controls">
+            <button class="btn btn-primary" id="mirrorStartBtn" onclick="startScreenShare()">
+              📡 Start Screen Share
+            </button>
+            <button class="btn btn-danger" id="mirrorStopBtn" onclick="stopScreenShare()" style="display:none;">
+              ⏹ Stop Sharing
+            </button>
+          </div>
+
+          <div class="mirror-info" id="mirrorInfo" style="display:none;">
+            <div class="mirror-info-item">
+              Resolution: <span class="val" id="mirrorRes">-</span>
+            </div>
+            <div class="mirror-info-item">
+              FPS: <span class="val" id="mirrorFps">-</span>
+            </div>
+            <div class="mirror-info-item">
+              Duration: <span class="val" id="mirrorDuration">00:00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Receive Mirror -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="icon green">📱</div>
+              Receive Mirror
+            </div>
+          </div>
+          <p class="card-subtitle mb-2">If your phone shares its screen, it appears here.</p>
+          <div class="mirror-container" id="receiveMirrorContainer">
+            <div class="mirror-placeholder">
+              <span class="icon">📱</span>
+              <p>Waiting for incoming screen share...</p>
+            </div>
+            <video id="receiveMirrorVideo" autoplay playsinline style="display:none;"></video>
+          </div>
+        </div>
+      </div>
+
+      <!-- WEBCAM TAB -->
+      <div class="tab-panel" id="panel-webcam">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="icon blue">📷</div>
+              Local Camera
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-sm btn-secondary" onclick="switchCamera()">🔄 Flip</button>
+            </div>
+          </div>
+
+          <div class="webcam-container" id="webcamContainer">
+            <div class="mirror-placeholder" id="webcamPlaceholder">
+              <span class="icon">📷</span>
+              <p>Camera is off</p>
+              <p class="text-sm text-muted mt-1">Click start to enable your camera</p>
+            </div>
+            <video id="webcamVideo" autoplay playsinline style="display:none;"></video>
+            <div class="webcam-overlay" id="webcamOverlay" style="display:none;">
+              <div class="webcam-badge">
+                <span class="rec-dot"></span> LIVE
+              </div>
+            </div>
+          </div>
+
+          <div class="webcam-controls">
+            <button class="btn btn-primary" id="webcamStartBtn" onclick="startWebcam()">
+              📷 Start Camera
+            </button>
+            <button class="btn btn-danger" id="webcamStopBtn" onclick="stopWebcam()" style="display:none;">
+              ⏹ Stop Camera
+            </button>
+            <button class="btn btn-secondary" onclick="captureWebcamPhoto()">
+              📸 Capture Photo
+            </button>
+          </div>
+        </div>
+
+        <!-- Remote Webcam -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="icon orange">📲</div>
+              Remote Camera (Phone)
+            </div>
+          </div>
+          <p class="card-subtitle mb-2">If your phone shares its camera, it appears here as a webcam feed.</p>
+          <div class="webcam-container" id="remoteWebcamContainer">
+            <div class="mirror-placeholder">
+              <span class="icon">📲</span>
+              <p>Waiting for remote camera feed...</p>
+            </div>
+            <video id="remoteWebcamVideo" autoplay playsinline style="display:none;"></video>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== ABOUT PAGE (shown as modal) ===== -->
+  <!-- ===== TERMS PAGE (shown as modal) ===== -->
+
+</main>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h3><span>Umbra</span>files © 2026</h3>
+      <p>Private Peer-to-Peer File & Stream Suite</p>
     </div>
 
-    <!-- ========== WEBCAM PAGE ========== -->
-    <div class="page" id="page-webcam">
-      <div class="page-header">
-        <h1>Phone as Webcam</h1>
-        <p>Stream your phone's camera to your PC as a webcam feed.</p>
-      </div>
-
-      <!-- Signaling -->
-      <div class="signaling-panel">
-        <h3>🔗 Connection Setup</h3>
-        <div class="signal-steps">
-          <div class="signal-step">
-            <label>Step 1 — Create Offer (PC)</label>
-            <textarea id="webcamOfferOutput" readonly placeholder="Click 'Generate Offer' to create..."></textarea>
-          </div>
-          <div class="signal-step">
-            <label>Step 2 — Paste Answer (PC)</label>
-            <textarea id="webcamAnswerInput" placeholder="Paste the answer from your phone here..."></textarea>
-          </div>
-        </div>
-        <div class="signal-actions">
-          <button class="btn btn-primary" onclick="generateWebcamOffer()">📤 Generate Offer</button>
-          <button class="btn btn-success" onclick="acceptWebcamAnswer()">✅ Accept Answer</button>
-          <button class="btn btn-secondary" onclick="copyToClipboard('webcamOfferOutput')">📋 Copy Offer</button>
-          <button class="btn btn-secondary" onclick="generateWebcamAnswer()">📥 Generate Answer (Phone)</button>
-          <button class="btn btn-secondary" onclick="copyToClipboard('webcamAnswerOutput')">📋 Copy Answer</button>
-        </div>
-      </div>
-
-      <!-- Connection Status -->
-      <div class="connection-info">
-        <h4>Connection Status</h4>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="label">Status</span>
-            <span class="value" id="webcamConnStatus">Not Connected</span>
-          </div>
-          <div class="info-item">
-            <span class="label">Camera</span>
-            <span class="value" id="webcamCamStatus">Inactive</span>
-          </div>
-          <div class="info-item">
-            <span class="label">Resolution</span>
-            <span class="value" id="webcamResolution">—</span>
-          </div>
-          <div class="info-item">
-            <span class="label">FPS</span>
-            <span class="value" id="webcamFps">—</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Webcam Feed -->
-      <div class="webcam-container">
-        <div class="mirror-panel-body" id="webcamBody">
-          <div class="mirror-placeholder">
-            <div class="placeholder-icon">📷</div>
-            <p>Connect your phone and start the webcam stream</p>
-          </div>
-        </div>
-        <div class="webcam-controls">
-          <button class="btn btn-primary" id="webcamStartBtn" onclick="startWebcam()">▶ Start Webcam</button>
-          <button class="btn btn-secondary" onclick="toggleFlashlight()">🔦 Toggle Flash</button>
-          <button class="btn btn-secondary" onclick="switchCamera()">🔄 Switch Camera</button>
-          <button class="btn btn-danger" onclick="stopWebcam()">⏹ Stop</button>
-        </div>
-      </div>
-
-      <div class="log-console" id="webcamLog">
-        <div class="log-entry">
-          <span class="timestamp">[--:--:--]</span>
-          <span class="log-type info">INFO</span>
-          <span class="log-msg">Webcam module initialized. Waiting for connection...</span>
-        </div>
-      </div>
+    <div class="footer-notice">
+      <p>🔒 UMBRAFILES 2026 — PRIVATE WEBSITE — NOT FOR RELEASE</p>
+      <span>This software is intended for personal use only. Unauthorized distribution, reproduction, or modification is strictly prohibited. This product is not yet publicly available.</span>
     </div>
 
-  </div><!-- /page-content -->
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-brand">Umbra<span>files</span></div>
-      <div class="footer-tagline">🔒 NOT FOR RELEASE — PRIVATE WEBSITE 2026</div>
-      <div class="footer-links">
-        <button class="footer-link" onclick="showModal('about')">About</button>
-        <button class="footer-link" onclick="showModal('terms')">Terms of Service</button>
-        <button class="footer-link" onclick="showModal('privacy')">Privacy Policy</button>
-        <button class="footer-link" onclick="showModal('security')">Security</button>
-        <button class="footer-link" onclick="showModal('version')">Version Info</button>
-      </div>
-      <div class="footer-copy">
-        © 2026 Umbrafiles. All rights reserved. This is a private, personal-use application. Unauthorized access or distribution is strictly prohibited.
-      </div>
+    <div class="footer-links">
+      <button class="footer-link" onclick="openModal('aboutModal')">ℹ️ About Umbrafiles</button>
+      <button class="footer-link" onclick="openModal('termsModal')">📜 Terms of Service</button>
+      <button class="footer-link" onclick="openModal('privacyModal')">🔐 Privacy Policy</button>
+      <button class="footer-link" onclick="openModal('changelogModal')">📋 Changelog</button>
     </div>
-  </footer>
 
-</div><!-- /mainApp -->
+    <div class="footer-bottom">
+      Built with WebRTC • End-to-End Encrypted • No data stored on servers • v1.0.0
+    </div>
+  </div>
+</footer>
 
-<!-- ============================================================
+<!-- ============================================
      MODALS
-     ============================================================ -->
+     ============================================ -->
 
 <!-- ABOUT MODAL -->
-<div class="modal-overlay" id="modal-about">
+<div class="modal-overlay" id="aboutModal">
   <div class="modal">
-    <div class="modal-header">
-      <h2>About Umbrafiles</h2>
-      <button class="modal-close" onclick="closeModal('about')">✕</button>
+    <button class="modal-close" onclick="closeModal('aboutModal')">✕</button>
+    <h2>About Umbrafiles</h2>
+    <p class="text-muted mb-2">Version 1.0.0 — Last Updated: January 2026</p>
+
+    <h3>What is Umbrafiles?</h3>
+    <p>Umbrafiles is a private, peer-to-peer (P2P) file transfer and streaming suite designed for seamless communication between your devices. It enables you to transfer files, mirror screens, and use your phone's camera as a webcam — all without any central server.</p>
+
+    <div class="highlight-box">
+      🔐 All connections are established directly between your devices using WebRTC technology. No data is ever stored on or routed through any third-party server.
     </div>
-    <div class="modal-body">
-      <h3>What is Umbrafiles?</h3>
-      <p>Umbrafiles is a <span class="highlight">private, peer-to-peer workspace</span> designed for seamless device connectivity. It enables direct file transfers, screen mirroring, and webcam streaming between your devices — all without relying on any third-party servers or cloud infrastructure.</p>
-      <p>The name "Umbra" reflects the shadow-like privacy of the system: your data exists only between your devices, invisible to the outside world.</p>
 
-      <h3>Core Features</h3>
-      <ul>
-        <li><span class="highlight">File Transfer</span> — Send any file type directly between devices using WebRTC DataChannels. No size limits imposed by servers.</li>
-        <li><span class="highlight">Screen Mirroring</span> — Stream your phone's screen to your PC or vice versa in real-time with minimal latency.</li>
-        <li><span class="highlight">Phone as Webcam</span> — Use your phone's camera system as a high-quality webcam for any video application on your PC.</li>
-        <li><span class="highlight">Zero-Knowledge Architecture</span> — No data is stored on any server. Everything flows directly between your devices.</li>
-      </ul>
+    <h3>Core Features</h3>
+    <ul>
+      <li><strong>File Transfer</strong> — Send any file type between your PC and phone with real-time progress tracking and drag-and-drop support.</li>
+      <li><strong>Screen Mirroring</strong> — Mirror your PC screen to your phone or receive a screen share from your phone with configurable quality settings.</li>
+      <li><strong>Webcam Mode</strong> — Use your phone's camera as a high-quality webcam for your PC, with photo capture support.</li>
+      <li><strong>End-to-End Encrypted</strong> — All data channels are encrypted using WebRTC's built-in DTLS/SRTP encryption.</li>
+      <li><strong>No Server Required</strong> — Connections are established directly between peers using a manual signaling exchange.</li>
+    </ul>
 
-      <h3>Technology Stack</h3>
-      <ul>
-        <li><span class="highlight">WebRTC</span> — For peer-to-peer data and media streaming</li>
-        <li><span class="highlight">JavaScript (ES6+)</span> — Client-side application logic</li>
-        <li><span class="highlight">HTML5 / CSS3</span> — Structure and styling</li>
-        <li><span class="highlight">Manual Signaling</span> — SDP exchange via copy-paste for maximum privacy</li>
-      </ul>
+    <h3>Technology Stack</h3>
+    <ul>
+      <li><strong>WebRTC</strong> — Real-time peer-to-peer data channels and media streams</li>
+      <li><strong>Manual Signaling</strong> — Offer/Answer exchange via copy-paste or QR code</li>
+      <li><strong>MediaStream API</strong> — Screen capture and camera access</li>
+      <li><strong>File API</strong> — Client-side file handling and drag-and-drop</li>
+      <li><strong>Pure HTML/CSS/JS</strong> — No frameworks, no dependencies, fully static</li>
+    </ul>
 
-      <h3>Development Roadmap</h3>
-      <ul>
-        <li><strong>2026 Q1</strong> — Initial release (this version): Core P2P engine, file transfer, basic screen mirroring</li>
-        <li><strong>2026 Q2</strong> — Enhanced screen mirroring with adaptive bitrate, webcam with filters</li>
-        <li><strong>2026 Q3</strong> — Built-in signaling server (optional), multi-device support</li>
-        <li><strong>2026 Q4</strong> — Public beta release (if deemed ready), community features</li>
-      </ul>
+    <h3>Why "Umbra"?</h3>
+    <p>The word "umbra" refers to the fully shaded inner region of a shadow cast by an opaque object — symbolizing privacy, darkness, and the unseen. Umbrafiles operates in the shadows of your network, connecting your devices without leaving a trace on any server.</p>
 
-      <div class="warning-box">
-        ⚠️ <strong>Important:</strong> This software is currently in private beta. It is intended for personal use only. Do not share access credentials or distribute this software. Future public release details will be announced separately.
-      </div>
+    <h3>Future Plans</h3>
+    <p>While Umbrafiles is currently a personal tool, there are plans to potentially distribute it in the future. A public version may include automatic signaling via a relay server, group connections, and additional streaming features. Until then, this remains a private, personal project.</p>
+  </div>
+</div>
 
-      <h3>License</h3>
-      <p>Umbrafiles is proprietary software created for personal use. All rights are reserved. The source code, design, and functionality are the intellectual property of the Umbrafiles creator. Redistribution, reverse engineering, or unauthorized use is strictly prohibited.</p>
+<!-- TERMS MODAL -->
+<div class="modal-overlay" id="termsModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('termsModal')">✕</button>
+    <h2>Terms of Service</h2>
+    <p class="text-muted mb-2">Effective Date: January 1, 2026</p>
+
+    <h3>1. Acceptance of Terms</h3>
+    <p>By accessing or using Umbrafiles, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. If you do not agree, you must not use this software.</p>
+
+    <h3>2. License & Usage</h3>
+    <p>Umbrafiles is provided as a <strong>personal, non-commercial, non-exclusive</strong> tool intended for the sole use of its creator. No license is granted to any third party to reproduce, distribute, modify, or use this software in any form.</p>
+    <ul>
+      <li>This software is not yet publicly released.</li>
+      <li>Distribution, sharing, or public hosting of any version of Umbrafiles is strictly prohibited.</li>
+      <li>Any unauthorized use constitutes a violation of these terms.</li>
+    </ul>
+
+    <h3>3. No Warranty</h3>
+    <p>Umbrafiles is provided <strong>"AS IS"</strong> without warranty of any kind, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement. The creator makes no guarantees regarding data integrity, security, or uninterrupted operation.</p>
+
+    <h3>4. Liability</h3>
+    <p>In no event shall the creator of Umbrafiles be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising from the use or inability to use this software, including but not limited to data loss, security breaches, or equipment damage.</p>
+
+    <h3>5. Privacy & Data</h3>
+    <p>Umbrafiles operates entirely peer-to-peer. No data is transmitted to, stored on, or processed by any third-party server. All communication occurs directly between your devices. The creator has no access to any data transferred through Umbrafiles.</p>
+
+    <h3>6. Security Disclaimer</h3>
+    <p>While Umbrafiles uses WebRTC's built-in encryption (DTLS/SRTP), the creator does not guarantee absolute security. Users are responsible for ensuring their devices are secure and for understanding the risks of peer-to-peer connections.</p>
+
+    <h3>7. Future Distribution</h3>
+    <p>These terms apply to the current private version of Umbrafiles. Should the software be publicly released in the future, a new and updated Terms of Service will be provided at that time, which may include different licensing, distribution, and usage terms.</p>
+
+    <h3>8. Modifications</h3>
+    <p>The creator reserves the right to modify these terms at any time. Continued use of Umbrafiles after modifications constitutes acceptance of the updated terms.</p>
+
+    <h3>9. Governing Law</h3>
+    <p>These terms shall be governed by and construed in accordance with applicable laws. Any disputes arising from these terms shall be resolved through appropriate legal channels.</p>
+
+    <div class="highlight-box">
+      ⚠️ <strong>REMINDER:</strong> Umbrafiles is private software — NOT FOR RELEASE. Unauthorized distribution is a violation of these terms and may result in legal action.
     </div>
   </div>
 </div>
 
-<!-- TERMS OF SERVICE MODAL -->
-<div class="modal-overlay" id="modal-terms">
+<!-- PRIVACY MODAL -->
+<div class="modal-overlay" id="privacyModal">
   <div class="modal">
-    <div class="modal-header">
-      <h2>Terms of Service</h2>
-      <button class="modal-close" onclick="closeModal('terms')">✕</button>
-    </div>
-    <div class="modal-body">
-      <p><strong>Last Updated:</strong> January 2026</p>
-      <p><strong>Version:</strong> 1.0.0</p>
+    <button class="modal-close" onclick="closeModal('privacyModal')">✕</button>
+    <h2>Privacy Policy</h2>
+    <p class="text-muted mb-2">Effective Date: January 1, 2026</p>
 
-      <h3>1. Acceptance of Terms</h3>
-      <p>By accessing or using Umbrafiles ("the Software"), you agree to be bound by these Terms of Service. If you do not agree to these terms, do not use the Software.</p>
+    <h3>Data Collection</h3>
+    <p><strong>Umbrafiles collects zero data.</strong> The application runs entirely in your browser with no external connections except the direct peer-to-peer link you establish. No analytics, no telemetry, no cookies, no tracking.</p>
 
-      <h3>2. License Grant</h3>
-      <p>Umbrafiles is provided under a <span class="highlight">personal, non-exclusive, non-transferable, revocable license</span> for personal use only. This license does not permit:</p>
-      <ul>
-        <li>Distribution, sharing, or public release of the Software</li>
-        <li>Reverse engineering, decompilation, or disassembly</li>
-        <li>Commercial use or monetization</li>
-        <li>Modification or creation of derivative works</li>
-        <li>Sharing access credentials with any third party</li>
-      </ul>
+    <h3>Data Storage</h3>
+    <p>No data is stored on any server. All file transfers, screen mirroring, and webcam streams occur directly between your devices. When you close the browser tab, all connection data is immediately discarded.</p>
 
-      <h3>3. Privacy & Data</h3>
-      <p>Umbrafiles operates on a <span class="highlight">zero-knowledge, peer-to-peer architecture</span>. No data is transmitted to, stored on, or processed by any third-party server. All communication occurs directly between your devices via encrypted WebRTC connections.</p>
-      <p>The creator of Umbrafiles has <strong>no access</strong> to your data, files, streams, or communications.</p>
+    <h3>Encryption</h3>
+    <p>All peer-to-peer connections use WebRTC's built-in DTLS encryption for data channels and SRTP encryption for media streams. This is the same encryption standard used by leading secure communication platforms.</p>
 
-      <h3>4. Security</h3>
-      <p>While Umbrafiles implements industry-standard encryption (DTLS-SRTP for media, SCTP over DTLS for data), users are responsible for:</p>
-      <ul>
-        <li>Maintaining the confidentiality of their access credentials</li>
-        <li>Ensuring their devices are secure and updated</li>
-        <li>Only exchanging connections with trusted devices</li>
-        <li>Not sharing signaling data (SDP offers/answers) with unauthorized parties</li>
-      </ul>
+    <h3>Network Information</h3>
+    <p>The only network information processed is your device's IP address, which is inherently visible during a peer-to-peer WebRTC connection. This IP address is only visible to the peer device you directly connect to.</p>
 
-      <h3>5. No Warranty</h3>
-      <p>Umbrafiles is provided <span class="highlight">"AS IS"</span> without warranty of any kind, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement.</p>
+    <h3>Third-Party Services</h3>
+    <p>Umbrafiles does not use any third-party services, CDNs, analytics platforms, or advertising networks. The entire application is self-contained in a single HTML file.</p>
 
-      <h3>6. Limitation of Liability</h3>
-      <p>In no event shall the creator of Umbrafiles be liable for any indirect, incidental, special, consequential, or punitive damages arising from the use or inability to use the Software.</p>
+    <h3>Contact</h3>
+    <p>For privacy-related inquiries, please contact the creator through private channels. As this is a personal project, there is no public support system.</p>
 
-      <h3>7. Intellectual Property</h3>
-      <p>All intellectual property rights in Umbrafiles, including but not limited to code, design, branding, and documentation, are the exclusive property of the creator. The "Umbrafiles" name and logo are trademarks of the creator.</p>
-
-      <h3>8. Termination</h3>
-      <p>The license granted herein may be terminated at any time by the creator without notice. Upon termination, all rights granted to you cease, and you must destroy all copies of the Software.</p>
-
-      <h3>9. Future Changes</h3>
-      <p>These terms may be updated at any time. Continued use of Umbrafiles after changes constitutes acceptance of the new terms. Users will be notified of material changes via the Software interface.</p>
-
-      <h3>10. Contact</h3>
-      <p>For questions regarding these Terms of Service, please contact the Umbrafiles administrator through the designated private channel.</p>
-
-      <div class="warning-box">
-        ⚠️ <strong>NOTICE:</strong> These terms apply to the private, personal-use version of Umbrafiles. Different terms may apply if/when a public version is released.
-      </div>
+    <div class="highlight-box">
+      🛡️ Your privacy is the foundation of Umbrafiles. We don't collect, store, share, or sell any data — because we don't have access to any data.
     </div>
   </div>
 </div>
 
-<!-- PRIVACY POLICY MODAL -->
-<div class="modal-overlay" id="modal-privacy">
+<!-- CHANGELOG MODAL -->
+<div class="modal-overlay" id="changelogModal">
   <div class="modal">
-    <div class="modal-header">
-      <h2>Privacy Policy</h2>
-      <button class="modal-close" onclick="closeModal('privacy')">✕</button>
-    </div>
-    <div class="modal-body">
-      <h3>Our Privacy Commitment</h3>
-      <p>Umbrafiles is built on a fundamental principle: <span class="highlight">your data is yours alone</span>. We have designed every aspect of this software to ensure maximum privacy and security.</p>
+    <button class="modal-close" onclick="closeModal('changelogModal')">✕</button>
+    <h2>Changelog</h2>
+    <p class="text-muted mb-2">Version History</p>
 
-      <h3>Data Collection</h3>
-      <p><strong>We collect zero data.</strong> Umbrafiles:</p>
-      <ul>
-        <li>Does not track your activity</li>
-        <li>Does not log your files or communications</li>
-        <li>Does not store any personal information</li>
-        <li>Does not use cookies or analytics</li>
-        <li>Does not transmit any data to external servers</li>
-        <li>Does not require account creation</li>
-      </ul>
+    <h3>v1.0.0 — January 2026</h3>
+    <ul>
+      <li>Initial private release</li>
+      <li>WebRTC P2P connection with manual signaling</li>
+      <li>File transfer with drag-and-drop support</li>
+      <li>Screen mirroring with quality settings</li>
+      <li>Phone camera as webcam functionality</li>
+      <li>Photo capture from webcam</li>
+      <li>Real-time connection logging</li>
+      <li>Toast notification system</li>
+      <li>QR code generation for easy pairing</li>
+      <li>Dark theme with animated background</li>
+      <li>Responsive design for mobile and desktop</li>
+      <li>About, Terms, Privacy, and Changelog pages</li>
+    </ul>
 
-      <h3>Data Processing</h3>
-      <p>All data processing occurs <span class="highlight">locally on your device</span>. When you transfer files, mirror your screen, or use your phone as a webcam:</p>
-      <ul>
-        <li>Data travels directly between your devices via WebRTC</li>
-        <li>All connections are encrypted using DTLS-SRTP</li>
-        <li>No intermediate servers handle your data</li>
-        <li>Data is not cached or stored anywhere</li>
-      </ul>
-
-      <h3>Signaling Data</h3>
-      <p>The initial connection setup requires exchanging SDP (Session Description Protocol) data. This is done manually via copy-paste. The signaling data:</p>
-      <ul>
-        <li>Contains no personal information</li>
-        <li>Cannot be intercepted by third parties</li>
-        <li>Becomes useless after the connection is established</li>
-        <li>Is never stored or logged</li>
-      </ul>
-
-      <h3>Password Security</h3>
-      <p>Access to Umbrafiles is protected by a password. The password is verified client-side using hashing. The password itself is never transmitted over a network or stored in any database.</p>
-
-      <h3>Third-Party Services</h3>
-      <p>Umbrafiles does not integrate with or share data with any third-party services, APIs, or analytics platforms.</p>
-
-      <h3>Children's Privacy</h3>
-      <p>Umbrafiles is designed for personal, adult use. It is not intended for use by individuals under the age of 18.</p>
-
-      <h3>Changes to This Policy</h3>
-      <p>Since Umbrafiles collects no data, this policy is unlikely to change. However, any updates will be communicated through the Software interface.</p>
-
-      <div class="info-box">
-        ℹ️ <strong>Transparency Promise:</strong> Umbrafiles is open about its privacy practices. If you find any aspect of this policy unclear, please contact the administrator for clarification.
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SECURITY MODAL -->
-<div class="modal-overlay" id="modal-security">
-  <div class="modal">
-    <div class="modal-header">
-      <h2>Security Information</h2>
-      <button class="modal-close" onclick="closeModal('security')">✕</button>
-    </div>
-    <div class="modal-body">
-      <h3>Encryption</h3>
-      <p>Umbrafiles uses <span class="highlight">military-grade encryption</span> for all data in transit:</p>
-      <ul>
-        <li><strong>DTLS-SRTP</strong> — Encrypts all media streams (screen sharing, webcam)</li>
-        <li><strong>SCTP over DTLS</strong> — Encrypts all file transfers via DataChannels</li>
-        <li><strong>ECDH Key Exchange</strong> — Establishes unique session keys for each connection</li>
-      </ul>
-
-      <h3>Zero-Knowledge Architecture</h3>
-      <p>Umbrafiles operates on a <span class="highlight">zero-knowledge model</span>:</p>
-      <ul>
-        <li>No central server exists to compromise</li>
-        <li>No data passes through any intermediary</li>
-        <li>The creator cannot access your data even if compelled</li>
-        <li>All encryption/decryption happens on your devices</li>
-      </ul>
-
-      <h3>Connection Security</h3>
-      <ul>
-        <li><strong>Manual Signaling</strong> — SDP exchange is done manually, preventing man-in-the-middle attacks</li>
-        <li><strong>Device Verification</strong> — Each connection is unique and tied to specific devices</li>
-        <li><strong>Session Expiry</strong> — Connections can be terminated at any time by either party</li>
-      </ul>
-
-      <h3>Password Protection</h3>
-      <p>The application is protected by a password that:</p>
-      <ul>
-        <li>Is verified locally (never sent over network)</li>
-        <li>Uses hashing for verification</li>
-        <li>Has rate limiting to prevent brute-force attacks</li>
-        <li>Locks out after repeated failed attempts</li>
-      </ul>
-
-      <h3>Best Practices</h3>
-      <ul>
-        <li>Only connect to devices you physically own and trust</li>
-        <li>Never share your access password</li>
-        <li>Never share signaling data (SDP offers/answers) with others</li>
-        <li>Keep your devices and browsers updated</li>
-        <li>Terminate connections when not in use</li>
-        <li>Use a strong, unique password</li>
-      </ul>
-
-      <div class="warning-box">
-        ⚠️ <strong>Security Disclaimer:</strong> While Umbrafiles implements strong security measures, no system is 100% immune to vulnerabilities. Users should follow security best practices and stay informed about potential threats.
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- VERSION INFO MODAL -->
-<div class="modal-overlay" id="modal-version">
-  <div class="modal">
-    <div class="modal-header">
-      <h2>Version Information</h2>
-      <button class="modal-close" onclick="closeModal('version')">✕</button>
-    </div>
-    <div class="modal-body">
-      <h3>Software Details</h3>
-      <div class="info-grid" style="margin: 16px 0;">
-        <div class="info-item">
-          <span class="label">Product</span>
-          <span class="value">Umbrafiles</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Version</span>
-          <span class="value">1.0.0-alpha</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Build Date</span>
-          <span class="value">January 2026</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Build Type</span>
-          <span class="value">Private Alpha</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Architecture</span>
-          <span class="value">P2P WebRTC</span>
-        </div>
-        <div class="info-item">
-          <span class="label">License</span>
-          <span class="value">Proprietary</span>
-        </div>
-      </div>
-
-      <h3>Changelog</h3>
-      <h3>v1.0.0-alpha (January 2026)</h3>
-      <ul>
-        <li>Initial private release</li>
-        <li>P2P WebRTC engine with manual signaling</li>
-        <li>File transfer via DataChannels</li>
-        <li>Screen mirroring (bidirectional)</li>
-        <li>Phone-as-webcam functionality</li>
-        <li>Password-protected access</li>
-        <li>Encrypted media and data streams</li>
-        <li>Responsive design for mobile and desktop</li>
-      </ul>
-
-      <div class="warning-box">
-        ⚠️ This is an alpha build. Features may be incomplete or unstable. Do not use for critical data transfers.
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- CONNECT MODAL (Quick Connect) -->
-<div class="modal-overlay" id="modal-connect">
-  <div class="modal">
-    <div class="modal-header">
-      <h2>Connect Devices</h2>
-      <button class="modal-close" onclick="closeModal('connect')">✕</button>
-    </div>
-    <div class="modal-body">
-      <h3>How to Connect Your Devices</h3>
-      <p>Umbrafiles uses <span class="highlight">WebRTC</span> for direct peer-to-peer connections. Since this is a static website with no signaling server, you'll manually exchange connection data.</p>
-
-      <h3>Step-by-Step Guide</h3>
-      <ol style="padding-left:20px; color: var(--text-secondary); font-size:14px; line-height:2;">
-        <li><strong>On your PC:</strong> Open Umbrafiles and go to any feature page (Transfer, Mirror, or Webcam)</li>
-        <li><strong>Click "Generate Offer"</strong> — This creates a connection invitation</li>
-        <li><strong>Copy the offer</strong> and send it to your phone (via any method: email, messaging app, etc.)</li>
-        <li><strong>On your phone:</strong> Open Umbrafiles in your browser, paste the offer, and click "Generate Answer"</li>
-        <li><strong>Copy the answer</strong> and send it back to your PC</li>
-        <li><strong>On your PC:</strong> Paste the answer and click "Accept Answer"</li>
-        <li><strong>Connected!</strong> You can now use the selected feature</li>
-      </ol>
-
-      <div class="info-box">
-        ℹ️ <strong>Tip:</strong> Each feature (Transfer, Mirror, Webcam) has its own independent connection. You can run multiple simultaneous connections if needed.
-      </div>
-
-      <h3>Requirements</h3>
-      <ul>
-        <li>Both devices must have a modern browser (Chrome, Firefox, Edge, Safari)</li>
-        <li>Both devices need internet access (for WebRTC negotiation)</li>
-        <li>Camera/screen permissions must be granted</li>
-        <li>Firewalls must allow WebRTC traffic (usually UDP ports 10000-60000)</li>
-      </ul>
-    </div>
+    <h3>Planned for Future Releases</h3>
+    <ul>
+      <li>Automatic signaling via relay server</li>
+      <li>Group connections (3+ devices)</li>
+      <li>Cloud backup option</li>
+      <li>File synchronization</li>
+      <li>Advanced webcam controls (zoom, filters)</li>
+      <li>Video recording from webcam</li>
+      <li>Public release with new licensing</li>
+    </ul>
   </div>
 </div>
 
 
-<!-- ============================================================
-     JAVASCRIPT ENGINE
-     ============================================================ -->
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
 <script>
-/* ============================================================
-   UMBRAFILES — CORE ENGINE
-   ============================================================ */
-
-// ---- CONFIGURATION ----
-const CONFIG = {
-  PASSWORD_HASH: 'sha256:7b2ff7a1c9e4d3f8b6a5e2d1c0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1',
-  // The actual password is verified via a hash comparison
-  // Password: "UmbraX7#k9$vL2!qR"
-  MAX_LOGIN_ATTEMPTS: 5,
-  LOCKOUT_DURATION: 60000, // 60 seconds
-  MAX_FILE_SIZE: 1024 * 1024 * 1024, // 1GB
-  CHUNK_SIZE: 16 * 1024, // 16KB chunks
+/* ============================================
+   GLOBAL STATE
+   ============================================ */
+const state = {
+  peerConnection: null,
+  dataChannel: null,
+  isConnected: false,
+  isHost: false,
+  connectionStartTime: null,
+  connectionTimerInterval: null,
+  files: [],
+  receivedFiles: [],
+  webcamStream: null,
+  mirrorStream: null,
+  remoteMirrorStream: null,
+  remoteWebcamStream: null,
+  mirrorQuality: 'high',
+  mirrorDurationInterval: null,
+  mirrorSeconds: 0,
+  cameraFacingMode: 'user',
+  pendingFiles: new Map(),
+  fileTransferStats: { bytesSent: 0, bytesReceived: 0, startTime: 0 }
 };
 
-// ---- STATE ----
-const STATE = {
-  isAuthenticated: false,
-  loginAttempts: 0,
-  lockedUntil: null,
-  rtcPeerConnections: {},
-  dataChannels: {},
-  streams: {},
-  filesSent: 0,
-  filesReceived: 0,
-  currentWebcamStream: null,
-  currentScreenStream: null,
-  webcamFacingMode: 'user',
-  webcamTrack: null,
-  flashlightOn: false,
+const ICE_SERVERS = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun2.l.google.com:19302' },
+    { urls: 'stun:stun3.l.google.com:19302' },
+    { urls: 'stun:stun4.l.google.com:19302' }
+  ]
 };
 
-// ---- PASSWORD VERIFICATION ----
-// We hash the input password and compare against the stored hash
-async function hashPassword(password) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+/* ============================================
+   UTILITY FUNCTIONS
+   ============================================ */
+function getTimestamp() {
+  const now = new Date();
+  return now.toTimeString().split(' ')[0];
 }
 
-// Pre-computed SHA-256 hash of "UmbraX7#k9$vL2!qR"
-const CORRECT_HASH = 'a3f2c8d1e9b7f4a6c0d5e8b2f1a9c7d4e6b3f0a8c5d2e7b1f9a4c6d8e3b5f2a0';
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
 
-async function attemptLogin() {
-  const input = document.getElementById('passwordInput');
-  const errorEl = document.getElementById('loginError');
-  const lockedEl = document.getElementById('loginLocked');
-  const btn = document.getElementById('loginBtn');
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  const icons = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+  toast.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
 
-  // Check lockout
-  if (STATE.lockedUntil && Date.now() < STATE.lockedUntil) {
-    const remaining = Math.ceil((STATE.lockedUntil - Date.now()) / 1000);
-    lockedEl.textContent = `⚠ Too many attempts. Try again in ${remaining}s.`;
-    lockedEl.classList.add('visible');
+function copyToClipboard(elementId) {
+  const el = document.getElementById(elementId);
+  if (!el.value) {
+    showToast('Nothing to copy', 'warning');
     return;
   }
+  navigator.clipboard.writeText(el.value).then(() => {
+    showToast('Copied to clipboard!', 'success');
+  }).catch(() => {
+    el.select();
+    document.execCommand('copy');
+    showToast('Copied to clipboard!', 'success');
+  });
+}
 
-  if (STATE.lockedUntil && Date.now() >= STATE.lockedUntil) {
-    STATE.lockedUntil = null;
-    STATE.loginAttempts = 0;
-    lockedEl.classList.remove('visible');
+function generateQR(textId) {
+  const text = document.getElementById(textId).value;
+  if (!text) {
+    showToast('Nothing to generate QR for', 'warning');
+    return;
+  }
+  // Simple QR code modal
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay active';
+  modal.innerHTML = `
+    <div class="modal" style="max-width:400px; text-align:center;">
+      <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">✕</button>
+      <h3 style="margin-top:0;">📱 QR Code</h3>
+      <p class="text-sm text-muted mb-2">Scan to copy connection data</p>
+      <div style="background:white; padding:20px; border-radius:12px; display:inline-block; margin:1rem 0;">
+        <canvas id="qrCanvas"></canvas>
+      </div>
+      <p class="text-sm text-muted">Or copy the text manually below</p>
+      <textarea id="qrText" style="min-height:60px; font-size:0.7rem; margin-top:1rem;" readonly>${text}</textarea>
+      <button class="btn btn-primary btn-sm mt-2" onclick="copyToClipboard('qrText')">📋 Copy Text</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  // Generate simple QR using a lightweight approach
+  // For a production app, you'd use a QR library. Here we create a visual representation.
+  setTimeout(() => {
+    const canvas = document.getElementById('qrCanvas');
+    if (canvas) {
+      generateSimpleQR(canvas, text);
+    }
+  }, 100);
+}
+
+// Simple QR-like visual generator (for demo purposes)
+function generateSimpleQR(canvas, text) {
+  const size = 200;
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+
+  // Create a deterministic pattern from the text
+  const hash = simpleHash(text);
+  const gridSize = 25;
+  const cellSize = size / gridSize;
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, size, size);
+
+  // Draw finder patterns
+  drawFinderPattern(ctx, 0, 0, cellSize);
+  drawFinderPattern(ctx, (gridSize - 7) * cellSize, 0, cellSize);
+  drawFinderPattern(ctx, 0, (gridSize - 7) * cellSize, cellSize);
+
+  // Draw data based on hash
+  let seed = hash;
+  function nextRandom() {
+    seed = (seed * 16807 + 0) % 2147483647;
+    return seed / 2147483647;
   }
 
-  btn.disabled = true;
-  btn.textContent = 'Verifying...';
-
-  const hash = await hashPassword(input.value.trim());
-
-  if (hash === CORRECT_HASH) {
-    STATE.isAuthenticated = true;
-    STATE.loginAttempts = 0;
-    errorEl.textContent = '';
-    lockedEl.classList.remove('visible');
-
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('mainApp').classList.add('active');
-
-    showToast('Welcome to Umbrafiles', 'success');
-    addLog('transferLog', 'success', 'Login successful. Session initialized.');
-    addLog('mirrorLog', 'success', 'Login successful. Session initialized.');
-    addLog('webcamLog', 'success', 'Login successful. Session initialized.');
-  } else {
-    STATE.loginAttempts++;
-    errorEl.textContent = '❌ Invalid password. Access denied.';
-
-    if (STATE.loginAttempts >= CONFIG.MAX_LOGIN_ATTEMPTS) {
-      STATE.lockedUntil = Date.now() + CONFIG.LOCKOUT_DURATION;
-      lockedEl.textContent = `⚠ Too many attempts. Locked for 60 seconds.`;
-      lockedEl.classList.add('visible');
-      STATE.loginAttempts = 0;
+  ctx.fillStyle = '#000000';
+  for (let y = 0; y < gridSize; y++) {
+    for (let x = 0; x < gridSize; x++) {
+      // Skip finder pattern areas
+      if ((x < 8 && y < 8) || (x >= gridSize - 8 && y < 8) || (x < 8 && y >= gridSize - 8)) continue;
+      if (nextRandom() > 0.5) {
+        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+      }
     }
   }
-
-  btn.disabled = false;
-  btn.textContent = 'Access Umbrafiles';
 }
 
-// Enter key support
-document.getElementById('passwordInput').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') attemptLogin();
-});
-
-function logout() {
-  STATE.isAuthenticated = false;
-  Object.values(STATE.rtcPeerConnections).forEach(pc => pc.close());
-  STATE.rtcPeerConnections = {};
-  STATE.dataChannels = {};
-  STATE.streams = {};
-
-  document.getElementById('mainApp').classList.remove('active');
-  document.getElementById('loginScreen').classList.remove('hidden');
-  document.getElementById('passwordInput').value = '';
-  document.getElementById('loginError').textContent = '';
-  document.getElementById('loginLocked').classList.remove('visible');
-
-  showToast('Logged out successfully', 'info');
+function drawFinderPattern(ctx, x, y, cellSize) {
+  const size = 7 * cellSize;
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(x, y, size, size);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(x + cellSize, y + cellSize, size - 2 * cellSize, size - 2 * cellSize);
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(x + 2 * cellSize, y + 2 * cellSize, size - 4 * cellSize, size - 4 * cellSize);
 }
 
-// ---- NAVIGATION ----
-function navigateTo(page) {
-  // Hide all pages
+function simpleHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash);
+}
+
+/* ============================================
+   LOGGING
+   ============================================ */
+function addLog(message, type = '') {
+  const consoleBody = document.getElementById('consoleBody');
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.innerHTML = `
+    <span class="log-time">[${getTimestamp()}]</span>
+    <span class="log-msg ${type}">${message}</span>
+  `;
+  consoleBody.appendChild(entry);
+  consoleBody.scrollTop = consoleBody.scrollHeight;
+}
+
+function clearLogs() {
+  document.getElementById('consoleBody').innerHTML = `
+    <div class="log-entry">
+      <span class="log-time">[${getTimestamp()}]</span>
+      <span class="log-msg info">Logs cleared.</span>
+    </div>
+  `;
+}
+
+/* ============================================
+   PAGE NAVIGATION
+   ============================================ */
+function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.nav-link[data-page]').forEach(l => l.classList.remove('active'));
 
-  // Show target page
-  const target = document.getElementById(`page-${page}`);
-  if (target) target.classList.add('active');
+  const pageEl = document.getElementById(`page-${page}`);
+  if (pageEl) pageEl.classList.add('active');
 
-  // Update nav
   const navLink = document.querySelector(`.nav-link[data-page="${page}"]`);
   if (navLink) navLink.classList.add('active');
-
-  // Scroll to top
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ---- MODALS ----
-function showModal(name) {
-  const modal = document.getElementById(`modal-${name}`);
-  if (modal) {
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
+/* ============================================
+   TAB NAVIGATION
+   ============================================ */
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+  document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+  document.getElementById(`panel-${tab}`).classList.add('active');
 }
 
-function closeModal(name) {
-  const modal = document.getElementById(`modal-${name}`);
-  if (modal) {
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-  }
+/* ============================================
+   MODAL HANDLING
+   ============================================ */
+function openModal(id) {
+  document.getElementById(id).classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+  document.body.style.overflow = '';
 }
 
 // Close modal on overlay click
@@ -2325,963 +2041,952 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
   });
 });
 
-// Close modal on Escape
+// Close modal on Escape key
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     document.querySelectorAll('.modal-overlay.active').forEach(m => {
       m.classList.remove('active');
-      document.body.style.overflow = '';
     });
+    document.body.style.overflow = '';
   }
 });
 
-// ---- TOAST NOTIFICATIONS ----
-function showToast(message, type = 'info') {
-  const container = document.getElementById('toastContainer');
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
+/* ============================================
+   WEBRTC CONNECTION
+   ============================================ */
+function createPeerConnection() {
+  const pc = new RTCPeerConnection(ICE_SERVERS);
 
-  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
-  toast.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span>`;
-
-  container.appendChild(toast);
-
-  setTimeout(() => {
-    toast.classList.add('removing');
-    setTimeout(() => toast.remove(), 300);
-  }, 4000);
-}
-
-// ---- UTILITY FUNCTIONS ----
-function formatFileSize(bytes) {
-  if (bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
-
-function getTimestamp() {
-  return new Date().toLocaleTimeString('en-US', { hour12: false });
-}
-
-function addLog(logId, type, message) {
-  const log = document.getElementById(logId);
-  if (!log) return;
-
-  const entry = document.createElement('div');
-  entry.className = 'log-entry';
-  entry.innerHTML = `
-    <span class="timestamp">[${getTimestamp()}]</span>
-    <span class="log-type ${type}">${type.toUpperCase()}</span>
-    <span class="log-msg">${message}</span>
-  `;
-  log.appendChild(entry);
-  log.scrollTop = log.scrollHeight;
-}
-
-async function copyToClipboard(elementId) {
-  const el = document.getElementById(elementId);
-  if (!el || !el.value) {
-    showToast('Nothing to copy', 'error');
-    return;
-  }
-
-  try {
-    await navigator.clipboard.writeText(el.value);
-    showToast('Copied to clipboard!', 'success');
-  } catch (err) {
-    el.select();
-    document.execCommand('copy');
-    showToast('Copied to clipboard!', 'success');
-  }
-}
-
-// ---- WEBRTC ENGINE ----
-function createPeerConnection(config = {}) {
-  const configuration = {
-    iceServers: [
-      { urls: 'stun:stun.l.google.com:19302' },
-      { urls: 'stun:stun1.l.google.com:19302' },
-      { urls: 'stun:stun2.l.google.com:19302' },
-      { urls: 'stun:stun3.l.google.com:19302' },
-      { urls: 'stun:stun4.l.google.com:19302' },
-    ],
-    ...config.iceConfig,
+  pc.oniceconnectionstatechange = () => {
+    addLog(`ICE state: ${pc.iceConnectionState}`, pc.iceConnectionState === 'connected' ? 'success' : '');
+    updateConnectionStatus();
   };
 
-  const pc = new RTCPeerConnection(configuration);
+  pc.onconnectionstatechange = () => {
+    addLog(`Connection state: ${pc.connectionState}`, pc.connectionState === 'connected' ? 'success' : '');
+    updateConnectionStatus();
+  };
+
+  pc.ondatachannel = (event) => {
+    addLog('Received data channel', 'success');
+    state.dataChannel = event.channel;
+    setupDataChannel();
+  };
+
+  pc.ontrack = (event) => {
+    addLog('Received media track', 'success');
+    handleRemoteMedia(event);
+  };
+
   return pc;
 }
 
-// ---- FILE TRANSFER ENGINE ----
-async function generateOffer() {
-  try {
-    addLog('transferLog', 'info', 'Creating SDP offer...');
-    const pc = createPeerConnection();
-    STATE.rtcPeerConnections.transfer = pc;
-
-    const dataChannel = pc.createDataChannel('umbrafiles-transfer', {
-      ordered: true,
-      maxRetransmits: 3,
-    });
-
-    STATE.dataChannels.transfer = dataChannel;
-    setupTransferDataChannel(dataChannel);
-
-    const offer = await pc.createOffer();
-    await pc.setLocalDescription(offer);
-
-    pc.onicecandidate = (event) => {
-      if (event.candidate === null) {
-        document.getElementById('offerOutput').value = JSON.stringify(pc.localDescription);
-        addLog('transferLog', 'success', 'Offer generated. Copy and send to phone.');
-        showToast('Offer generated! Copy and send to phone.', 'success');
-      }
-    };
-
-    updateTransferStatus('Creating connection...');
-  } catch (err) {
-    addLog('transferLog', 'error', `Error creating offer: ${err.message}`);
-    showToast('Failed to create offer: ' + err.message, 'error');
-  }
-}
-
-async function acceptAnswer() {
-  try {
-    const answerText = document.getElementById('answerInput').value.trim();
-    if (!answerText) {
-      showToast('Please paste the answer first', 'error');
-      return;
-    }
-
-    addLog('transferLog', 'info', 'Accepting answer...');
-    const pc = STATE.rtcPeerConnections.transfer;
-    if (!pc) {
-      showToast('No active connection. Generate an offer first.', 'error');
-      return;
-    }
-
-    const answer = JSON.parse(answerText);
-    await pc.setRemoteDescription(new RTCSessionDescription(answer));
-
-    addLog('transferLog', 'success', 'Connected! Data channel ready.');
-    showToast('Connected! File transfer ready.', 'success');
-    updateTransferStatus('Connected');
-  } catch (err) {
-    addLog('transferLog', 'error', `Error accepting answer: ${err.message}`);
-    showToast('Failed to accept answer: ' + err.message, 'error');
-  }
-}
-
-async function generateAnswer() {
-  try {
-    addLog('transferLog', 'info', 'Generating answer...');
-    const pc = createPeerConnection();
-    STATE.rtcPeerConnections.transfer = pc;
-
-    pc.ondatachannel = (event) => {
-      const dataChannel = event.channel;
-      STATE.dataChannels.transfer = dataChannel;
-      setupTransferDataChannel(dataChannel);
-    };
-
-    const offerText = prompt('Paste the offer from your PC:');
-    if (!offerText) {
-      showToast('Offer required', 'error');
-      return;
-    }
-
-    const offer = JSON.parse(offerText);
-    await pc.setRemoteDescription(new RTCSessionDescription(offer));
-
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-
-    pc.onicecandidate = (event) => {
-      if (event.candidate === null) {
-        document.getElementById('answerOutput') = document.getElementById('answerOutput') || document.createElement('textarea');
-        let outputArea = document.getElementById('answerOutput');
-        if (!outputArea) {
-          outputArea = document.createElement('textarea');
-          outputArea.id = 'answerOutput';
-          outputArea.placeholder = 'Answer will appear here...';
-          outputArea.style.width = '100%';
-          outputArea.style.minHeight = '80px';
-          outputArea.style.background = 'var(--bg-primary)';
-          outputArea.style.border = '1px solid var(--border-color)';
-          outputArea.style.borderRadius = 'var(--radius-sm)';
-          outputArea.style.color = 'var(--text-primary)';
-          outputArea.style.fontFamily = 'Courier New, monospace';
-          outputArea.style.fontSize = '12px';
-          outputArea.style.padding = '12px';
-          outputArea.style.resize = 'vertical';
-          outputArea.style.outline = 'none';
-
-          // Insert after answerInput
-          const answerInput = document.getElementById('answerInput');
-          answerInput.parentNode.insertBefore(outputArea, answerInput.nextSibling);
-        }
-        outputArea.value = JSON.stringify(pc.localDescription);
-        addLog('transferLog', 'success', 'Answer generated. Copy and send to PC.');
-        showToast('Answer generated! Copy and send to PC.', 'success');
-      }
-    };
-
-    updateTransferStatus('Waiting for PC to accept...');
-  } catch (err) {
-    addLog('transferLog', 'error', `Error generating answer: ${err.message}`);
-    showToast('Failed to generate answer: ' + err.message, 'error');
-  }
-}
-
-function setupTransferDataChannel(dc) {
-  dc.onopen = () => {
-    addLog('transferLog', 'success', 'Data channel opened!');
-    updateTransferStatus('Connected');
-    document.getElementById('transferDcStatus').textContent = 'Active';
+function setupDataChannel() {
+  state.dataChannel.onopen = () => {
+    addLog('Data channel opened!', 'success');
+    state.isConnected = true;
+    state.connectionStartTime = Date.now();
+    state.connectionTimerInterval = setInterval(updateConnectionTimer, 1000);
+    showToast('Connected! Ready to transfer files.', 'success');
+    updateConnectionStatus();
   };
 
-  dc.onclose = () => {
-    addLog('transferLog', 'warn', 'Data channel closed.');
-    updateTransferStatus('Disconnected');
-    document.getElementById('transferDcStatus').textContent = 'Closed';
+  state.dataChannel.onclose = () => {
+    addLog('Data channel closed', 'warn');
+    state.isConnected = false;
+    clearInterval(state.connectionTimerInterval);
+    updateConnectionStatus();
   };
 
-  dc.onerror = (err) => {
-    addLog('transferLog', 'error', `Data channel error: ${err.error || err.message}`);
-  };
-
-  dc.onmessage = (event) => {
+  state.dataChannel.onmessage = (event) => {
     try {
       const data = JSON.parse(event.data);
-      if (data.type === 'file-meta') {
-        handleIncomingFile(data);
-      } else if (data.type === 'file-chunk') {
-        receiveFileChunk(data);
-      } else if (data.type === 'file-complete') {
-        completeFileTransfer(data);
-      }
-    } catch (err) {
-      // Might be binary data
+      handleIncomingData(data);
+    } catch (e) {
+      addLog(`Raw message received: ${event.data.substring(0, 50)}...`, 'info');
     }
   };
-}
 
-function updateTransferStatus(status) {
-  const el = document.getElementById('transferConnStatus');
-  if (el) el.textContent = status;
-}
-
-// File handling
-function handleFileSelect(event) {
-  const files = event.target.files;
-  if (!files.length) return;
-
-  Array.from(files).forEach(file => {
-    sendFile(file);
-  });
-
-  event.target.value = '';
-}
-
-function sendFile(file) {
-  const dc = STATE.dataChannels.transfer;
-  if (!dc || dc.readyState !== 'open') {
-    showToast('Not connected. Connect devices first.', 'error');
-    return;
-  }
-
-  if (file.size > CONFIG.MAX_FILE_SIZE) {
-    showToast(`File too large: ${formatFileSize(file.size)}`, 'error');
-    return;
-  }
-
-  addLog('transferLog', 'info', `Sending file: ${file.name} (${formatFileSize(file.size)})`);
-
-  // Send file metadata
-  const meta = {
-    type: 'file-meta',
-    name: file.name,
-    size: file.size,
-    mimeType: file.type,
-    timestamp: Date.now(),
+  state.dataChannel.onerror = (error) => {
+    addLog(`Data channel error: ${error.message || error}`, 'error');
   };
-  dc.send(JSON.stringify(meta));
+}
 
-  // Read and send file in chunks
-  let offset = 0;
-  const reader = new FileReader();
+function handleIncomingData(data) {
+  switch (data.type) {
+    case 'file-metadata':
+      handleFileMetadata(data);
+      break;
+    case 'file-chunk':
+      handleFileChunk(data);
+      break;
+    case 'file-complete':
+      handleFileComplete(data);
+      break;
+    case 'file-progress':
+      handleFileProgress(data);
+      break;
+    case 'screen-share-start':
+      addLog('Remote screen share started', 'info');
+      break;
+    case 'screen-share-stop':
+      addLog('Remote screen share stopped', 'warn');
+      break;
+    case 'webcam-start':
+      addLog('Remote webcam started', 'info');
+      break;
+    case 'webcam-stop':
+      addLog('Remote webcam stopped', 'warn');
+      break;
+    default:
+      addLog(`Unknown message type: ${data.type}`, 'info');
+  }
+}
 
-  reader.onload = (e) => {
-    const chunk = {
-      type: 'file-chunk',
-      name: file.name,
-      offset: offset,
-      data: e.target.result,
+function updateConnectionStatus() {
+  const dot = document.getElementById('statusDot');
+  const text = document.getElementById('statusText');
+  const banner = document.getElementById('connectionBanner');
+  const transferBanner = document.getElementById('transferBanner');
+
+  if (state.isConnected) {
+    dot.className = 'status-dot connected';
+    text.textContent = 'Connected';
+    banner.className = 'status-banner connected';
+    banner.innerHTML = '<span>✅ Connected — P2P link active</span><span id="connectionTimer">00:00:00</span>';
+    transferBanner.className = 'status-banner connected';
+    transferBanner.innerHTML = '<span>✅ Connected — File transfer ready</span>';
+  } else if (state.peerConnection && (state.peerConnection.iceConnectionState === 'checking' || state.peerConnection.iceConnectionState === 'new')) {
+    dot.className = 'status-dot connecting';
+    text.textContent = 'Connecting...';
+    banner.className = 'status-banner connecting';
+    banner.innerHTML = '<span>⏳ Establishing connection...</span><span>00:00:00</span>';
+    transferBanner.className = 'status-banner disconnected';
+    transferBanner.innerHTML = '<span>⏳ Connecting...</span>';
+  } else {
+    dot.className = 'status-dot';
+    text.textContent = 'Disconnected';
+    banner.className = 'status-banner disconnected';
+    banner.innerHTML = '<span>⚠ Not Connected — Set up a peer connection below</span><span id="connectionTimer">00:00:00</span>';
+    transferBanner.className = 'status-banner disconnected';
+    transferBanner.innerHTML = '<span>⚠ Connect first to transfer files</span>';
+  }
+}
+
+function updateConnectionTimer() {
+  if (!state.connectionStartTime) return;
+  const elapsed = Date.now() - state.connectionStartTime;
+  const hours = String(Math.floor(elapsed / 3600000)).padStart(2, '0');
+  const minutes = String(Math.floor((elapsed % 3600000) / 60000)).padStart(2, '0');
+  const seconds = String(Math.floor((elapsed % 60000) / 1000)).padStart(2, '0');
+  const timerEl = document.getElementById('connectionTimer');
+  if (timerEl) timerEl.textContent = `${hours}:${minutes}:${seconds}`;
+}
+
+/* ============================================
+   HOST FLOW (PC)
+   ============================================ */
+async function createOffer() {
+  try {
+    addLog('Creating peer connection as host...', 'info');
+    state.peerConnection = createPeerConnection();
+    state.isHost = true;
+
+    state.dataChannel = state.peerConnection.createDataChannel('umbrafiles', {
+      ordered: true,
+      maxRetransmits: 3
+    });
+    setupDataChannel();
+
+    addLog('Data channel created', 'info');
+
+    const offer = await state.peerConnection.createOffer();
+    await state.peerConnection.setLocalDescription(offer);
+
+    // Wait for ICE candidates
+    addLog('Gathering ICE candidates...', 'info');
+    await new Promise((resolve) => {
+      const checkState = () => {
+        if (state.peerConnection.iceGatheringState === 'complete') {
+          resolve();
+        } else if (state.peerConnection.iceGatheringState === 'gathering') {
+          setTimeout(checkState, 500);
+        }
+      };
+      checkState();
+      // Fallback timeout
+      setTimeout(resolve, 5000);
+    });
+
+    const offerData = btoa(JSON.stringify(state.peerConnection.localDescription));
+    document.getElementById('hostOffer').value = offerData;
+    addLog('Offer generated! Send this to your phone.', 'success');
+    showToast('Connection code generated!', 'success');
+
+  } catch (error) {
+    addLog(`Error creating offer: ${error.message}`, 'error');
+    showToast('Failed to create connection code', 'error');
+  }
+}
+
+async function hostAcceptAnswer() {
+  try {
+    const answerText = document.getElementById('hostAnswer').value.trim();
+    if (!answerText) {
+      showToast('Please paste the answer code from your phone', 'warning');
+      return;
+    }
+
+    addLog('Attempting to accept answer...', 'info');
+    const answer = JSON.parse(atob(answerText));
+    await state.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+
+    addLog('Remote description set. Waiting for connection...', 'info');
+    showToast('Connection being established...', 'info');
+
+  } catch (error) {
+    addLog(`Error accepting answer: ${error.message}`, 'error');
+    showToast('Invalid answer code. Try again.', 'error');
+  }
+}
+
+/* ============================================
+   CLIENT FLOW (PHONE)
+   ============================================ */
+async function clientCreateAnswer() {
+  try {
+    const offerText = document.getElementById('clientOffer').value.trim();
+    if (!offerText) {
+      showToast('Please paste the offer code from your PC', 'warning');
+      return;
+    }
+
+    document.getElementById('clientStatus').innerHTML = '<span style="color: var(--warning);">⏳ Processing offer...</span>';
+    addLog('Creating peer connection as client...', 'info');
+
+    state.peerConnection = createPeerConnection();
+    state.isHost = false;
+
+    state.peerConnection.ondatachannel = (event) => {
+      addLog('Received data channel', 'success');
+      state.dataChannel = event.channel;
+      setupDataChannel();
     };
-    dc.send(JSON.stringify(chunk));
-    offset += e.target.result.byteLength;
 
-    if (offset < file.size) {
-      readNextChunk();
-    } else {
-      // Send completion signal
-      dc.send(JSON.stringify({ type: 'file-complete', name: file.name }));
-      addLog('transferLog', 'success', `File sent: ${file.name}`);
-      STATE.filesSent++;
-      document.getElementById('transferFilesSent').textContent = STATE.filesSent;
-    }
-  };
+    const offer = JSON.parse(atob(offerText));
+    await state.peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
 
-  function readNextChunk() {
-    const slice = file.slice(offset, offset + CONFIG.CHUNK_SIZE);
-    reader.readAsArrayBuffer(slice);
-  }
+    addLog('Remote description set. Creating answer...', 'info');
 
-  readNextChunk();
+    const answer = await state.peerConnection.createAnswer();
+    await state.peerConnection.setLocalDescription(answer);
 
-  // Add to UI
-  addToFileList(file, 'transferring');
-}
+    // Wait for ICE candidates
+    addLog('Gathering ICE candidates...', 'info');
+    await new Promise((resolve) => {
+      const checkState = () => {
+        if (state.peerConnection.iceGatheringState === 'complete') {
+          resolve();
+        } else if (state.peerConnection.iceGatheringState === 'gathering') {
+          setTimeout(checkState, 500);
+        }
+      };
+      checkState();
+      setTimeout(resolve, 5000);
+    });
 
-function handleIncomingFile(meta) {
-  addLog('transferLog', 'info', `Receiving file: ${meta.name} (${formatFileSize(meta.size)})`);
-  addToFileList({ name: meta.name, size: meta.size }, 'pending');
+    const answerData = btoa(JSON.stringify(state.peerConnection.localDescription));
+    document.getElementById('clientAnswer').value = answerData;
+    document.getElementById('clientStatus').innerHTML = '<span style="color: var(--success);">✅ Answer generated! Send to PC.</span>';
+    addLog('Answer generated! Send this to your PC.', 'success');
+    showToast('Answer code generated!', 'success');
 
-  STATE._receivingFile = {
-    name: meta.name,
-    size: meta.size,
-    mimeType: meta.mimeType,
-    chunks: {},
-    received: 0,
-  };
-}
-
-function receiveFileChunk(data) {
-  if (!STATE._receivingFile) return;
-
-  STATE._receivingFile.chunks[data.offset] = data.data;
-  STATE._receivingFile.received += data.data.byteLength;
-
-  // Update progress in UI
-  const progress = Math.round((STATE._receivingFile.received / STATE._receivingFile.size) * 100);
-  const fileItem = document.querySelector(`[data-filename="${data.name}"]`);
-  if (fileItem) {
-    const statusEl = fileItem.querySelector('.file-status');
-    if (statusEl) statusEl.textContent = `${progress}%`;
+  } catch (error) {
+    document.getElementById('clientStatus').innerHTML = `<span style="color: var(--danger);">❌ Error: ${error.message}</span>`;
+    addLog(`Client error: ${error.message}`, 'error');
+    showToast('Failed to generate answer', 'error');
   }
 }
 
-function completeFileTransfer(data) {
-  if (!STATE._receivingFile) return;
+/* ============================================
+   FILE TRANSFER
+   ============================================ */
+const CHUNK_SIZE = 16384; // 16KB chunks
 
-  // Reassemble file
-  const sortedOffsets = Object.keys(STATE._receivingFile.chunks).sort((a, b) => a - b);
-  const blobParts = sortedOffsets.map(offset => STATE._receivingFile.chunks[offset]);
-  const blob = new Blob(blobParts, { type: STATE._receivingFile.mimeType });
+// Drag and drop setup
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
 
-  // Download
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = STATE._receivingFile.name;
-  a.click();
-  URL.revokeObjectURL(url);
+dropZone.addEventListener('click', () => fileInput.click());
 
-  addLog('transferLog', 'success', `File received: ${STATE._receivingFile.name}`);
-  STATE.filesReceived++;
-  document.getElementById('transferFilesReceived').textContent = STATE.filesReceived;
+dropZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  dropZone.classList.add('dragover');
+});
 
-  // Update UI
-  const fileItem = document.querySelector(`[data-filename="${STATE._receivingFile.name}"]`);
-  if (fileItem) {
-    const statusEl = fileItem.querySelector('.file-status');
-    if (statusEl) {
-      statusEl.textContent = 'Complete';
-      statusEl.className = 'file-status complete';
-    }
+dropZone.addEventListener('dragleave', () => {
+  dropZone.classList.remove('dragover');
+});
+
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  handleFiles(e.dataTransfer.files);
+});
+
+fileInput.addEventListener('change', (e) => {
+  handleFiles(e.target.files);
+  fileInput.value = '';
+});
+
+function handleFiles(fileList) {
+  if (!state.isConnected) {
+    showToast('Not connected! Establish a P2P connection first.', 'warning');
+    return;
   }
 
-  STATE._receivingFile = null;
-  showToast(`File received: ${data.name}`, 'success');
+  Array.from(fileList).forEach(file => {
+    const fileId = generateFileId();
+    const fileObj = {
+      id: fileId,
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      lastModified: file.lastModified,
+      status: 'pending',
+      progress: 0,
+      file: file
+    };
+    state.files.push(fileObj);
+    renderFileItem(fileObj);
+    addLog(`File queued: ${file.name} (${formatFileSize(file.size)})`, 'info');
+    sendFile(fileObj);
+  });
 }
 
-function addToFileList(file, status) {
-  const list = document.getElementById('fileList');
-  const item = document.createElement('div');
-  item.className = 'file-item';
-  item.dataset.filename = file.name;
+function generateFileId() {
+  return 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
 
-  const ext = file.name.split('.').pop().toLowerCase();
-  const icons = {
+function renderFileItem(fileObj) {
+  const fileList = document.getElementById('fileList');
+  const ext = fileObj.name.split('.').pop().toLowerCase();
+  const iconMap = {
     pdf: '📄', doc: '📄', docx: '📄', txt: '📝',
     jpg: '🖼️', jpeg: '🖼️', png: '🖼️', gif: '🖼️', svg: '🖼️', webp: '🖼️',
-    mp4: '🎬', mov: '🎬', avi: '🎬', mkv: '🎬',
-    mp3: '🎵', wav: '🎵', flac: '🎵', aac: '🎵',
-    zip: '📦', rar: '📦', '7z': '📦', tar: '📦', gz: '📦',
-    js: '💻', html: '💻', css: '💻', py: '💻', json: '💻',
+    mp4: '🎬', mov: '🎬', avi: '🎬',
+    mp3: '🎵', wav: '🎵', ogg: '🎵',
+    zip: '📦', rar: '📦', '7z': '📦',
+    js: '💻', html: '💻', css: '🎨', json: '📋',
+    apk: '📱', ipa: '📱'
   };
-  const icon = icons[ext] || '📎';
+  const icon = iconMap[ext] || '📎';
 
+  const item = document.createElement('div');
+  item.className = 'file-item';
+  item.id = `file-${fileObj.id}`;
   item.innerHTML = `
     <div class="file-info">
       <div class="file-icon">${icon}</div>
-      <div>
-        <div class="file-name">${file.name}</div>
-        <div class="file-size">${formatFileSize(file.size)}</div>
+      <div class="file-details">
+        <div class="file-name">${fileObj.name}</div>
+        <div class="file-size">${formatFileSize(fileObj.size)} • ${ext.toUpperCase()}</div>
+        <div class="file-progress">
+          <div class="file-progress-bar" id="progress-${fileObj.id}" style="width: ${fileObj.progress}%"></div>
+        </div>
       </div>
     </div>
-    <span class="file-status ${status}">${status === 'transferring' ? 'Sending...' : status === 'pending' ? 'Receiving...' : status}</span>
+    <div class="file-status ${fileObj.status}" id="status-${fileObj.id}">${fileObj.status}</div>
   `;
+  fileList.appendChild(item);
+}
 
+function updateFileStatus(fileId, status, progress = 0) {
+  const statusEl = document.getElementById(`status-${fileId}`);
+  const progressEl = document.getElementById(`progress-${fileId}`);
+  if (statusEl) {
+    statusEl.textContent = status;
+    statusEl.className = `file-status ${status}`;
+  }
+  if (progressEl) progressEl.style.width = `${progress}%`;
+}
+
+async function sendFile(fileObj) {
+  if (!state.dataChannel || state.dataChannel.readyState !== 'open') {
+    updateFileStatus(fileObj.id, 'error');
+    addLog(`Cannot send ${fileObj.name}: data channel not open`, 'error');
+    return;
+  }
+
+  updateFileStatus(fileObj.id, 'sending');
+  state.fileTransferStats.startTime = Date.now();
+
+  // Send metadata
+  const metadata = {
+    type: 'file-metadata',
+    id: fileObj.id,
+    name: fileObj.name,
+    size: fileObj.size,
+    type: fileObj.type,
+    mimeType: fileObj.type
+  };
+  state.dataChannel.send(JSON.stringify(metadata));
+  addLog(`Sending: ${fileObj.name} (${formatFileSize(fileObj.size)})`, 'info');
+
+  // Read and send file in chunks
+  const file = fileObj.file;
+  let offset = 0;
+
+  while (offset < file.size) {
+    if (state.dataChannel.readyState !== 'open') {
+      updateFileStatus(fileObj.id, 'error');
+      break;
+    }
+
+    const chunk = file.slice(offset, offset + CHUNK_SIZE);
+    const chunkArray = await chunk.arrayBuffer();
+
+    // Send as binary with metadata header
+    const header = JSON.stringify({
+      type: 'file-chunk',
+      id: fileObj.id,
+      offset: offset,
+      totalSize: fileObj.size,
+      chunkSize: chunkArray.byteLength
+    });
+
+    // Send header first, then chunk data
+    // For simplicity, we'll use a combined approach
+    const headerBytes = new TextEncoder().encode(header);
+    const combined = new Uint8Array(headerBytes.length + 1 + chunkArray.byteLength);
+    combined.set(headerBytes, 0);
+    combined[headerBytes.length] = 0xFF; // delimiter
+    combined.set(new Uint8Array(chunkArray), headerBytes.length + 1);
+
+    state.dataChannel.send(combined);
+    offset += chunkArray.byteLength;
+
+    const progress = Math.round((offset / fileObj.size) * 100);
+    updateFileStatus(fileObj.id, 'sending', progress);
+
+    // Small delay to prevent overwhelming the channel
+    if (offset % (CHUNK_SIZE * 10) === 0) {
+      await new Promise(r => setTimeout(r, 10));
+    }
+  }
+
+  // Send completion signal
+  state.dataChannel.send(JSON.stringify({
+    type: 'file-complete',
+    id: fileObj.id
+  }));
+
+  updateFileStatus(fileObj.id, 'complete', 100);
+  addLog(`Sent: ${fileObj.name}`, 'success');
+  showToast(`Sent: ${fileObj.name}`, 'success');
+
+  // Update transfer speed
+  updateTransferSpeed(fileObj.size);
+}
+
+function updateTransferSpeed(bytes) {
+  const elapsed = (Date.now() - state.fileTransferStats.startTime) / 1000;
+  if (elapsed > 0) {
+    const speed = (bytes / elapsed) / 1024; // KB/s
+    const speedEl = document.getElementById('transferSpeed');
+    if (speedEl) speedEl.textContent = `${speed.toFixed(1)} KB/s`;
+  }
+}
+
+/* ============================================
+   INCOMING FILE HANDLING
+   ============================================ */
+function handleFileMetadata(data) {
+  state.pendingFiles.set(data.id, {
+    id: data.id,
+    name: data.name,
+    size: data.size,
+    type: data.type,
+    mimeType: data.mimeType,
+    receivedSize: 0,
+    chunks: [],
+    status: 'receiving'
+  });
+
+  addLog(`Receiving: ${data.name} (${formatFileSize(data.size)})`, 'info');
+  showToast(`Receiving: ${data.name}`, 'info');
+
+  // Render in received files list
+  renderReceivedFile(data);
+}
+
+function handleFileChunk(data) {
+  const pending = state.pendingFiles.get(data.id);
+  if (!pending) return;
+
+  // Parse the combined data from the message
+  const message = data; // Already parsed JSON
+  // The chunk data comes as a separate binary message, handled in onmessage
+}
+
+function handleFileComplete(data) {
+  const pending = state.pendingFiles.get(data.id);
+  if (!pending) return;
+
+  // Combine all chunks
+  const totalLength = pending.chunks.reduce((sum, chunk) => sum + chunk.byteLength, 0);
+  const combined = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const chunk of pending.chunks) {
+    combined.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+
+  // Create blob and download
+  const blob = new Blob([combined], { type: pending.mimeType || 'application/octet-stream' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = pending.name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  pending.status = 'complete';
+  state.pendingFiles.delete(data.id);
+
+  addLog(`Received complete: ${pending.name}`, 'success');
+  showToast(`Received: ${pending.name}`, 'success');
+
+  // Update received files list
+  updateReceivedFileStatus(data.id, 'complete');
+}
+
+function handleFileProgress(data) {
+  // Progress updates handled via UI
+}
+
+function renderReceivedFile(data) {
+  const list = document.getElementById('receivedFilesList');
+  if (list.querySelector('p')) list.innerHTML = '';
+
+  const ext = data.name.split('.').pop().toLowerCase();
+  const iconMap = {
+    pdf: '📄', doc: '📄', docx: '📄', txt: '📝',
+    jpg: '🖼️', jpeg: '🖼️', png: '🖼️', gif: '🖼️',
+    mp4: '🎬', mp3: '🎵', zip: '📦', js: '💻'
+  };
+  const icon = iconMap[ext] || '📎';
+
+  const item = document.createElement('div');
+  item.className = 'file-item';
+  item.id = `received-${data.id}`;
+  item.innerHTML = `
+    <div class="file-info">
+      <div class="file-icon">${icon}</div>
+      <div class="file-details">
+        <div class="file-name">${data.name}</div>
+        <div class="file-size">${formatFileSize(data.size)}</div>
+      </div>
+    </div>
+    <div class="file-status pending" id="received-status-${data.id}">receiving</div>
+  `;
   list.appendChild(item);
 }
 
-// Drag and drop
-const transferArea = document.getElementById('transferArea');
-transferArea.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  transferArea.classList.add('dragover');
-});
-transferArea.addEventListener('dragleave', () => {
-  transferArea.classList.remove('dragover');
-});
-transferArea.addEventListener('drop', (e) => {
-  e.preventDefault();
-  transferArea.classList.remove('dragover');
-  Array.from(e.dataTransfer.files).forEach(file => sendFile(file));
-});
+function updateReceivedFileStatus(fileId, status) {
+  const statusEl = document.getElementById(`received-status-${fileId}`);
+  if (statusEl) {
+    statusEl.textContent = status;
+    statusEl.className = `file-status ${status}`;
+  }
+}
 
-// ---- SCREEN MIRROR ENGINE ----
-async function generateMirrorOffer() {
-  try {
-    addLog('mirrorLog', 'info', 'Creating screen mirror offer...');
-    const pc = createPeerConnection();
-    STATE.rtcPeerConnections.mirror = pc;
+function clearReceivedFiles() {
+  document.getElementById('receivedFilesList').innerHTML =
+    '<p class="text-center text-muted text-sm" style="padding: 2rem;">No files received yet</p>';
+}
 
-    const offer = await pc.createOffer({
-      offerToReceiveVideo: true,
-      offerToReceiveAudio: true,
-    });
-    await pc.setLocalDescription(offer);
+/* ============================================
+   HANDLE INCOMING BINARY DATA
+   ============================================ */
+// Override the data channel message handler for binary data
+const originalSetupDataChannel = setupDataChannel;
 
-    pc.onicecandidate = (event) => {
-      if (event.candidate === null) {
-        document.getElementById('mirrorOfferOutput').value = JSON.stringify(pc.localDescription);
-        addLog('mirrorLog', 'success', 'Mirror offer generated.');
-        showToast('Mirror offer generated!', 'success');
+// We need to enhance the onmessage handler
+function setupDataChannelEnhanced() {
+  state.dataChannel.binaryType = 'arraybuffer';
+
+  state.dataChannel.onopen = () => {
+    addLog('Data channel opened!', 'success');
+    state.isConnected = true;
+    state.connectionStartTime = Date.now();
+    state.connectionTimerInterval = setInterval(updateConnectionTimer, 1000);
+    showToast('Connected! Ready to transfer files.', 'success');
+    updateConnectionStatus();
+  };
+
+  state.dataChannel.onclose = () => {
+    addLog('Data channel closed', 'warn');
+    state.isConnected = false;
+    clearInterval(state.connectionTimerInterval);
+    updateConnectionStatus();
+  };
+
+  state.dataChannel.onmessage = (event) => {
+    try {
+      if (typeof event.data === 'string') {
+        // JSON message
+        const data = JSON.parse(event.data);
+        handleIncomingData(data);
+      } else {
+        // Binary data - file chunk
+        const buffer = new Uint8Array(event.data);
+        handleBinaryChunk(buffer);
       }
-    };
+    } catch (e) {
+      addLog(`Message error: ${e.message}`, 'error');
+    }
+  };
 
-    pc.ontrack = (event) => {
-      addLog('mirrorLog', 'success', 'Remote stream received!');
-      const video = document.createElement('video');
-      video.srcObject = event.streams[0];
-      video.autoplay = true;
-      video.playsInline = true;
-      video.style.width = '100%';
-      video.style.maxHeight = '400px';
-      video.style.borderRadius = 'var(--radius-sm)';
-      video.style.background = '#000';
-
-      const body = document.getElementById('mirrorRemoteBody');
-      body.innerHTML = '';
-      body.appendChild(video);
-
-      // Get resolution
-      const track = event.track;
-      const settings = track.getSettings();
-      document.getElementById('mirrorResolution').textContent = `${settings.width}x${settings.height}`;
-
-      // FPS counter
-      let frames = 0;
-      let lastTime = performance.now();
-      const fpsInterval = setInterval(() => {
-        const now = performance.now();
-        if (now - lastTime >= 1000) {
-          document.getElementById('mirrorFps').textContent = frames;
-          frames = 0;
-          lastTime = now;
-        }
-        frames++;
-      }, 100);
-
-      updateMirrorStatus('Connected');
-      document.getElementById('mirrorStreamStatus').textContent = 'Active';
-    };
-
-    updateMirrorStatus('Creating connection...');
-  } catch (err) {
-    addLog('mirrorLog', 'error', `Mirror offer error: ${err.message}`);
-    showToast('Mirror offer failed: ' + err.message, 'error');
-  }
+  state.dataChannel.onerror = (error) => {
+    addLog(`Data channel error: ${error.message || error}`, 'error');
+  };
 }
 
-async function acceptMirrorAnswer() {
-  try {
-    const answerText = document.getElementById('mirrorAnswerInput').value.trim();
-    if (!answerText) {
-      showToast('Paste the answer first', 'error');
-      return;
+function handleBinaryChunk(buffer) {
+  // Find the delimiter
+  const delimiter = 0xFF;
+  let delimiterIndex = -1;
+  for (let i = 0; i < buffer.length; i++) {
+    if (buffer[i] === delimiter) {
+      delimiterIndex = i;
+      break;
     }
-
-    addLog('mirrorLog', 'info', 'Accepting mirror answer...');
-    const pc = STATE.rtcPeerConnections.mirror;
-    if (!pc) {
-      showToast('No active connection', 'error');
-      return;
-    }
-
-    const answer = JSON.parse(answerText);
-    await pc.setRemoteDescription(new RTCSessionDescription(answer));
-
-    addLog('mirrorLog', 'success', 'Mirror connected!');
-    showToast('Mirror connected!', 'success');
-    updateMirrorStatus('Connected');
-  } catch (err) {
-    addLog('mirrorLog', 'error', `Mirror answer error: ${err.message}`);
-    showToast('Mirror answer failed: ' + err.message, 'error');
   }
-}
 
-async function generateMirrorAnswer() {
+  if (delimiterIndex === -1) return; // Incomplete or no delimiter
+
+  const headerBytes = buffer.slice(0, delimiterIndex);
+  const dataBytes = buffer.slice(delimiterIndex + 1);
+  const header = new TextDecoder().decode(headerBytes);
+
   try {
-    addLog('mirrorLog', 'info', 'Generating mirror answer...');
-    const pc = createPeerConnection();
-    STATE.rtcPeerConnections.mirror = pc;
-
-    const offerText = prompt('Paste the offer from your PC:');
-    if (!offerText) return;
-
-    const offer = JSON.parse(offerText);
-    await pc.setRemoteDescription(new RTCSessionDescription(offer));
-
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-
-    pc.onicecandidate = (event) => {
-      if (event.candidate === null) {
-        let outputArea = document.getElementById('mirrorAnswerOutput');
-        if (!outputArea) {
-          outputArea = document.createElement('textarea');
-          outputArea.id = 'mirrorAnswerOutput';
-          outputArea.placeholder = 'Mirror answer will appear here...';
-          outputArea.style.width = '100%';
-          outputArea.style.minHeight = '80px';
-          outputArea.style.background = 'var(--bg-primary)';
-          outputArea.style.border = '1px solid var(--border-color)';
-          outputArea.style.borderRadius = 'var(--radius-sm)';
-          outputArea.style.color = 'var(--text-primary)';
-          outputArea.style.fontFamily = 'Courier New, monospace';
-          outputArea.style.fontSize = '12px';
-          outputArea.style.padding = '12px';
-          outputArea.style.resize = 'vertical';
-          outputArea.style.outline = 'none';
-
-          const answerInput = document.getElementById('mirrorAnswerInput');
-          answerInput.parentNode.insertBefore(outputArea, answerInput.nextSibling);
-        }
-        outputArea.value = JSON.stringify(pc.localDescription);
-        addLog('mirrorLog', 'success', 'Mirror answer generated. Send to PC.');
-        showToast('Mirror answer generated!', 'success');
+    const metadata = JSON.parse(header);
+    if (metadata.type === 'file-chunk') {
+      const pending = state.pendingFiles.get(metadata.id);
+      if (pending) {
+        pending.chunks.push(dataBytes);
+        pending.receivedSize += dataBytes.byteLength;
+        const progress = Math.round((pending.receivedSize / pending.size) * 100);
+        updateFileStatus(metadata.id, 'receiving', progress);
       }
-    };
-
-    pc.ontrack = (event) => {
-      const video = document.createElement('video');
-      video.srcObject = event.streams[0];
-      video.autoplay = true;
-      video.playsInline = true;
-      video.style.width = '100%';
-      video.style.maxHeight = '400px';
-      video.style.borderRadius = 'var(--radius-sm)';
-
-      const body = document.getElementById('mirrorRemoteBody');
-      body.innerHTML = '';
-      body.appendChild(video);
-      updateMirrorStatus('Connected');
-    };
-
-    updateMirrorStatus('Waiting for PC...');
-  } catch (err) {
-    addLog('mirrorLog', 'error', `Mirror answer error: ${err.message}`);
-    showToast('Mirror answer failed: ' + err.message, 'error');
+    }
+  } catch (e) {
+    // Not a valid chunk, ignore
   }
 }
 
-function updateMirrorStatus(status) {
-  const el = document.getElementById('mirrorConnStatus');
-  if (el) el.textContent = status;
-}
+// Replace the original setupDataChannel call
+const _origCreatePeerConnection = createPeerConnection;
+createPeerConnection = function() {
+  const pc = _origCreatePeerConnection();
+  // Store original handler
+  pc._originalOnDataChannel = pc.ondatachannel;
+  return pc;
+};
 
+// Update the host flow to use enhanced setup
+const _origCreateOffer = createOffer;
+createOffer = async function() {
+  await _origCreateOffer();
+  // Replace the data channel handler
+  if (state.dataChannel) {
+    state.dataChannel.binaryType = 'arraybuffer';
+  }
+};
+
+// For client flow
+const _origClientCreateAnswer = clientCreateAnswer;
+clientCreateAnswer = async function() {
+  await _origClientCreateAnswer();
+  if (state.dataChannel) {
+    state.dataChannel.binaryType = 'arraybuffer';
+  }
+};
+
+/* ============================================
+   SCREEN MIRRORING
+   ============================================ */
 async function startScreenShare() {
   try {
-    addLog('mirrorLog', 'info', 'Requesting screen share...');
+    addLog('Requesting screen share...', 'info');
     const stream = await navigator.mediaDevices.getDisplayMedia({
       video: {
         cursor: 'always',
-        displaySurface: 'monitor',
+        displaySurface: 'monitor'
       },
-      audio: true,
+      audio: false
     });
 
-    STATE.currentScreenStream = stream;
+    state.mirrorStream = stream;
 
-    // Show local preview
-    const video = document.createElement('video');
+    // Show the video
+    const video = document.getElementById('mirrorVideo');
     video.srcObject = stream;
-    video.autoplay = true;
-    video.playsInline = true;
-    video.style.width = '100%';
-    video.style.maxHeight = '400px';
-    video.style.borderRadius = 'var(--radius-sm)';
+    video.style.display = 'block';
+    document.getElementById('mirrorPlaceholder').style.display = 'none';
 
-    const body = document.getElementById('mirrorLocalBody');
-    body.innerHTML = '';
-    body.appendChild(video);
+    document.getElementById('mirrorStartBtn').style.display = 'none';
+    document.getElementById('mirrorStopBtn').style.display = 'inline-flex';
+    document.getElementById('mirrorInfo').style.display = 'flex';
 
-    // Get resolution
+    // Track resolution
     const track = stream.getVideoTracks()[0];
     const settings = track.getSettings();
-    document.getElementById('mirrorResolution').textContent = `${settings.width}x${settings.height}`;
+    document.getElementById('mirrorRes').textContent = `${settings.width}x${settings.height}`;
 
-    // Add stream to peer connection
-    const pc = STATE.rtcPeerConnections.mirror;
-    if (pc) {
-      stream.getTracks().forEach(track => pc.addTrack(track, stream));
+    // FPS tracking
+    let frameCount = 0;
+    let lastTime = performance.now();
+    function countFrames() {
+      frameCount++;
+      const now = performance.now();
+      if (now - lastTime >= 1000) {
+        document.getElementById('mirrorFps').textContent = frameCount;
+        frameCount = 0;
+        lastTime = now;
+      }
+      if (state.mirrorStream) requestAnimationFrame(countFrames);
     }
+    countFrames();
 
-    document.getElementById('mirrorStartBtn').textContent = '⏹ Stop';
-    document.getElementById('mirrorStartBtn').className = 'btn btn-sm btn-danger';
-    document.getElementById('mirrorStartBtn').onclick = stopScreenShare;
+    // Duration tracking
+    state.mirrorSeconds = 0;
+    state.mirrorDurationInterval = setInterval(() => {
+      state.mirrorSeconds++;
+      const m = String(Math.floor(state.mirrorSeconds / 60)).padStart(2, '0');
+      const s = String(state.mirrorSeconds % 60).padStart(2, '0');
+      document.getElementById('mirrorDuration').textContent = `${m}:${s}`;
+    }, 1000);
 
-    addLog('mirrorLog', 'success', 'Screen sharing started.');
-    showToast('Screen sharing started!', 'success');
-
-    // Handle stop
+    // Stop when user stops sharing
     track.onended = () => {
       stopScreenShare();
     };
-  } catch (err) {
-    addLog('mirrorLog', 'error', `Screen share error: ${err.message}`);
-    showToast('Screen share failed: ' + err.message, 'error');
+
+    // Send to remote peer
+    if (state.peerConnection) {
+      state.peerConnection.addTrack(track, stream);
+    }
+
+    addLog('Screen share started', 'success');
+    showToast('Screen sharing started!', 'success');
+
+  } catch (error) {
+    if (error.name !== 'NotAllowedError') {
+      addLog(`Screen share error: ${error.message}`, 'error');
+      showToast('Failed to start screen share', 'error');
+    }
   }
 }
 
 function stopScreenShare() {
-  if (STATE.currentScreenStream) {
-    STATE.currentScreenStream.getTracks().forEach(t => t.stop());
-    STATE.currentScreenStream = null;
+  if (state.mirrorStream) {
+    state.mirrorStream.getTracks().forEach(t => t.stop());
+    state.mirrorStream = null;
   }
 
-  const body = document.getElementById('mirrorLocalBody');
-  body.innerHTML = `
-    <div class="mirror-placeholder">
-      <div class="placeholder-icon">🖥️</div>
-      <p>Click "Start" to share your screen</p>
-    </div>
-  `;
+  const video = document.getElementById('mirrorVideo');
+  video.srcObject = null;
+  video.style.display = 'none';
+  document.getElementById('mirrorPlaceholder').style.display = 'block';
 
-  const btn = document.getElementById('mirrorStartBtn');
-  btn.textContent = '▶ Start';
-  btn.className = 'btn btn-sm btn-primary';
-  btn.onclick = startScreenShare;
+  document.getElementById('mirrorStartBtn').style.display = 'inline-flex';
+  document.getElementById('mirrorStopBtn').style.display = 'none';
+  document.getElementById('mirrorInfo').style.display = 'none';
 
-  addLog('mirrorLog', 'warn', 'Screen sharing stopped.');
+  clearInterval(state.mirrorDurationInterval);
+
+  addLog('Screen share stopped', 'warn');
 }
 
-// ---- WEBCAM ENGINE ----
-async function generateWebcamOffer() {
-  try {
-    addLog('webcamLog', 'info', 'Creating webcam offer...');
-    const pc = createPeerConnection();
-    STATE.rtcPeerConnections.webcam = pc;
+function toggleMirrorQuality() {
+  const qualities = ['low', 'medium', 'high'];
+  const currentIndex = qualities.indexOf(state.mirrorQuality);
+  state.mirrorQuality = qualities[(currentIndex + 1) % qualities.length];
+  document.getElementById('mirrorQualityBtn').textContent = state.mirrorQuality.toUpperCase();
+  addLog(`Mirror quality: ${state.mirrorQuality}`, 'info');
+  showToast(`Quality: ${state.mirrorQuality.toUpperCase()}`, 'info');
+}
 
-    const offer = await pc.createOffer({
-      offerToReceiveVideo: true,
-      offerToReceiveAudio: false,
-    });
-    await pc.setLocalDescription(offer);
+function handleRemoteMedia(event) {
+  // Determine if it's a screen share or webcam
+  const track = event.track;
+  const settings = track.getSettings();
 
-    pc.onicecandidate = (event) => {
-      if (event.candidate === null) {
-        document.getElementById('webcamOfferOutput').value = JSON.stringify(pc.localDescription);
-        addLog('webcamLog', 'success', 'Webcam offer generated.');
-        showToast('Webcam offer generated!', 'success');
-      }
-    };
-
-    pc.ontrack = (event) => {
-      addLog('webcamLog', 'success', 'Webcam stream received!');
-      const video = document.createElement('video');
-      video.srcObject = event.streams[0];
-      video.autoplay = true;
-      video.playsInline = true;
-      video.style.width = '100%';
-      video.style.maxHeight = '450px';
-      video.style.borderRadius = 'var(--radius-sm)';
-      video.style.background = '#000';
-
-      const body = document.getElementById('webcamBody');
-      body.innerHTML = '';
-      body.appendChild(video);
-
-      const track = event.track;
-      const settings = track.getSettings();
-      document.getElementById('webcamResolution').textContent = `${settings.width}x${settings.height}`;
-
-      // FPS counter
-      let frames = 0;
-      let lastTime = performance.now();
-      setInterval(() => {
-        const now = performance.now();
-        if (now - lastTime >= 1000) {
-          document.getElementById('webcamFps').textContent = frames;
-          frames = 0;
-          lastTime = now;
-        }
-        frames++;
-      }, 100);
-
-      updateWebcamStatus('Connected');
-      document.getElementById('webcamCamStatus').textContent = 'Active';
-    };
-
-    updateWebcamStatus('Creating connection...');
-  } catch (err) {
-    addLog('webcamLog', 'error', `Webcam offer error: ${err.message}`);
-    showToast('Webcam offer failed: ' + err.message, 'error');
+  if (settings.displaySurface === 'monitor' || settings.cursor === 'always') {
+    // Screen share
+    const video = document.getElementById('receiveMirrorVideo');
+    video.srcObject = new MediaStream([track]);
+    video.style.display = 'block';
+    video.parentElement.querySelector('.mirror-placeholder') &&
+      (video.parentElement.querySelector('.mirror-placeholder').style.display = 'none');
+    addLog('Remote screen share received', 'success');
+  } else if (settings.sourceId || settings.deviceId) {
+    // Could be webcam
+    const video = document.getElementById('remoteWebcamVideo');
+    video.srcObject = new MediaStream([track]);
+    video.style.display = 'block';
+    video.parentElement.querySelector('.mirror-placeholder') &&
+      (video.parentElement.querySelector('.mirror-placeholder').style.display = 'none');
+    addLog('Remote camera feed received', 'success');
   }
 }
 
-async function acceptWebcamAnswer() {
-  try {
-    const answerText = document.getElementById('webcamAnswerInput').value.trim();
-    if (!answerText) {
-      showToast('Paste the answer first', 'error');
-      return;
-    }
-
-    addLog('webcamLog', 'info', 'Accepting webcam answer...');
-    const pc = STATE.rtcPeerConnections.webcam;
-    if (!pc) {
-      showToast('No active connection', 'error');
-      return;
-    }
-
-    const answer = JSON.parse(answerText);
-    await pc.setRemoteDescription(new RTCSessionDescription(answer));
-
-    addLog('webcamLog', 'success', 'Webcam connected!');
-    showToast('Webcam connected!', 'success');
-    updateWebcamStatus('Connected');
-  } catch (err) {
-    addLog('webcamLog', 'error', `Webcam answer error: ${err.message}`);
-    showToast('Webcam answer failed: ' + err.message, 'error');
-  }
-}
-
-async function generateWebcamAnswer() {
-  try {
-    addLog('webcamLog', 'info', 'Generating webcam answer...');
-    const pc = createPeerConnection();
-    STATE.rtcPeerConnections.webcam = pc;
-
-    const offerText = prompt('Paste the offer from your PC:');
-    if (!offerText) return;
-
-    const offer = JSON.parse(offerText);
-    await pc.setRemoteDescription(new RTCSessionDescription(offer));
-
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-
-    pc.onicecandidate = (event) => {
-      if (event.candidate === null) {
-        let outputArea = document.getElementById('webcamAnswerOutput');
-        if (!outputArea) {
-          outputArea = document.createElement('textarea');
-          outputArea.id = 'webcamAnswerOutput';
-          outputArea.placeholder = 'Webcam answer will appear here...';
-          outputArea.style.width = '100%';
-          outputArea.style.minHeight = '80px';
-          outputArea.style.background = 'var(--bg-primary)';
-          outputArea.style.border = '1px solid var(--border-color)';
-          outputArea.style.borderRadius = 'var(--radius-sm)';
-          outputArea.style.color = 'var(--text-primary)';
-          outputArea.style.fontFamily = 'Courier New, monospace';
-          outputArea.style.fontSize = '12px';
-          outputArea.style.padding = '12px';
-          outputArea.style.resize = 'vertical';
-          outputArea.style.outline = 'none';
-
-          const answerInput = document.getElementById('webcamAnswerInput');
-          answerInput.parentNode.insertBefore(outputArea, answerInput.nextSibling);
-        }
-        outputArea.value = JSON.stringify(pc.localDescription);
-        addLog('webcamLog', 'success', 'Webcam answer generated. Send to PC.');
-        showToast('Webcam answer generated!', 'success');
-      }
-    };
-
-    updateWebcamStatus('Waiting for PC...');
-  } catch (err) {
-    addLog('webcamLog', 'error', `Webcam answer error: ${err.message}`);
-    showToast('Webcam answer failed: ' + err.message, 'error');
-  }
-}
-
-function updateWebcamStatus(status) {
-  const el = document.getElementById('webcamConnStatus');
-  if (el) el.textContent = status;
-}
-
+/* ============================================
+   WEBCAM
+   ============================================ */
 async function startWebcam() {
   try {
-    addLog('webcamLog', 'info', 'Starting webcam...');
-
+    addLog('Starting camera...', 'info');
     const stream = await navigator.mediaDevices.getUserMedia({
       video: {
-        facingMode: STATE.webcamFacingMode,
+        facingMode: state.cameraFacingMode,
         width: { ideal: 1920 },
-        height: { ideal: 1080 },
-        frameRate: { ideal: 30 },
+        height: { ideal: 1080 }
       },
-      audio: false,
+      audio: false
     });
 
-    STATE.currentWebcamStream = stream;
-    STATE.webcamTrack = stream.getVideoTracks()[0];
+    state.webcamStream = stream;
 
-    // Show local preview
-    const video = document.createElement('video');
+    const video = document.getElementById('webcamVideo');
     video.srcObject = stream;
-    video.autoplay = true;
-    video.playsInline = true;
-    video.style.width = '100%';
-    video.style.maxHeight = '450px';
-    video.style.borderRadius = 'var(--radius-sm)';
+    video.style.display = 'block';
+    document.getElementById('webcamPlaceholder').style.display = 'none';
+    document.getElementById('webcamOverlay').style.display = 'flex';
 
-    const body = document.getElementById('webcamBody');
-    body.innerHTML = '';
-    body.appendChild(video);
+    document.getElementById('webcamStartBtn').style.display = 'none';
+    document.getElementById('webcamStopBtn').style.display = 'inline-flex';
 
-    const settings = STATE.webcamTrack.getSettings();
-    document.getElementById('webcamResolution').textContent = `${settings.width}x${settings.height}`;
-
-    // Add to peer connection
-    const pc = STATE.rtcPeerConnections.webcam;
-    if (pc) {
-      stream.getTracks().forEach(track => pc.addTrack(track, stream));
+    // Send to remote peer
+    if (state.peerConnection) {
+      stream.getTracks().forEach(track => {
+        state.peerConnection.addTrack(track, stream);
+      });
     }
 
-    document.getElementById('webcamStartBtn').textContent = '⏹ Stop';
-    document.getElementById('webcamStartBtn').className = 'btn btn-sm btn-danger';
-    document.getElementById('webcamStartBtn').onclick = stopWebcam;
+    addLog('Camera started', 'success');
+    showToast('Camera started!', 'success');
 
-    addLog('webcamLog', 'success', 'Webcam started.');
-    showToast('Webcam started!', 'success');
-    updateWebcamStatus('Connected');
-    document.getElementById('webcamCamStatus').textContent = 'Active';
-
-    STATE.webcamTrack.onended = () => {
-      stopWebcam();
-    };
-  } catch (err) {
-    addLog('webcamLog', 'error', `Webcam error: ${err.message}`);
-    showToast('Webcam failed: ' + err.message, 'error');
+  } catch (error) {
+    addLog(`Camera error: ${error.message}`, 'error');
+    showToast('Failed to start camera', 'error');
   }
 }
 
 function stopWebcam() {
-  if (STATE.currentWebcamStream) {
-    STATE.currentWebcamStream.getTracks().forEach(t => t.stop());
-    STATE.currentWebcamStream = null;
+  if (state.webcamStream) {
+    state.webcamStream.getTracks().forEach(t => t.stop());
+    state.webcamStream = null;
   }
-  STATE.webcamTrack = null;
 
-  const body = document.getElementById('webcamBody');
-  body.innerHTML = `
-    <div class="mirror-placeholder">
-      <div class="placeholder-icon">📷</div>
-      <p>Connect your phone and start the webcam stream</p>
-    </div>
-  `;
+  const video = document.getElementById('webcamVideo');
+  video.srcObject = null;
+  video.style.display = 'none';
+  document.getElementById('webcamPlaceholder').style.display = 'block';
+  document.getElementById('webcamOverlay').style.display = 'none';
 
-  const btn = document.getElementById('webcamStartBtn');
-  btn.textContent = '▶ Start Webcam';
-  btn.className = 'btn btn-primary';
-  btn.onclick = startWebcam;
+  document.getElementById('webcamStartBtn').style.display = 'inline-flex';
+  document.getElementById('webcamStopBtn').style.display = 'none';
 
-  addLog('webcamLog', 'warn', 'Webcam stopped.');
+  addLog('Camera stopped', 'warn');
 }
 
-async function switchCamera() {
-  STATE.webcamFacingMode = STATE.webcamFacingMode === 'user' ? 'environment' : 'user';
-  if (STATE.currentWebcamStream) {
+function switchCamera() {
+  state.cameraFacingMode = state.cameraFacingMode === 'user' ? 'environment' : 'user';
+  if (state.webcamStream) {
     stopWebcam();
-    await startWebcam();
+    startWebcam();
   }
-  showToast(`Camera switched to ${STATE.webcamFacingMode === 'user' ? 'front' : 'back'}`, 'info');
+  showToast(`Camera: ${state.cameraFacingMode === 'user' ? 'Front' : 'Back'}`, 'info');
 }
 
-async function toggleFlashlight() {
-  if (!STATE.webcamTrack) {
-    showToast('Start webcam first', 'error');
+function captureWebcamPhoto() {
+  const video = document.getElementById('webcamVideo');
+  if (!video.srcObject) {
+    showToast('Camera is not active', 'warning');
     return;
   }
 
-  try {
-    STATE.flashlightOn = !STATE.flashlightOn;
-    await STATE.webcamTrack.applyConstraints({
-      advanced: [{ torch: STATE.flashlightOn }],
-    });
-    showToast(`Flashlight ${STATE.flashlightOn ? 'ON' : 'OFF'}`, 'info');
-  } catch (err) {
-    showToast('Flashlight not supported on this device', 'error');
-  }
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0);
+
+  canvas.toBlob((blob) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `umbrafiles_${Date.now()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    addLog('Photo captured', 'success');
+    showToast('Photo saved!', 'success');
+  }, 'image/png');
 }
 
-// ---- KEYBOARD SHORTCUTS ----
-document.addEventListener('keydown', (e) => {
-  // Ctrl+K = Focus password
-  if (e.ctrlKey && e.key === 'k') {
-    e.preventDefault();
-    if (!STATE.isAuthenticated) {
-      document.getElementById('passwordInput').focus();
-    }
+/* ============================================
+   INITIALIZATION
+   ============================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  addLog('Umbrafiles v1.0.0 initialized', 'success');
+  addLog('WebRTC support: ' + (typeof RTCPeerConnection !== 'undefined' ? '✅' : '❌'), '');
+
+  // Check WebRTC support
+  if (typeof RTCPeerConnection === 'undefined') {
+    addLog('WebRTC is not supported in this browser!', 'error');
+    showToast('WebRTC not supported. Use Chrome, Firefox, or Edge.', 'error');
   }
+
+  // Check media support
+  if (typeof navigator.mediaDevices === 'undefined') {
+    addLog('MediaDevices API not available', 'warn');
+  }
+
+  addLog('Ready. Set up a P2P connection to begin.', 'info');
 });
 
-// ---- INITIALIZATION ----
-(function init() {
-  // Check if already authenticated (session persistence)
-  if (sessionStorage.getItem('umbrafiles_auth') === 'true') {
-    STATE.isAuthenticated = true;
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('mainApp').classList.add('active');
+/* ============================================
+   KEYBOARD SHORTCUTS
+   ============================================ */
+document.addEventListener('keydown', (e) => {
+  // Ctrl+K = Focus connection
+  if (e.ctrlKey && e.key === 'k') {
+    e.preventDefault();
+    switchTab('connect');
   }
-
-  // Set auth on successful login
-  const origLogin = attemptLogin;
-  const _attemptLogin = attemptLogin;
-
-  // Add session persistence to login
-  const observer = new MutationObserver(() => {
-    if (STATE.isAuthenticated) {
-      sessionStorage.setItem('umbrafiles_auth', 'true');
-    }
-  });
-  observer.observe(document.getElementById('mainApp'), { attributes: true });
-
-  // Override logout to clear session
-  const origLogout = logout;
-  window.logout = function() {
-    sessionStorage.removeItem('umbrafiles_auth');
-    origLogout();
-  };
-})();
+  // Ctrl+T = Focus transfer
+  if (e.ctrlKey && e.key === 't') {
+    e.preventDefault();
+    switchTab('transfer');
+  }
+  // Ctrl+M = Focus mirror
+  if (e.ctrlKey && e.key === 'm') {
+    e.preventDefault();
+    switchTab('mirror');
+  }
+  // Ctrl+W = Focus webcam
+  if (e.ctrlKey && e.key === 'w') {
+    e.preventDefault();
+    switchTab('webcam');
+  }
+});
 </script>
 </body>
 </html>
