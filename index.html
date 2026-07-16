@@ -2935,6 +2935,443 @@ document.getElementById('totalCategories').textContent = uniqueCategories.length
 console.log('%c🎮 Umbrafiles Loaded!', 'color: #7b2ff7; font-size: 20px; font-weight: bold;');
 console.log('%c' + GAMES.length + ' games loaded successfully.', 'color: #c471f5; font-size: 12px;');
 console.log('%cKeyboard shortcuts: Ctrl+K (search), Ctrl+F (favorites), Esc (close), ? (shortcuts)', 'color: #17c3eb; font-size: 11px;');
+   <!-- ============================================
+     ABOUT MODAL
+     ============================================ -->
+<div class="info-modal-overlay" id="aboutModal">
+  <div class="info-modal">
+    <div class="info-modal-header">
+      <div class="info-modal-title">🎮 About Umbrafiles</div>
+      <button class="info-modal-close" onclick="closeInfoModal('aboutModal')">✕</button>
+    </div>
+    <div class="info-modal-body">
+      <div class="about-hero">
+        <span class="about-hero-icon">🌑</span>
+        <h2>Welcome to Umbrafiles</h2>
+        <p>Your go-to destination for free, unblocked online games. Play instantly in your browser — no downloads, no installs, no hassle.</p>
+      </div>
+
+      <div class="about-features">
+        <div class="about-feature">
+          <span class="about-feature-icon">⚡</span>
+          <h4>Instant Play</h4>
+          <p>Click any game and start playing immediately. No sign-ups, no waiting.</p>
+        </div>
+        <div class="about-feature">
+          <span class="about-feature-icon">🔓</span>
+          <h4>Unblocked</h4>
+          <p>Access games from school, work, or anywhere. We keep things running smoothly.</p>
+        </div>
+        <div class="about-feature">
+          <span class="about-feature-icon">📱</span>
+          <h4>Mobile Friendly</h4>
+          <p>Works on desktop, tablet, and mobile browsers with responsive design.</p>
+        </div>
+        <div class="about-feature">
+          <span class="about-feature-icon">🎯</span>
+          <h4>Curated Collection</h4>
+          <p>Hand-picked games across action, racing, puzzle, strategy, and more.</p>
+        </div>
+        <div class="about-feature">
+          <span class="about-feature-icon">❤️</span>
+          <h4>Favorites System</h4>
+          <p>Save your favorite games and find them quickly anytime.</p>
+        </div>
+        <div class="about-feature">
+          <span class="about-feature-icon">🔍</span>
+          <h4>Smart Search</h4>
+          <p>Find games fast with category filters, sorting, and instant search.</p>
+        </div>
+      </div>
+
+      <div class="about-stats-row">
+        <div class="about-stat">
+          <div class="about-stat-value">111+</div>
+          <div class="about-stat-label">Games</div>
+        </div>
+        <div class="about-stat">
+          <div class="about-stat-value">11</div>
+          <div class="about-stat-label">Categories</div>
+        </div>
+        <div class="about-stat">
+          <div class="about-stat-value">100%</div>
+          <div class="about-stat-label">Free</div>
+        </div>
+        <div class="about-stat">
+          <div class="about-stat-value">0</div>
+          <div class="about-stat-label">Ads</div>
+        </div>
+      </div>
+
+      <div class="about-team">
+        <h3>📖 Our Story</h3>
+        <p>Umbrafiles was created with a simple mission: make high-quality online games accessible to everyone, everywhere. Whether you're looking to kill time between classes, need a quick break at work, or just want to explore fun browser games, we've got you covered.</p>
+        <p style="margin-top: 0.75rem;">We believe gaming should be free, easy, and fun — without paywalls, downloads, or complicated setups. Every game on our platform is tested and verified to work smoothly in modern browsers.</p>
+        <p style="margin-top: 0.75rem;">We're always adding new games based on community requests. If you have a game you'd love to see, use our <a href="#" onclick="closeInfoModal('aboutModal'); setTimeout(()=>openInfoModal('requestModal'), 350);" style="color: var(--accent-secondary); text-decoration: none;">game request form</a> and we'll consider adding it!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     CONTACT MODAL
+     ============================================ -->
+<div class="info-modal-overlay" id="contactModal">
+  <div class="info-modal">
+    <div class="info-modal-header">
+      <div class="info-modal-title">📬 Contact Us</div>
+      <button class="info-modal-close" onclick="closeInfoModal('contactModal')">✕</button>
+    </div>
+    <div class="info-modal-body">
+      <div class="contact-intro">
+        <h3>Get in Touch</h3>
+        <p>Have a question, suggestion, or just want to say hi? We'd love to hear from you!</p>
+      </div>
+
+      <form class="contact-form" id="contactForm" onsubmit="handleContactSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="contactName">Your Name *</label>
+            <input type="text" class="form-input" id="contactName" placeholder="John Doe" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contactEmail">Email Address *</label>
+            <input type="email" class="form-input" id="contactEmail" placeholder="john@example.com" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="contactSubject">Subject *</label>
+          <select class="form-select" id="contactSubject" required>
+            <option value="">Select a topic...</option>
+            <option value="general">General Question</option>
+            <option value="bug">Bug Report</option>
+            <option value="feature">Feature Request</option>
+            <option value="game">Game Suggestion</option>
+            <option value="dmca">DMCA / Copyright</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="contactMessage">Message *</label>
+          <textarea class="form-textarea" id="contactMessage" placeholder="Tell us what's on your mind..." required></textarea>
+        </div>
+        <button type="submit" class="form-submit-btn">📨 Send Message</button>
+      </form>
+
+      <div class="request-status">
+        💡 <strong>Note:</strong> This form opens your email client. For faster responses, you can also reach us at <a href="mailto:support@umbrafiles.com" style="color: var(--accent-secondary); text-decoration: none;">support@umbrafiles.com</a>
+      </div>
+
+      <div class="contact-alternatives">
+        <h4>Other Ways to Reach Us</h4>
+        <div class="contact-alt-item">
+          <span class="contact-alt-icon">📧</span>
+          <span>Email: support@umbrafiles.com</span>
+        </div>
+        <div class="contact-alt-item">
+          <span class="contact-alt-icon">⏱️</span>
+          <span>Response time: Usually within 24-48 hours</span>
+        </div>
+        <div class="contact-alt-item">
+          <span class="contact-alt-icon">🌍</span>
+          <span>Available worldwide — no time zone restrictions</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     GAME REQUEST MODAL
+     ============================================ -->
+<div class="info-modal-overlay" id="requestModal">
+  <div class="info-modal">
+    <div class="info-modal-header">
+      <div class="info-modal-title">🎮 Request a Game</div>
+      <button class="info-modal-close" onclick="closeInfoModal('requestModal')">✕</button>
+    </div>
+    <div class="info-modal-body">
+      <div class="request-intro">
+        <h3>Want to See a Game Added?</h3>
+        <p>Fill out the form below and we'll consider adding it to our collection. We add new games regularly!</p>
+      </div>
+
+      <form class="contact-form" id="requestForm" onsubmit="handleRequestSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="requestName">Your Name</label>
+            <input type="text" class="form-input" id="requestName" placeholder="Anonymous (optional)">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="requestEmail">Email (optional)</label>
+            <input type="email" class="form-input" id="requestEmail" placeholder="We'll notify you if added">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="requestGameName">Game Name *</label>
+          <input type="text" class="form-input" id="requestGameName" placeholder="e.g., Slope, Subway Surfers, 1v1.LOL" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="requestCategory">Category *</label>
+            <select class="form-select" id="requestCategory" required>
+              <option value="">Select category...</option>
+              <option value="Action">Action</option>
+              <option value="Racing">Racing</option>
+              <option value="Puzzle">Puzzle</option>
+              <option value="Arcade">Arcade</option>
+              <option value="Casual">Casual</option>
+              <option value="Sports">Sports</option>
+              <option value="Strategy">Strategy</option>
+              <option value="Simulation">Simulation</option>
+              <option value="Adventure">Adventure</option>
+              <option value="Card">Card</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="requestPlatform">Platform</label>
+            <select class="form-select" id="requestPlatform">
+              <option value="Any">Any platform</option>
+              <option value="Web">Web-based</option>
+              <option value="HTML5">HTML5</option>
+              <option value="Unity">Unity</option>
+              <option value="Flash">Flash (legacy)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="requestLink">Game Link (if you have one)</label>
+          <input type="url" class="form-input" id="requestLink" placeholder="https://... (optional)">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="requestReason">Why should we add this game?</label>
+          <textarea class="form-textarea" id="requestReason" placeholder="Tell us why this game would be a great addition..." style="min-height: 80px;"></textarea>
+        </div>
+        <button type="submit" class="form-submit-btn">🚀 Submit Request</button>
+      </form>
+
+      <div class="request-tips">
+        <h4>💡 Tips for a Successful Request</h4>
+        <ul>
+          <li>Make sure the game is free and available to play online</li>
+          <li>Provide a working link if possible — it helps us find the game faster</li>
+          <li>Choose the correct category so we can organize it properly</li>
+          <li>We prioritize popular, well-made games that work in browsers</li>
+          <li>Requests are reviewed regularly but we can't guarantee every game will be added</li>
+        </ul>
+      </div>
+
+      <div class="request-status">
+        📊 <strong>Current Queue:</strong> ~<span id="requestQueueSize">12</span> pending requests. Average processing time: 3-7 days.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     PRIVACY POLICY MODAL
+     ============================================ -->
+<div class="info-modal-overlay" id="privacyModal">
+  <div class="info-modal">
+    <div class="info-modal-header">
+      <div class="info-modal-title">🔒 Privacy Policy</div>
+      <button class="info-modal-close" onclick="closeInfoModal('privacyModal')">✕</button>
+    </div>
+    <div class="info-modal-body">
+      <div class="policy-content">
+        <span class="policy-date">Last Updated: January 1, 2026 | Effective Date: January 1, 2026</span>
+
+        <div class="policy-highlight">
+          <p><strong>TL;DR:</strong> We respect your privacy. We collect minimal data, don't sell your information, and use cookies only to improve your experience. You can use Umbrafiles without creating an account.</p>
+        </div>
+
+        <h2>1. Introduction</h2>
+        <p>Umbrafiles ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website umbrafiles.com and use our services (collectively, the "Service").</p>
+        <p>Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the Service.</p>
+
+        <h2>2. Information We Collect</h2>
+
+        <h3>2.1 Information You Provide Directly</h3>
+        <p>We may collect information that you voluntarily provide when you:</p>
+        <ul>
+          <li>Submit a contact form or game request (name, email, message content)</li>
+          <li>Use our favorites system (game IDs stored locally in your browser)</li>
+        </ul>
+
+        <h3>2.2 Information Collected Automatically</h3>
+        <p>When you visit our Service, we may automatically collect certain information, including:</p>
+        <ul>
+          <li><strong>Usage Data:</strong> Pages visited, games played, time spent on pages, click patterns</li>
+          <li><strong>Device Information:</strong> Browser type, operating system, device type, screen resolution</li>
+          <li><strong>IP Address:</strong> Collected for analytics and security purposes</li>
+          <li><strong>Cookies and Similar Technologies:</strong> Used to remember your preferences, favorites, and improve functionality</li>
+        </ul>
+
+        <h3>2.3 Local Storage</h3>
+        <p>We use your browser's local storage to save your favorites list. This data stays on your device and is never transmitted to our servers. You can clear this data at any time by clearing your browser's local storage.</p>
+
+        <h2>3. How We Use Your Information</h2>
+        <p>We use the information we collect to:</p>
+        <ul>
+          <li>Provide, maintain, and improve our Service</li>
+          <li>Process and respond to your contact form submissions and game requests</li>
+          <li>Save your favorite games for future visits</li>
+          <li>Analyze usage patterns to understand which games and features are most popular</li>
+          <li>Monitor and analyze trends, usage, and activities in connection with our Service</li>
+          <li>Detect, investigate, and prevent fraudulent transactions and unauthorized access</li>
+          <li>Send you administrative information, such as updates, security alerts, and support messages</li>
+        </ul>
+
+        <h2>4. Cookies and Tracking Technologies</h2>
+        <p>We use cookies and similar tracking technologies to track activity on our Service and improve our Service. Cookies are files with a small amount of data that may include an anonymous unique identifier.</p>
+        <p><strong>Types of cookies we use:</strong></p>
+        <ul>
+          <li><strong>Essential Cookies:</strong> Required for the Service to function (e.g., favorites persistence)</li>
+          <li><strong>Analytics Cookies:</strong> Help us understand how visitors interact with our Service</li>
+          <li><strong>Preference Cookies:</strong> Remember your settings and preferences</li>
+        </ul>
+        <p>You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our Service.</p>
+
+        <h2>5. Third-Party Services</h2>
+        <p>Our Service may contain links to third-party websites and games that are not owned or controlled by us. We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party sites or services.</p>
+        <p><strong>Notable third-party services include:</strong></p>
+        <ul>
+          <li>Game hosting platforms (e.g., onlinegames.io) where game content is embedded</li>
+          <li>Analytics providers (if applicable)</li>
+          <li>Browser-based game engines and frameworks</li>
+        </ul>
+        <p>We encourage you to review the privacy policies of any third-party services you access through our Service.</p>
+
+        <h2>6. Data Sharing and Disclosure</h2>
+        <p>We do <strong>not</strong> sell, trade, or rent your personal identification information to others. We may share information only in the following circumstances:</p>
+        <ul>
+          <li><strong>Legal Requirements:</strong> When required by law, regulation, legal process, or governmental request</li>
+          <li><strong>Protection of Rights:</strong> To protect and defend the rights, property, or safety of Umbrafiles, our users, or others</li>
+          <li><strong>Business Transfers:</strong> In connection with a merger, acquisition, or sale of assets</li>
+          <li><strong>Service Providers:</strong> With trusted third-party service providers who assist us in operating our Service (subject to confidentiality obligations)</li>
+        </ul>
+
+        <h2>7. Data Security</h2>
+        <p>The security of your personal information is important to us, but remember that no method of transmission over the Internet, or method of electronic storage, is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security.</p>
+        <p>We implement appropriate technical and organizational measures to protect your data against unauthorized access, alteration, disclosure, or destruction.</p>
+
+        <h2>8. Children's Privacy</h2>
+        <p>Our Service is not intended for children under 13 years of age. We do not knowingly collect personal identifiable information from children under 13. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact us immediately.</p>
+        <p>If we become aware that we have collected personal information from a child under age 13 without verification of parental consent, we take steps to remove that information from our servers.</p>
+
+        <h2>9. Your Rights and Choices</h2>
+        <p>Depending on your location, you may have certain rights regarding your personal information:</p>
+        <ul>
+          <li><strong>Access:</strong> Request a copy of the personal data we hold about you</li>
+          <li><strong>Correction:</strong> Request that we correct inaccurate or incomplete data</li>
+          <li><strong>Deletion:</strong> Request that we delete your personal data</li>
+          <li><strong>Opt-Out:</strong> Opt out of marketing communications at any time</li>
+          <li><strong>Cookies:</strong> Manage cookie preferences through your browser settings</li>
+        </ul>
+        <p>To exercise any of these rights, please contact us at <a href="mailto:privacy@umbrafiles.com" style="color: var(--accent-secondary); text-decoration: none;">privacy@umbrafiles.com</a></p>
+
+        <h2>10. California Privacy Rights (CCPA)</h2>
+        <p>If you are a California resident, you have the right to know what personal information we collect, use, and disclose. You also have the right to request deletion of your personal information and to opt-out of the sale of your personal information.</p>
+        <p><strong>We do not sell your personal information.</strong></p>
+
+        <h2>11. International Data Transfers</h2>
+        <p>Your information, including personal information, may be transferred to — and maintained on — computers located outside of your state, province, country, or other governmental jurisdiction where the data protection laws may differ from those of your jurisdiction.</p>
+        <p>If you are located outside the United States and choose to provide information to us, please note that we transfer the data, including personal information, to the United States and process it there.</p>
+
+        <h2>12. Changes to This Privacy Policy</h2>
+        <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.</p>
+        <p>You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
+
+        <h2>13. Contact Us</h2>
+        <p>If you have any questions about this Privacy Policy, please contact us:</p>
+        <ul>
+          <li>By email: <a href="mailto:privacy@umbrafiles.com" style="color: var(--accent-secondary); text-decoration: none;">privacy@umbrafiles.com</a></li>
+          <li>Through our <a href="#" onclick="closeInfoModal('privacyModal'); setTimeout(()=>openInfoModal('contactModal'), 350);" style="color: var(--accent-secondary); text-decoration: none;">Contact form</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     DMCA MODAL
+     ============================================ -->
+<div class="info-modal-overlay" id="dmcaModal">
+  <div class="info-modal">
+    <div class="info-modal-header">
+      <div class="info-modal-title">©️ DMCA Policy</div>
+      <button class="info-modal-close" onclick="closeInfoModal('dmcaModal')">✕</button>
+    </div>
+    <div class="info-modal-body">
+      <div class="policy-content">
+        <span class="policy-date">Last Updated: January 1, 2026</span>
+
+        <div class="policy-highlight">
+          <p><strong>Important:</strong> Umbrafiles respects the intellectual property rights of others and expects its users to do the same. We respond to notices of alleged copyright infringement that comply with applicable law. If you believe that your work has been copied in a way that constitutes copyright infringement, please provide the notice described below.</p>
+        </div>
+
+        <h2>1. DMCA Notice and Takedown Procedure</h2>
+        <p>Under the Digital Millennium Copyright Act of 1998 (DMCA, 17 U.S.C. § 512), if you believe that any content accessible on or through the Service infringes your copyrights, you may send us a written DMCA notification requesting that we remove or disable access to the infringing material.</p>
+
+        <h2>2. Required Information for a DMCA Notice</h2>
+        <p>Your DMCA notification must include all of the following information:</p>
+        <ol>
+          <li><strong>Physical or Electronic Signature:</strong> A physical or electronic signature of a person authorized to act on behalf of the owner of an exclusive right that is allegedly infringed.</li>
+          <li><strong>Identification of the Copyrighted Work:</strong> A description of the copyrighted work you believe to have been infringed, or, if multiple copyrighted works are covered by a single notification, a representative list of such works.</li>
+          <li><strong>Identification of the Infringing Material:</strong> Information reasonably sufficient to permit us to locate the material that you claim is infringing, including at minimum the URL(s) of the material.</li>
+          <li><strong>Your Contact Information:</strong> Your name, address, telephone number, and email address.</li>
+          <li><strong>Statement of Good Faith Belief:</strong> A statement that you have a good faith belief that the disputed use is not authorized by the copyright owner, its agent, or the law.</li>
+          <li><strong>Statement of Accuracy:</strong> A statement, made under penalty of perjury, that the above information in your notification is accurate and that you are authorized to make the notice on behalf of the copyright owner.</li>
+        </ol>
+
+        <h2>3. How to Submit a DMCA Notice</h2>
+        <p>Please send your DMCA notice to:</p>
+        <ul>
+          <li><strong>Email:</strong> <a href="mailto:dmca@umbrafiles.com" style="color: var(--accent-secondary); text-decoration: none;">dmca@umbrafiles.com</a></li>
+          <li><strong>Subject Line:</strong> Please use the subject line "DMCA Copyright Infringement Notice"</li>
+          <li><strong>Response Time:</strong> We typically process valid DMCA notices within 2-5 business days</li>
+        </ul>
+
+        <h2>4. Counter-Notice Procedure</h2>
+        <p>If you believe your content was removed or disabled as a result of a mistake or misidentification, you may submit a written counter-notice to us requesting that the content be restored. Your counter-notice must include:</p>
+        <ol>
+          <li>Your physical or electronic signature</li>
+          <li>Identification of the material that has been removed and the location where it appeared before it was removed</li>
+          <li>A statement, made under penalty of perjury, that you have a good faith belief that the material was removed or disabled as a result of mistake or misidentification</li>
+          <li>Your name, address, telephone number, and email address</li>
+          <li>A statement that you consent to the jurisdiction of the federal court in your judicial district, and a statement that you will accept service of process from the person who provided the original DMCA notice</li>
+        </ol>
+
+        <h2>5. Repeat Infringer Policy</h2>
+        <p>In accordance with the DMCA and other applicable law, Umbrafiles has adopted a policy of terminating, in appropriate circumstances and at our sole discretion, users and/or licensees who are deemed to be repeat infringers. We may also at our sole discretion limit access to the Service and/or terminate the accounts of any users who infringe any intellectual property rights of others, whether or not there is any repeat infringement.</p>
+
+        <h2>6. Games and Third-Party Content</h2>
+        <p>Umbrafiles hosts games provided by third-party game developers and publishers. We do not create, host, or distribute the game content itself. Games are embedded through iframe links to third-party hosting platforms. If you believe a specific game infringes your intellectual property rights, please provide us with detailed information about the infringing game, including:</p>
+        <ul>
+          <li>The name of the game you believe infringes your rights</li>
+          <li>Your copyright registration number (if available)</li>
+          <li>A link to your original work</li>
+          <li>The URL of the game page on Umbrafiles</li>
+        </ul>
+
+        <h2>7. Trademark Policy</h2>
+        <p>The Umbrafiles name, logo, and all related names, logos, product and service names, designs, and slogans are trademarks of Umbrafiles or its affiliates or licensors. You must not use such marks without the prior written permission of Umbrafiles. All other names, logos, product and service names, designs, and slogans on this Service are the trademarks of their respective owners.</p>
+
+        <h2>8. Disclaimer</h2>
+        <p>Umbrafiles does not endorse, authorize, or license any games hosted on third-party platforms. All games are the property of their respective owners. Umbrafiles provides links to these games as a convenience to our users and does not assume any responsibility for the content, accuracy, or legality of third-party game sites.</p>
+        <p>We encourage all copyright owners to review our DMCA notice process above before taking any legal action. In most cases, a DMCA notice is the most efficient way to resolve copyright issues.</p>
+
+        <h2>9. Contact Information</h2>
+        <p>If you have any questions about this DMCA Policy, please contact us:</p>
+        <ul>
+          <li><strong>DMCA Email:</strong> <a href="mailto:dmca@umbrafiles.com" style="color: var(--accent-secondary); text-decoration: none;">dmca@umbrafiles.com</a></li>
+          <li><strong>General Contact:</strong> <a href="mailto:support@umbrafiles.com" style="color: var(--accent-secondary); text-decoration: none;">support@umbrafiles.com</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
 </script>
 </body>
 </html>
