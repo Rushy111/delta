@@ -2127,6 +2127,162 @@ body {
 <button class="scroll-top-btn" id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 
 <script>
+   /* ============================================
+   INFO MODAL SYSTEM
+   ============================================ */
+function openInfoModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeInfoModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+  modal.classList.remove('active');
+  // Only restore body overflow if no other modal is open
+  const anyModalOpen = document.querySelector('.info-modal-overlay.active, .game-modal-overlay.active');
+  if (!anyModalOpen) {
+    document.body.style.overflow = '';
+  }
+}
+
+// Close info modals on outside click
+document.querySelectorAll('.info-modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.classList.remove('active');
+      const anyModalOpen = document.querySelector('.info-modal-overlay.active, .game-modal-overlay.active');
+      if (!anyModalOpen) {
+        document.body.style.overflow = '';
+      }
+    }
+  });
+});
+
+// Close info modals with Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.info-modal-overlay.active').forEach(modal => {
+      modal.classList.remove('active');
+    });
+    const anyModalOpen = document.querySelector('.info-modal-overlay.active, .game-modal-overlay.active');
+    if (!anyModalOpen) {
+      document.body.style.overflow = '';
+    }
+  }
+});
+
+/* ============================================
+   CONTACT FORM HANDLER
+   ============================================ */
+function handleContactSubmit(event) {
+  event.preventDefault();
+
+  const name = document.getElementById('contactName').value.trim();
+  const email = document.getElementById('contactEmail').value.trim();
+  const subject = document.getElementById('contactSubject').value;
+  const message = document.getElementById('contactMessage').value.trim();
+
+  if (!name || !email || !subject || !message) {
+    showToast('Please fill in all required fields', 'info');
+    return;
+  }
+
+  const subjectMap = {
+    'general': 'General Question',
+    'bug': 'Bug Report',
+    'feature': 'Feature Request',
+    'game': 'Game Suggestion',
+    'dmca': 'DMCA / Copyright',
+    'other': 'Other'
+  };
+
+  const mailSubject = `Umbrafiles Contact: ${subjectMap[subject] || subject}`;
+  const mailBody = `Name: ${name}%0AEmail: ${email}%0ASubject: ${subjectMap[subject] || subject}%0A%0AMessage:%0A${encodeURIComponent(message)}`;
+
+  window.open(`mailto:support@umbrafiles.com?subject=${encodeURIComponent(mailSubject)}&body=${mailBody}`, '_blank');
+
+  showToast('Email client opened! Send the message to complete.', 'success');
+
+  // Reset form
+  document.getElementById('contactForm').reset();
+}
+
+/* ============================================
+   GAME REQUEST FORM HANDLER
+   ============================================ */
+function handleRequestSubmit(event) {
+  event.preventDefault();
+
+  const name = document.getElementById('requestName').value.trim() || 'Anonymous';
+  const email = document.getElementById('requestEmail').value.trim();
+  const gameName = document.getElementById('requestGameName').value.trim();
+  const category = document.getElementById('requestCategory').value;
+  const platform = document.getElementById('requestPlatform').value;
+  const link = document.getElementById('requestLink').value.trim();
+  const reason = document.getElementById('requestReason').value.trim();
+
+  if (!gameName || !category) {
+    showToast('Please fill in the game name and category', 'info');
+    return;
+  }
+
+  const subject = `Game Request: ${gameName}`;
+  let body = `Game Name: ${gameName}%0ACategory: ${category}%0APlatform: ${platform}%0ARequester: ${name}`;
+  if (email) body += `%0AEmail: ${email}`;
+  if (link) body += `%0AGame Link: ${link}`;
+  if (reason) body += `%0A%0AWhy this game:%0A${encodeURIComponent(reason)}`;
+
+  window.open(`mailto:support@umbrafiles.com?subject=${encodeURIComponent(subject)}&body=${body}`, '_blank');
+
+  showToast('Game request submitted! We\'ll review it soon 🎮', 'success');
+
+  // Reset form
+  document.getElementById('requestForm').reset();
+
+  // Simulate queue increment
+  const queueEl = document.getElementById('requestQueueSize');
+  if (queueEl) {
+    const current = parseInt(queueEl.textContent) || 12;
+    queueEl.textContent = current + 1;
+  }
+}
+
+/* ============================================
+   UPDATE FOOTER LINKS TO OPEN MODALS
+   ============================================ */
+// These are already handled by the onclick handlers in the footer HTML,
+// but let's make sure the footer links work properly.
+// The footer already has onclick handlers that call return false,
+// so we need to update them to open modals instead.
+
+// Update footer links dynamically after DOM loads
+document.addEventListener('DOMContentLoaded', () => {
+  const footerLinks = document.querySelectorAll('.footer-link');
+  footerLinks.forEach(link => {
+    const text = link.textContent.trim().toLowerCase();
+    if (text === 'about') {
+      link.setAttribute('onclick', "openInfoModal('aboutModal'); return false;");
+    } else if (text === 'contact') {
+      link.setAttribute('onclick', "openInfoModal('contactModal'); return false;");
+    } else if (text === 'request a game') {
+      link.setAttribute('onclick', "openInfoModal('requestModal'); return false;");
+    } else if (text === 'dmca') {
+      link.setAttribute('onclick', "openInfoModal('dmcaModal'); return false;");
+    } else if (text === 'privacy policy') {
+      link.setAttribute('onclick', "openInfoModal('privacyModal'); return false;");
+    }
+  });
+
+  // Also update the Privacy Policy link in the footer text
+  const footerPrivacyLink = document.querySelector('.footer-text a');
+  if (footerPrivacyLink) {
+    footerPrivacyLink.setAttribute('onclick', "openInfoModal('privacyModal'); return false;");
+  }
+});
+
 /* ============================================
    GAME DATA
    ============================================ */
