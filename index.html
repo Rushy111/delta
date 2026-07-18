@@ -296,6 +296,72 @@
             background: var(--bg-card-hover);
         }
 
+        .lang-switcher {
+            position: relative;
+        }
+
+        .lang-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: var(--transition-fast);
+        }
+
+        .lang-btn:hover {
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+            background: var(--bg-card-hover);
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 6px;
+            min-width: 160px;
+            box-shadow: var(--shadow-md);
+            display: none;
+            z-index: 100;
+        }
+
+        .lang-dropdown.open {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .lang-option {
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lang-option:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .lang-option.active {
+            color: var(--accent);
+            background: rgba(124, 92, 252, 0.1);
+        }
+
         .nav-cta {
             padding: 8px 20px;
             border-radius: var(--radius-full);
@@ -328,15 +394,6 @@
             align-items: center;
             justify-content: center;
             gap: 5px;
-        }
-
-        .mobile-menu-btn span {
-            display: block;
-            width: 18px;
-            height: 2px;
-            background: currentColor;
-            border-radius: 2px;
-            transition: var(--transition-fast);
         }
 
         .mobile-menu-btn.open span:nth-child(1) {
@@ -714,6 +771,20 @@
             z-index: 1;
         }
 
+        .version-badge {
+            display: inline-block;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            background: rgba(74, 222, 128, 0.15);
+            color: var(--success);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
         /* ============================================
            ARCHIVE PAGE
            ============================================ */
@@ -914,18 +985,209 @@
             color: var(--text-secondary);
         }
 
-        /* File Grid */
-        .files-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 16px;
+        /* Folders Section */
+        .folders-section {
+            margin-bottom: 32px;
         }
 
-        .files-grid.list-view {
-            grid-template-columns: 1fr;
+        .folders-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .folders-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
             gap: 8px;
         }
 
+        .folders-grid {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .folder-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-size: 14px;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .folder-item:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-card-hover);
+        }
+
+        .folder-item.active {
+            border-color: var(--accent);
+            background: rgba(124, 92, 252, 0.1);
+            color: var(--accent);
+        }
+
+        .folder-item .folder-count {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            background: var(--bg-tertiary);
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+        }
+
+        .folder-item.active .folder-count {
+            background: rgba(124, 92, 252, 0.2);
+            color: var(--accent);
+        }
+
+        .folder-item .folder-actions {
+            display: none;
+            gap: 2px;
+        }
+
+        .folder-item:hover .folder-actions {
+            display: flex;
+        }
+
+        .folder-item .folder-actions button {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: transparent;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-fast);
+        }
+
+        .folder-item .folder-actions button:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .folder-item .folder-actions button.delete:hover {
+            color: var(--danger);
+        }
+
+        /* Tags Section */
+        .tags-section {
+            margin-bottom: 32px;
+        }
+
+        .tags-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .tags-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tags-grid {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+        }
+
+        .tag-item:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-card-hover);
+        }
+
+        .tag-item.active {
+            color: white;
+        }
+
+        .tag-item[data-color="purple"] { background: rgba(124, 92, 252, 0.2); border-color: rgba(124, 92, 252, 0.3); color: #a78bfa; }
+        .tag-item[data-color="purple"].active { background: var(--accent); border-color: var(--accent); color: white; }
+        .tag-item[data-color="blue"] { background: rgba(92, 140, 252, 0.2); border-color: rgba(92, 140, 252, 0.3); color: #60a5fa; }
+        .tag-item[data-color="blue"].active { background: var(--accent-secondary); border-color: var(--accent-secondary); color: white; }
+        .tag-item[data-color="green"] { background: rgba(74, 222, 128, 0.2); border-color: rgba(74, 222, 128, 0.3); color: #4ade80; }
+        .tag-item[data-color="green"].active { background: var(--success); border-color: var(--success); color: white; }
+        .tag-item[data-color="orange"] { background: rgba(251, 191, 36, 0.2); border-color: rgba(251, 191, 36, 0.3); color: #fbbf24; }
+        .tag-item[data-color="orange"].active { background: var(--warning); border-color: var(--warning); color: #1a1a2e; }
+        .tag-item[data-color="pink"] { background: rgba(252, 92, 140, 0.2); border-color: rgba(252, 92, 140, 0.3); color: #fc5c8c; }
+        .tag-item[data-color="pink"].active { background: var(--accent-tertiary); border-color: var(--accent-tertiary); color: white; }
+        .tag-item[data-color="cyan"] { background: rgba(34, 211, 238, 0.2); border-color: rgba(34, 211, 238, 0.3); color: #22d3ee; }
+        .tag-item[data-color="cyan"].active { background: #06b6d4; border-color: #06b6d4; color: white; }
+
+        .tag-remove {
+            width: 16px;
+            height: 16px;
+            border: none;
+            background: transparent;
+            color: inherit;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.5;
+            transition: var(--transition-fast);
+        }
+
+        .tag-remove:hover {
+            opacity: 1;
+        }
+
+        .add-tag-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            border: 1px dashed var(--border);
+            background: transparent;
+            color: var(--text-tertiary);
+        }
+
+        .add-tag-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* File Cards with tags */
         .file-card {
             padding: 20px;
             border-radius: var(--radius-md);
@@ -934,7 +1196,6 @@
             transition: var(--transition-base);
             cursor: pointer;
             position: relative;
-            group: true;
         }
 
         .file-card:hover {
@@ -963,6 +1224,20 @@
             color: var(--text-tertiary);
         }
 
+        .file-card .file-tags {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .file-card .file-tag {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+        }
+
         .file-card .file-actions {
             position: absolute;
             top: 12px;
@@ -975,6 +1250,40 @@
 
         .file-card:hover .file-actions {
             opacity: 1;
+        }
+
+        .file-card .file-folder-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .file-card .file-thumbnail {
+            width: 100%;
+            height: 120px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 12px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .file-card .file-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .file-card[data-has-thumb="true"] .file-thumbnail {
+            display: block;
+        }
+
+        .file-card[data-has-thumb="true"] .file-icon {
+            display: none;
         }
 
         .file-action-btn {
@@ -1015,6 +1324,12 @@
             flex-shrink: 0;
         }
 
+        .list-view .file-thumbnail {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+        }
+
         .list-view .file-name {
             flex: 1;
             min-width: 0;
@@ -1028,6 +1343,10 @@
         .list-view .file-actions {
             position: static;
             opacity: 1;
+        }
+
+        .list-view .file-folder-badge {
+            position: static;
         }
 
         /* Empty State */
@@ -1052,6 +1371,173 @@
         .empty-state p {
             color: var(--text-tertiary);
             font-size: 14px;
+        }
+
+        /* ============================================
+           ANALYTICS PAGE
+           ============================================ */
+        .analytics-page {
+            padding: 80px 0;
+        }
+
+        .analytics-hero {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .analytics-hero h2 {
+            font-size: clamp(32px, 5vw, 52px);
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            margin-bottom: 16px;
+        }
+
+        .analytics-hero p {
+            font-size: 17px;
+            color: var(--text-secondary);
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .analytics-card {
+            padding: 28px;
+            border-radius: var(--radius-lg);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+        }
+
+        .analytics-card h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .analytics-card .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 4px;
+        }
+
+        .analytics-card .stat-sub {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        .analytics-bar-chart {
+            margin-top: 16px;
+        }
+
+        .analytics-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .analytics-bar-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            min-width: 80px;
+        }
+
+        .analytics-bar-track {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .analytics-bar-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width 0.8s ease;
+        }
+
+        .analytics-bar-value {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            min-width: 50px;
+            text-align: right;
+            font-family: var(--font-mono);
+        }
+
+        .analytics-time-chart {
+            margin-top: 16px;
+        }
+
+        .time-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+
+        .time-bar-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            min-width: 60px;
+            font-family: var(--font-mono);
+        }
+
+        .time-bar-track {
+            flex: 1;
+            height: 12px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .time-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            border-radius: var(--radius-full);
+            transition: width 0.8s ease;
+        }
+
+        .time-bar-value {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            min-width: 40px;
+            text-align: right;
+            font-family: var(--font-mono);
+        }
+
+        /* Tag breakdown */
+        .tag-breakdown {
+            margin-top: 16px;
+        }
+
+        .tag-breakdown-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tag-breakdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .tag-breakdown-name {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .tag-breakdown-count {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            font-family: var(--font-mono);
         }
 
         /* ============================================
@@ -1422,9 +1908,7 @@
             justify-content: flex-end;
         }
 
-        /* ============================================
-           TOAST NOTIFICATIONS
-           ============================================ */
+        /* Toast Notifications */
         .toast-container {
             position: fixed;
             bottom: 24px;
@@ -1624,9 +2108,7 @@
             }
         }
 
-        /* ============================================
-           PROGRESS BAR FOR UPLOADS
-           ============================================ */
+        /* Upload progress */
         .upload-progress {
             margin-top: 16px;
             display: none;
@@ -1660,9 +2142,7 @@
             font-family: var(--font-mono);
         }
 
-        /* ============================================
-           FILE PREVIEW MODAL
-           ============================================ */
+        /* File preview modal */
         .preview-modal .modal {
             max-width: 600px;
         }
@@ -1718,20 +2198,73 @@
             font-family: var(--font-mono);
         }
 
-        /* ============================================
-           LOADING SKELETON
-           ============================================ */
-        .skeleton {
-            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: var(--radius-md);
+        /* Tag management in file card */
+        .file-card .file-tag-selector {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            opacity: 0;
+            transition: var(--transition-fast);
         }
 
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+        .file-card:hover .file-tag-selector {
+            opacity: 1;
         }
+
+        /* Folder modal */
+        .folder-modal .modal {
+            max-width: 400px;
+        }
+
+        .folder-input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .folder-input-group input {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: var(--font-sans);
+            outline: none;
+        }
+
+        .folder-input-group input:focus {
+            border-color: var(--accent);
+        }
+
+        /* Color picker for tags */
+        .color-picker {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .color-option {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .color-option:hover, .color-option.selected {
+            border-color: var(--text-primary);
+            transform: scale(1.15);
+        }
+
+        .color-option[data-color="purple"] { background: #7c5cfc; }
+        .color-option[data-color="blue"] { background: #5c8cfc; }
+        .color-option[data-color="green"] { background: #4ade80; }
+        .color-option[data-color="orange"] { background: #fbbf24; }
+        .color-option[data-color="pink"] { background: #fc5c8c; }
+        .color-option[data-color="cyan"] { background: #22d3ee; }
     </style>
 </head>
 <body>
@@ -1750,6 +2283,7 @@
             <ul class="nav-links" id="navLinks">
                 <li><a class="nav-link active" data-page="home" onclick="navigateTo('home')">Home</a></li>
                 <li><a class="nav-link" data-page="archive" onclick="navigateTo('archive')">Archive</a></li>
+                <li><a class="nav-link" data-page="analytics" onclick="navigateTo('analytics')">Analytics</a></li>
                 <li><a class="nav-link" data-page="about" onclick="navigateTo('about')">About</a></li>
                 <li><a class="nav-link" data-page="updates" onclick="navigateTo('updates')">Updates</a></li>
                 <li><a class="nav-link" data-page="terms" onclick="navigateTo('terms')">Terms</a></li>
@@ -1757,6 +2291,17 @@
             </ul>
 
             <div class="nav-actions">
+                <div class="lang-switcher">
+                    <button class="lang-btn" onclick="toggleLangDropdown()" title="Language">🌐</button>
+                    <div class="lang-dropdown" id="langDropdown">
+                        <div class="lang-option active" data-lang="en" onclick="setLanguage('en')">🇺🇸 English</div>
+                        <div class="lang-option" data-lang="es" onclick="setLanguage('es')">🇪🇸 Español</div>
+                        <div class="lang-option" data-lang="fr" onclick="setLanguage('fr')">🇫🇷 Français</div>
+                        <div class="lang-option" data-lang="de" onclick="setLanguage('de')">🇩🇪 Deutsch</div>
+                        <div class="lang-option" data-lang="ja" onclick="setLanguage('ja')">🇯🇵 日本語</div>
+                        <div class="lang-option" data-lang="zh" onclick="setLanguage('zh')">🇨🇳 中文</div>
+                    </div>
+                </div>
                 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
                 <a class="nav-cta" onclick="navigateTo('archive')">Open Archive</a>
                 <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
@@ -1772,6 +2317,7 @@
     <div class="mobile-menu" id="mobileMenu">
         <a class="nav-link active" data-page="home" onclick="navigateTo('home'); closeMobileMenu();">Home</a>
         <a class="nav-link" data-page="archive" onclick="navigateTo('archive'); closeMobileMenu();">Archive</a>
+        <a class="nav-link" data-page="analytics" onclick="navigateTo('analytics'); closeMobileMenu();">Analytics</a>
         <a class="nav-link" data-page="about" onclick="navigateTo('about'); closeMobileMenu();">About</a>
         <a class="nav-link" data-page="updates" onclick="navigateTo('updates'); closeMobileMenu();">Updates</a>
         <a class="nav-link" data-page="terms" onclick="navigateTo('terms'); closeMobileMenu();">Terms</a>
@@ -1787,36 +2333,36 @@
                 <div class="container">
                     <div class="hero-badge">
                         <span class="hero-badge-dot"></span>
-                        v1.0.0 — Now Live — July 18, 2026
+                        <span data-i18n="hero_badge">v1.1.0 — Now Live — July 18, 2026</span>
                     </div>
                     <h1>
-                        Your files,<br>
-                        <span class="gradient-text">in the shadows.</span>
+                        <span data-i18n="hero_title_1">Your files,</span><br>
+                        <span class="gradient-text" data-i18n="hero_title_2">in the shadows.</span>
                     </h1>
-                    <p class="hero-subtitle">
+                    <p class="hero-subtitle" data-i18n="hero_subtitle">
                         Umbrafiles is your personal, private file archive. Store, organize, and retrieve your files anytime — all within your browser. No servers. No tracking. Just you and your data.
                     </p>
                     <div class="hero-actions">
                         <button class="btn btn-primary" onclick="navigateTo('archive')">
-                            📁 Open Your Archive
+                            📁 <span data-i18n="hero_cta">Open Your Archive</span>
                         </button>
                         <button class="btn btn-secondary" onclick="navigateTo('about')">
-                            Learn More →
+                            <span data-i18n="hero_learn">Learn More</span> →
                         </button>
                     </div>
 
                     <div class="hero-stats">
                         <div class="hero-stat">
                             <div class="hero-stat-value">100%</div>
-                            <div class="hero-stat-label">Client-Side Storage</div>
+                            <div class="hero-stat-label" data-i18n="stat_client">Client-Side Storage</div>
                         </div>
                         <div class="hero-stat">
                             <div class="hero-stat-value">0</div>
-                            <div class="hero-stat-label">Files on Our Servers</div>
+                            <div class="hero-stat-label" data-i18n="stat_zero">Files on Our Servers</div>
                         </div>
                         <div class="hero-stat">
                             <div class="hero-stat-value">∞</div>
-                            <div class="hero-stat-label">Your Data, Your Control</div>
+                            <div class="hero-stat-label" data-i18n="stat_infinite">Your Data, Your Control</div>
                         </div>
                     </div>
                 </div>
@@ -1825,9 +2371,9 @@
             <section class="features">
                 <div class="container">
                     <div class="section-header">
-                        <div class="section-label">Why Umbrafiles</div>
-                        <h2 class="section-title">Built different. Built right.</h2>
-                        <p class="section-subtitle">
+                        <div class="section-label" data-i18n="features_label">Why Umbrafiles</div>
+                        <h2 class="section-title" data-i18n="features_title">Built different. Built right.</h2>
+                        <p class="section-subtitle" data-i18n="features_subtitle">
                             We believe your files should never leave your control. Here's what makes Umbrafiles different.
                         </p>
                     </div>
@@ -1835,33 +2381,33 @@
                     <div class="features-grid">
                         <div class="feature-card">
                             <div class="feature-icon purple">🔒</div>
-                            <h3>Zero-Knowledge Privacy</h3>
-                            <p>Your files are stored entirely in your browser using IndexedDB. We never see, touch, or store any of your data. Not even a hash.</p>
+                            <h3 data-i18n="f1_title">Zero-Knowledge Privacy</h3>
+                            <p data-i18n="f1_desc">Your files are stored entirely in your browser using IndexedDB. We never see, touch, or store any of your data. Not even a hash.</p>
                         </div>
                         <div class="feature-card">
                             <div class="feature-icon blue">⚡</div>
-                            <h3>Instant Access</h3>
-                            <p>No login walls, no waiting. Open Umbrafiles and your archive is right there. Your files load instantly from local storage.</p>
+                            <h3 data-i18n="f2_title">Instant Access</h3>
+                            <p data-i18n="f2_desc">No login walls, no waiting. Open Umbrafiles and your archive is right there. Your files load instantly from local storage.</p>
                         </div>
                         <div class="feature-card">
                             <div class="feature-icon green">📦</div>
-                            <h3>Any File Type</h3>
-                            <p>Documents, images, videos, code, archives — Umbrafiles accepts any file type. Store it all in one organized place.</p>
+                            <h3 data-i18n="f3_title">Any File Type</h3>
+                            <p data-i18n="f3_desc">Documents, images, videos, code, archives — Umbrafiles accepts any file type. Store it all in one organized place.</p>
                         </div>
                         <div class="feature-card">
                             <div class="feature-icon orange">🔍</div>
-                            <h3>Smart Search</h3>
-                            <p>Find your files instantly with our built-in search. Filter by name, type, or date. Your archive, searchable.</p>
+                            <h3 data-i18n="f4_title">Smart Search</h3>
+                            <p data-i18n="f4_desc">Find your files instantly with our built-in search. Filter by name, type, or date. Your archive, searchable.</p>
                         </div>
                         <div class="feature-card">
                             <div class="feature-icon pink">🎨</div>
-                            <h3>Beautiful Interface</h3>
-                            <p>A carefully crafted dark interface that's easy on the eyes. Grid or list view — choose your preferred layout.</p>
+                            <h3 data-i18n="f5_title">Beautiful Interface</h3>
+                            <p data-i18n="f5_desc">A carefully crafted dark interface that's easy on the eyes. Grid or list view — choose your preferred layout.</p>
                         </div>
                         <div class="feature-card">
                             <div class="feature-icon cyan">🌐</div>
-                            <h3>Works Offline</h3>
-                            <p>Once loaded, your files are available even without an internet connection. True personal archiving.</p>
+                            <h3 data-i18n="f6_title">Works Offline</h3>
+                            <p data-i18n="f6_desc">Once loaded, your files are available even without an internet connection. True personal archiving.</p>
                         </div>
                     </div>
                 </div>
@@ -1874,15 +2420,15 @@
                 <div class="container">
                     <div class="archive-header">
                         <div>
-                            <h2>📁 Your Archive</h2>
+                            <h2>📁 <span data-i18n="archive_title">Your Archive</span></h2>
                             <p id="fileCount">0 files stored — 0 MB used</p>
                         </div>
                         <div class="archive-actions">
                             <button class="btn btn-secondary btn-sm" onclick="exportAllFiles()">
-                                📤 Export All
+                                📤 <span data-i18n="export_all">Export All</span>
                             </button>
                             <button class="btn btn-danger btn-sm" onclick="confirmClearAll()">
-                                🗑️ Clear All
+                                🗑️ <span data-i18n="clear_all">Clear All</span>
                             </button>
                         </div>
                     </div>
@@ -1890,7 +2436,7 @@
                     <!-- Storage Bar -->
                     <div class="storage-bar-container">
                         <div class="storage-bar-header">
-                            <span>Storage Used</span>
+                            <span data-i18n="storage_used">Storage Used</span>
                             <strong id="storageUsed">0 MB</strong>
                         </div>
                         <div class="storage-bar">
@@ -1898,11 +2444,38 @@
                         </div>
                     </div>
 
+                    <!-- Folders Section -->
+                    <div class="folders-section">
+                        <div class="folders-header">
+                            <h3>📂 <span data-i18n="folders_title">Folders</span></h3>
+                            <button class="btn btn-secondary btn-sm" onclick="openFolderModal()">+ <span data-i18n="new_folder">New Folder</span></button>
+                        </div>
+                        <div class="folders-grid" id="foldersGrid">
+                            <div class="folder-item active" data-folder="all" onclick="selectFolder('all')">
+                                📁 <span data-i18n="all_files">All Files</span>
+                                <span class="folder-count" id="allFileCount">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tags Section -->
+                    <div class="tags-section">
+                        <div class="tags-header">
+                            <h3>🏷️ <span data-i18n="tags_title">Tags</span></h3>
+                            <button class="btn btn-secondary btn-sm" onclick="openTagModal()">+ <span data-i18n="new_tag">New Tag</span></button>
+                        </div>
+                        <div class="tags-grid" id="tagsGrid">
+                            <div class="tag-item" data-color="purple" data-tag="all" onclick="filterByTag('all')">
+                                <span data-i18n="all_tags">All Tags</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Upload Zone -->
                     <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
                         <span class="upload-zone-icon">☁️</span>
-                        <h3>Drop your files here</h3>
-                        <p>or <span class="browse-link">browse files</span> to upload</p>
+                        <h3 data-i18n="upload_drop">Drop your files here</h3>
+                        <p data-i18n="upload_browse">or <span class="browse-link">browse files</span> to upload</p>
                         <input type="file" id="fileInput" multiple onchange="handleFileSelect(event)">
                         <div class="upload-progress" id="uploadProgress">
                             <div class="upload-progress-bar">
@@ -1915,7 +2488,7 @@
                     <!-- Toolbar -->
                     <div class="archive-toolbar">
                         <div class="search-wrapper">
-                            <input type="text" class="search-input" id="searchInput" placeholder="Search your files..." oninput="filterFiles()">
+                            <input type="text" class="search-input" id="searchInput" placeholder="Search your files..." oninput="filterFiles()" data-i18n-placeholder="search_placeholder">
                         </div>
                         <div class="view-toggle">
                             <button class="active" id="gridViewBtn" onclick="setView('grid')">▦</button>
@@ -1931,8 +2504,68 @@
                     <!-- Empty State -->
                     <div class="empty-state" id="emptyState" style="display: none;">
                         <span class="empty-state-icon">📭</span>
-                        <h3>Your archive is empty</h3>
-                        <p>Upload your first file to get started. Drag & drop or click the upload zone above.</p>
+                        <h3 data-i18n="empty_title">Your archive is empty</h3>
+                        <p data-i18n="empty_desc">Upload your first file to get started. Drag & drop or click the upload zone above.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ==================== ANALYTICS PAGE ==================== -->
+        <div class="page" id="page-analytics">
+            <section class="analytics-page">
+                <div class="container">
+                    <div class="analytics-hero">
+                        <div class="section-label" data-i18n="analytics_label">Storage Analytics</div>
+                        <h2 data-i18n="analytics_title">Your data at a glance</h2>
+                        <p data-i18n="analytics_subtitle">Understand how your files are organized and stored.</p>
+                    </div>
+
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <h3 data-i18n="total_files">Total Files</h3>
+                            <div class="stat-value" id="analyticsTotalFiles">0</div>
+                            <div class="stat-sub" data-i18n="total_files_sub">across all folders</div>
+                        </div>
+                        <div class="analytics-card">
+                            <h3 data-i18n="total_size">Total Size</h3>
+                            <div class="stat-value" id="analyticsTotalSize">0 MB</div>
+                            <div class="stat-sub" data-i18n="total_size_sub">of local storage used</div>
+                        </div>
+                        <div class="analytics-card">
+                            <h3 data-i18n="total_folders">Total Folders</h3>
+                            <div class="stat-value" id="analyticsTotalFolders">0</div>
+                            <div class="stat-sub" data-i18n="total_folders_sub">for organization</div>
+                        </div>
+                        <div class="analytics-card">
+                            <h3 data-i18n="total_tags">Total Tags</h3>
+                            <div class="stat-value" id="analyticsTotalTags">0</div>
+                            <div class="stat-sub" data-i18n="total_tags_sub">categories in use</div>
+                        </div>
+                    </div>
+
+                    <!-- File Type Breakdown -->
+                    <div class="analytics-card" style="margin-bottom: 24px;">
+                        <h3 data-i18n="file_types">File Type Breakdown</h3>
+                        <div class="analytics-bar-chart" id="fileTypeChart"></div>
+                    </div>
+
+                    <!-- Folder Breakdown -->
+                    <div class="analytics-card" style="margin-bottom: 24px;">
+                        <h3 data-i18n="folder_breakdown">Folder Breakdown</h3>
+                        <div class="analytics-bar-chart" id="folderChart"></div>
+                    </div>
+
+                    <!-- Tag Breakdown -->
+                    <div class="analytics-card" style="margin-bottom: 24px;">
+                        <h3 data-i18n="tag_breakdown">Tag Breakdown</h3>
+                        <div class="tag-breakdown" id="tagBreakdown"></div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="analytics-card">
+                        <h3 data-i18n="recent_files">Recently Added</h3>
+                        <div class="analytics-time-chart" id="recentFilesChart"></div>
                     </div>
                 </div>
             </section>
@@ -1943,9 +2576,9 @@
             <section class="about-page">
                 <div class="container">
                     <div class="about-hero">
-                        <div class="section-label">About Umbrafiles</div>
-                        <h2>We believe in <span class="gradient-text">digital sovereignty.</span></h2>
-                        <p>
+                        <div class="section-label" data-i18n="about_label">About Umbrafiles</div>
+                        <h2 data-i18n="about_title">We believe in <span class="gradient-text">digital sovereignty.</span></h2>
+                        <p data-i18n="about_desc">
                             Umbrafiles was born from a simple frustration: every time you want to save a file online, you hand over your data to someone else's server. We built Umbrafiles to change that. Your files belong to you — and they should stay that way.
                         </p>
                     </div>
@@ -1953,68 +2586,68 @@
                     <div class="about-grid">
                         <div class="about-card">
                             <span class="about-card-icon">🎯</span>
-                            <h3>Our Mission</h3>
-                            <p>To give every internet user a simple, beautiful, and private way to archive their files without compromising their privacy. No sign-ups, no cloud dependency, no compromises.</p>
+                            <h3 data-i18n="mission_title">Our Mission</h3>
+                            <p data-i18n="mission_desc">To give every internet user a simple, beautiful, and private way to archive their files without compromising their privacy. No sign-ups, no cloud dependency, no compromises.</p>
                         </div>
                         <div class="about-card">
                             <span class="about-card-icon">🛡️</span>
-                            <h3>Our Promise</h3>
-                            <p>We will never store your files on our servers. We will never sell your data. We will never track you. Umbrafiles is a static website — there's nothing to hack, nothing to steal.</p>
+                            <h3 data-i18n="promise_title">Our Promise</h3>
+                            <p data-i18n="promise_desc">We will never store your files on our servers. We will never sell your data. We will never track you. Umbrafiles is a static website — there's nothing to hack, nothing to steal.</p>
                         </div>
                         <div class="about-card">
                             <span class="about-card-icon">🔧</span>
-                            <h3>Our Technology</h3>
-                            <p>Built entirely with vanilla HTML, CSS, and JavaScript. Your files are stored in your browser's IndexedDB — a powerful, built-in database that works offline and requires no external services.</p>
+                            <h3 data-i18n="tech_title">Our Technology</h3>
+                            <p data-i18n="tech_desc">Built entirely with vanilla HTML, CSS, and JavaScript. Your files are stored in your browser's IndexedDB — a powerful, built-in database that works offline and requires no external services.</p>
                         </div>
                         <div class="about-card">
                             <span class="about-card-icon">🌍</span>
-                            <h3>Our Philosophy</h3>
-                            <p>The internet was meant to be a place of freedom. Umbrafiles is a small step toward reclaiming that freedom — one file at a time. No corporate agendas, no venture capital, just a tool that works.</p>
+                            <h3 data-i18n="philosophy_title">Our Philosophy</h3>
+                            <p data-i18n="philosophy_desc">The internet was meant to be a place of freedom. Umbrafiles is a small step toward reclaiming that freedom — one file at a time. No corporate agendas, no venture capital, just a tool that works.</p>
                         </div>
                         <div class="about-card">
                             <span class="about-card-icon">📖</span>
-                            <h3>The Name</h3>
-                            <p>"Umbra" refers to the darkest part of a shadow. Just as a shadow is always with you but never intrusive, Umbrafiles is always there for your files — present when you need it, invisible when you don't.</p>
+                            <h3 data-i18n="name_title">The Name</h3>
+                            <p data-i18n="name_desc">"Umbra" refers to the darkest part of a shadow. Just as a shadow is always with you but never intrusive, Umbrafiles is always there for your files — present when you need it, invisible when you don't.</p>
                         </div>
                         <div class="about-card">
                             <span class="about-card-icon">🚀</span>
-                            <h3>Version 1.0.0</h3>
-                            <p>Launched July 18, 2026. This first release includes file upload, storage, retrieval, search, and export. More features are on the way — check the updates page for what's coming next.</p>
+                            <h3>Version 1.1.0 <span class="version-badge">New</span></h3>
+                            <p data-i18n="v110_desc">Launched July 18, 2026. This release adds folders, tags, thumbnails, analytics, and multi-language support. More features are on the way — check the updates page for what's coming next.</p>
                         </div>
                     </div>
 
                     <div class="about-values">
                         <div class="section-header">
-                            <div class="section-label">Core Values</div>
-                            <h2 class="section-title">What drives us</h2>
+                            <div class="section-label" data-i18n="values_label">Core Values</div>
+                            <h2 class="section-title" data-i18n="values_title">What drives us</h2>
                         </div>
                         <div class="values-list">
                             <div class="value-item">
                                 <span class="value-item-icon">🤝</span>
                                 <div>
-                                    <h4>User First</h4>
-                                    <p>Every design decision, every line of code — it's all for you. Your privacy and experience come first, always.</p>
+                                    <h4 data-i18n="v1_title">User First</h4>
+                                    <p data-i18n="v1_desc">Every design decision, every line of code — it's all for you. Your privacy and experience come first, always.</p>
                                 </div>
                             </div>
                             <div class="value-item">
                                 <span class="value-item-icon">🔓</span>
                                 <div>
-                                    <h4>Transparency</h4>
-                                    <p>Our entire codebase is visible. You can inspect exactly what Umbrafiles does. No hidden scripts, no surprises.</p>
+                                    <h4 data-i18n="v2_title">Transparency</h4>
+                                    <p data-i18n="v2_desc">Our entire codebase is visible. You can inspect exactly what Umbrafiles does. No hidden scripts, no surprises.</p>
                                 </div>
                             </div>
                             <div class="value-item">
                                 <span class="value-item-icon">♻️</span>
                                 <div>
-                                    <h4>Sustainability</h4>
-                                    <p>By storing files locally, we eliminate the energy cost of data centers. Your archive has zero carbon footprint.</p>
+                                    <h4 data-i18n="v3_title">Sustainability</h4>
+                                    <p data-i18n="v3_desc">By storing files locally, we eliminate the energy cost of data centers. Your archive has zero carbon footprint.</p>
                                 </div>
                             </div>
                             <div class="value-item">
                                 <span class="value-item-icon">💎</span>
                                 <div>
-                                    <h4>Quality Over Quantity</h4>
-                                    <p>We'd rather have one feature that works perfectly than ten that are mediocre. Craftsmanship matters.</p>
+                                    <h4 data-i18n="v4_title">Quality Over Quantity</h4>
+                                    <p data-i18n="v4_desc">We'd rather have one feature that works perfectly than ten that are mediocre. Craftsmanship matters.</p>
                                 </div>
                             </div>
                         </div>
@@ -2028,12 +2661,33 @@
             <section class="updates-page">
                 <div class="container">
                     <div class="updates-hero">
-                        <div class="section-label">Changelog</div>
-                        <h2>What's new</h2>
-                        <p>The story of Umbrafiles, version by version.</p>
+                        <div class="section-label" data-i18n="updates_label">Changelog</div>
+                        <h2 data-i18n="updates_title">What's new</h2>
+                        <p data-i18n="updates_subtitle">The story of Umbrafiles, version by version.</p>
                     </div>
 
                     <div class="timeline">
+                        <div class="timeline-item featured">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">July 18, 2026</div>
+                            <div class="timeline-card">
+                                <h3>
+                                    Version 1.1.0 — The Enhancement
+                                    <span class="timeline-badge badge-new">New</span>
+                                </h3>
+                                <p data-i18n="v110_changelog">Major feature release adding organization and intelligence to your archive:</p>
+                                <ul>
+                                    <li>📁 <strong>Folders</strong> — Create, rename, delete, and organize files into custom folders</li>
+                                    <li>🏷️ <strong>Tags & Categories</strong> — Color-coded tags for your files with filtering</li>
+                                    <li>📸 <strong>Image Thumbnails</strong> — Auto-generated preview thumbnails for image files</li>
+                                    <li>📊 <strong>Storage Analytics</strong> — New analytics page showing file type breakdown, folder usage, and tag distribution</li>
+                                    <li>🌐 <strong>Multi-Language Support</strong> — Full i18n with 6 languages: English, Español, Français, Deutsch, 日本語, 中文</li>
+                                    <li>🔗 <strong>Advanced Filtering</strong> — Combine folder, tag, and search filters</li>
+                                    <li>📋 <strong>Enhanced File Metadata</strong> — Better file type detection and display</li>
+                                </ul>
+                            </div>
+                        </div>
+
                         <div class="timeline-item featured">
                             <div class="timeline-dot"></div>
                             <div class="timeline-date">July 18, 2026</div>
@@ -2044,20 +2698,20 @@
                                 </h3>
                                 <p>Umbrafiles goes live! Here's everything that's included in our inaugural release:</p>
                                 <ul>
-                                    <li>📁 <strong>File Upload</strong> — Drag & drop or click-to-browse upload for any file type</li>
-                                    <li>💾 <strong>IndexedDB Storage</strong> — Files stored securely in your browser</li>
-                                    <li>🔍 <strong>Search & Filter</strong> — Find files by name instantly</li>
-                                    <li>📤 <strong>Download Individual Files</strong> — Retrieve any file with one click</li>
-                                    <li>📦 <strong>Export All Files</strong> — Download your entire archive as a batch</li>
-                                    <li>🗑️ <strong>Delete Files</strong> — Remove individual files or clear your entire archive</li>
-                                    <li>📊 <strong>Storage Tracker</strong> — Visual indicator of storage usage</li>
-                                    <li>🌙 <strong>Dark & Light Themes</strong> — Toggle between themes with preference saving</li>
-                                    <li>📱 <strong>Fully Responsive</strong> — Works on desktop, tablet, and mobile</li>
-                                    <li>🎨 <strong>Glassmorphism UI</strong> — Carefully crafted aesthetic with subtle animations</li>
-                                    <li>🔗 <strong>Hash-Based Routing</strong> — SPA navigation without page reloads</li>
-                                    <li>📋 <strong>Terms of Service</strong> — Comprehensive legal documentation</li>
-                                    <li>🛡️ <strong>Privacy Policy</strong> — Full transparency on data handling</li>
-                                    <li>🔔 <strong>Toast Notifications</strong> — Elegant feedback for all actions</li>
+                                    <li>📁 File Upload — Drag & drop or click-to-browse upload for any file type</li>
+                                    <li>💾 IndexedDB Storage — Files stored securely in your browser</li>
+                                    <li>🔍 Search & Filter — Find files by name instantly</li>
+                                    <li>📤 Download Individual Files — Retrieve any file with one click</li>
+                                    <li>📦 Export All Files — Download your entire archive as a batch</li>
+                                    <li>🗑️ Delete Files — Remove individual files or clear your entire archive</li>
+                                    <li>📊 Storage Tracker — Visual indicator of storage usage</li>
+                                    <li>🌙 Dark & Light Themes — Toggle between themes with preference saving</li>
+                                    <li>📱 Fully Responsive — Works on desktop, tablet, and mobile</li>
+                                    <li>🎨 Glassmorphism UI — Carefully crafted aesthetic with subtle animations</li>
+                                    <li>🔗 Hash-Based Routing — SPA navigation without page reloads</li>
+                                    <li>📋 Terms of Service — Comprehensive legal documentation</li>
+                                    <li>🛡️ Privacy Policy — Full transparency on data handling</li>
+                                    <li>🔔 Toast Notifications — Elegant feedback for all actions</li>
                                 </ul>
                             </div>
                         </div>
@@ -2067,29 +2721,10 @@
                             <div class="timeline-date">Q3 2026 — Planned</div>
                             <div class="timeline-card">
                                 <h3>
-                                    Version 1.1.0 — Coming Soon
-                                    <span class="timeline-badge badge-improved">Planned</span>
-                                </h3>
-                                <p>Here's what we're planning for the near future:</p>
-                                <ul>
-                                    <li>📁 Folder organization and management</li>
-                                    <li>🏷️ Custom tags and categories for files</li>
-                                    <li>📸 Image and document preview thumbnails</li>
-                                    <li>📊 Advanced storage analytics</li>
-                                    <li>🌐 Multi-language support (i18n)</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-date">Q4 2026 — Roadmap</div>
-                            <div class="timeline-card">
-                                <h3>
                                     Version 1.2.0 — The Future
                                     <span class="timeline-badge badge-improved">Planned</span>
                                 </h3>
-                                <p>Longer-term goals for Umbrafiles:</p>
+                                <p data-i18n="v120_planned">Here's what we're planning for the near future:</p>
                                 <ul>
                                     <li>🔐 End-to-end encryption for extra security</li>
                                     <li>📱 Progressive Web App (PWA) with install capability</li>
@@ -2127,6 +2762,7 @@
                             <li>Download and retrieve your files at any time</li>
                             <li>Delete files from your local storage</li>
                             <li>Export all stored files as a batch</li>
+                            <li>Organize files into folders and tags</li>
                         </ul>
                     </div>
 
@@ -2227,7 +2863,7 @@
                         <p>Umbrafiles uses your browser's built-in storage technologies:</p>
                         <ul>
                             <li><strong>IndexedDB:</strong> Your uploaded files are stored here. This is your browser's local database. No data leaves your device.</li>
-                            <li><strong>localStorage:</strong> We store your theme preference (dark/light) here. No personal data is stored.</li>
+                            <li><strong>localStorage:</strong> We store your theme preference (dark/light) and language preference here. No personal data is stored.</li>
                             <li><strong>Cookies:</strong> Umbrafiles does not set any cookies. If your browser stores any cookies, they are not set by Umbrafiles.</li>
                         </ul>
                     </div>
@@ -2352,15 +2988,69 @@
         </div>
     </div>
 
+    <!-- Folder Modal -->
+    <div class="modal-overlay folder-modal" id="folderModal">
+        <div class="modal">
+            <h3 id="folderModalTitle">Create New Folder</h3>
+            <p id="folderModalDesc">Enter a name for your new folder.</p>
+            <div class="folder-input-group">
+                <input type="text" id="folderNameInput" placeholder="Folder name..." data-i18n-placeholder="folder_name_placeholder">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary btn-sm" onclick="closeModal('folderModal')">Cancel</button>
+                <button class="btn btn-primary btn-sm" id="confirmFolderBtn" onclick="executeFolderAction()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tag Modal -->
+    <div class="modal-overlay folder-modal" id="tagModal">
+        <div class="modal">
+            <h3>Create New Tag</h3>
+            <p>Enter a name and choose a color for your new tag.</p>
+            <div class="folder-input-group">
+                <input type="text" id="tagNameInput" placeholder="Tag name...">
+            </div>
+            <div class="color-picker" id="colorPicker">
+                <div class="color-option selected" data-color="purple" onclick="selectTagColor('purple')"></div>
+                <div class="color-option" data-color="blue" onclick="selectTagColor('blue')"></div>
+                <div class="color-option" data-color="green" onclick="selectTagColor('green')"></div>
+                <div class="color-option" data-color="orange" onclick="selectTagColor('orange')"></div>
+                <div class="color-option" data-color="pink" onclick="selectTagColor('pink')"></div>
+                <div class="color-option" data-color="cyan" onclick="selectTagColor('cyan')"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary btn-sm" onclick="closeModal('tagModal')">Cancel</button>
+                <button class="btn btn-primary btn-sm" onclick="executeCreateTag()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tag Assign Modal -->
+    <div class="modal-overlay folder-modal" id="tagAssignModal">
+        <div class="modal">
+            <h3>Assign Tags</h3>
+            <p>Select tags to assign to this file.</p>
+            <div id="tagAssignList"></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary btn-sm" onclick="closeModal('tagAssignModal')">Cancel</button>
+                <button class="btn btn-primary btn-sm" onclick="executeTagAssign()">Save</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         /* ============================================
-           UMBRAFILES — CORE APPLICATION
+           UMBRAFILES v1.1.0 — CORE APPLICATION
            ============================================ */
 
         // ---- IndexedDB Setup ----
         const DB_NAME = 'UmbraFilesDB';
-        const DB_VERSION = 1;
+        const DB_VERSION = 2;
         const STORE_NAME = 'files';
+        const FOLDERS_STORE = 'folders';
+        const TAGS_STORE = 'tags';
+        const META_STORE = 'metadata';
         let db = null;
 
         function openDB() {
@@ -2374,6 +3064,17 @@
                         store.createIndex('name', 'name', { unique: false });
                         store.createIndex('type', 'type', { unique: false });
                         store.createIndex('date', 'date', { unique: false });
+                        store.createIndex('folder', 'folder', { unique: false });
+                        store.createIndex('tags', 'tags', { unique: false, multiEntry: true });
+                    }
+                    if (!database.objectStoreNames.contains(FOLDERS_STORE)) {
+                        database.createObjectStore(FOLDERS_STORE, { keyPath: 'id' });
+                    }
+                    if (!database.objectStoreNames.contains(TAGS_STORE)) {
+                        database.createObjectStore(TAGS_STORE, { keyPath: 'id' });
+                    }
+                    if (!database.objectStoreNames.contains(META_STORE)) {
+                        database.createObjectStore(META_STORE, { keyPath: 'key' });
                     }
                 };
 
@@ -2388,54 +3089,89 @@
             });
         }
 
+        // ---- Generic DB Helpers ----
+        function dbAdd(storeName, data) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, 'readwrite');
+                tx.objectStore(storeName).add(data).onsuccess = () => resolve();
+                tx.objectStore(storeName).onerror = () => reject();
+            });
+        }
+
+        function dbPut(storeName, data) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, 'readwrite');
+                tx.objectStore(storeName).put(data).onsuccess = () => resolve();
+                tx.objectStore(storeName).onerror = () => reject();
+            });
+        }
+
+        function dbGet(storeName, key) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, 'readonly');
+                tx.objectStore(storeName).get(key).onsuccess = () => resolve(tx.objectStore(storeName).get(key).result);
+                tx.objectStore(storeName).onerror = () => reject();
+            });
+        }
+
+        function dbGetAll(storeName) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, 'readonly');
+                tx.objectStore(storeName).getAll().onsuccess = () => resolve(tx.objectStore(storeName).getAll().result);
+                tx.objectStore(storeName).onerror = () => reject();
+            });
+        }
+
+        function dbDelete(storeName, key) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, 'readwrite');
+                tx.objectStore(storeName).delete(key).onsuccess = () => resolve();
+                tx.objectStore(storeName).onerror = () => reject();
+            });
+        }
+
         // ---- File Operations ----
         function addFile(fileObj) {
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction(STORE_NAME, 'readwrite');
-                const store = tx.objectStore(STORE_NAME);
-                const request = store.add(fileObj);
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
+            return dbAdd(STORE_NAME, fileObj);
         }
 
         function getAllFiles() {
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction(STORE_NAME, 'readonly');
-                const store = tx.objectStore(STORE_NAME);
-                const request = store.getAll();
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
+            return dbGetAll(STORE_NAME);
         }
 
         function deleteFile(id) {
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction(STORE_NAME, 'readwrite');
-                const store = tx.objectStore(STORE_NAME);
-                const request = store.delete(id);
-                request.onsuccess = () => resolve();
-                request.onerror = () => reject(request.error);
-            });
+            return dbDelete(STORE_NAME, id);
         }
 
         function clearAllFiles() {
             return new Promise((resolve, reject) => {
                 const tx = db.transaction(STORE_NAME, 'readwrite');
-                const store = tx.objectStore(STORE_NAME);
-                const request = store.clear();
-                request.onsuccess = () => resolve();
-                request.onerror = () => reject(request.error);
+                tx.objectStore(STORE_NAME).clear().onsuccess = () => resolve();
+                tx.objectStore(STORE_NAME).onerror = () => reject();
             });
         }
 
         function getFileById(id) {
-            return new Promise((resolve, reject) => {
+            return dbGet(STORE_NAME, id);
+        }
+
+        function getFilesByFolder(folder) {
+            return new Promise((resolve) => {
+                if (folder === 'all') {
+                    getAllFiles().then(resolve);
+                    return;
+                }
                 const tx = db.transaction(STORE_NAME, 'readonly');
-                const store = tx.objectStore(STORE_NAME);
-                const request = store.get(id);
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
+                const index = tx.objectStore(STORE_NAME).index('folder');
+                index.getAll(folder).onsuccess = () => resolve(index.getAll(folder).result);
+            });
+        }
+
+        function getFilesByTag(tagName) {
+            return new Promise((resolve) => {
+                const tx = db.transaction(STORE_NAME, 'readonly');
+                const index = tx.objectStore(STORE_NAME).index('tags');
+                index.getAll(tagName).onsuccess = () => resolve(index.getAll(tagName).result);
             });
         }
 
@@ -2446,25 +3182,20 @@
 
         function handleRoute() {
             const hash = window.location.hash.slice(1) || 'home';
-            const validPages = ['home', 'archive', 'about', 'updates', 'terms', 'privacy'];
+            const validPages = ['home', 'archive', 'analytics', 'about', 'updates', 'terms', 'privacy'];
             const page = validPages.includes(hash) ? hash : 'home';
 
-            // Update page visibility
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             const targetPage = document.getElementById(`page-${page}`);
             if (targetPage) targetPage.classList.add('active');
 
-            // Update nav links
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.toggle('active', link.dataset.page === page);
             });
 
-            // Refresh archive if navigating there
-            if (page === 'archive') {
-                renderFiles();
-            }
+            if (page === 'archive') renderFiles();
+            if (page === 'analytics') renderAnalytics();
 
-            // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -2482,8 +3213,7 @@
         }
 
         function toggleTheme() {
-            const current = getTheme();
-            setTheme(current === 'dark' ? 'light' : 'dark');
+            setTheme(getTheme() === 'dark' ? 'light' : 'dark');
         }
 
         // ---- Mobile Menu ----
@@ -2504,12 +3234,9 @@
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-
             const icons = { success: '✅', error: '❌', info: 'ℹ️' };
             toast.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span>`;
-
             container.appendChild(toast);
-
             setTimeout(() => {
                 toast.classList.add('removing');
                 setTimeout(() => toast.remove(), 300);
@@ -2525,16 +3252,13 @@
             document.getElementById(id).classList.remove('open');
         }
 
-        // Close modals on overlay click
         document.querySelectorAll('.modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) {
-                    overlay.classList.remove('open');
-                }
+                if (e.target === overlay) overlay.classList.remove('open');
             });
         });
 
-        // ---- File Type Icons ----
+        // ---- File Utilities ----
         function getFileIcon(fileType) {
             const type = fileType || '';
             if (type.startsWith('image/')) return '🖼️';
@@ -2572,67 +3296,311 @@
             return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
         }
 
-        // ---- Archive Functions ----
+        // ---- State ----
         let currentView = 'grid';
+        let currentFolder = 'all';
+        let currentTag = 'all';
         let deleteTargetId = null;
+        let folderEditId = null;
+        let tagAssignFileId = null;
+        let selectedTagColor = 'purple';
 
+        // ---- Archive Rendering ----
         async function renderFiles() {
-            const files = await getAllFiles();
+            let files = await getAllFiles();
             const grid = document.getElementById('filesGrid');
             const emptyState = document.getElementById('emptyState');
             const fileCount = document.getElementById('fileCount');
             const storageUsed = document.getElementById('storageUsed');
             const storageBarFill = document.getElementById('storageBarFill');
 
-            // Update storage info
+            // Storage info
             const totalSize = files.reduce((sum, f) => sum + (f.size || 0), 0);
             const totalMB = (totalSize / (1024 * 1024)).toFixed(1);
             fileCount.textContent = `${files.length} file${files.length !== 1 ? 's' : ''} stored — ${totalMB} MB used`;
             storageUsed.textContent = `${totalMB} MB`;
-
-            // Estimate storage bar (assuming ~50MB practical limit for demo)
             const maxStorage = 50;
-            const percentage = Math.min((totalMB / maxStorage) * 100, 100);
-            storageBarFill.style.width = percentage + '%';
+            storageBarFill.style.width = Math.min((totalMB / maxStorage) * 100, 100) + '%';
 
-            // Show/hide empty state
+            // Apply folder filter
+            if (currentFolder !== 'all') {
+                files = files.filter(f => f.folder === currentFolder);
+            }
+
+            // Apply tag filter
+            if (currentTag !== 'all') {
+                files = files.filter(f => f.tags && f.tags.includes(currentTag));
+            }
+
+            // Apply search filter
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            if (query) {
+                files = files.filter(f => f.name.toLowerCase().includes(query));
+            }
+
             if (files.length === 0) {
                 grid.style.display = 'none';
                 emptyState.style.display = 'block';
+            } else {
+                grid.style.display = '';
+                emptyState.style.display = 'none';
+            }
+
+            files.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            grid.innerHTML = files.map(file => {
+                const hasThumb = file.type && file.type.startsWith('image/') && file.thumbnail;
+                const folderName = file.folder && file.folder !== 'all' ? file.folder : null;
+                const tagsHtml = (file.tags && file.tags.length) ?
+                    `<div class="file-tags">${file.tags.map(t => `<span class="file-tag tag-item" data-color="${t.color}" style="font-size:10px; padding:2px 8px; border-radius:9999px; font-weight:600;">${t.name}</span>`).join('')}</div>` : '';
+
+                return `
+                    <div class="file-card" onclick="previewFile('${file.id}')" data-name="${file.name.toLowerCase()}" data-type="${file.type}" data-has-thumb="${hasThumb}">
+                        <div class="file-actions">
+                            <button class="file-action-btn" onclick="event.stopPropagation(); downloadFile('${file.id}')" title="Download">📥</button>
+                            <button class="file-action-btn" onclick="event.stopPropagation(); openTagAssignModal('${file.id}')" title="Tags">🏷️</button>
+                            <button class="file-action-btn delete" onclick="event.stopPropagation(); confirmDelete('${file.id}')" title="Delete">🗑️</button>
+                        </div>
+                        ${folderName ? `<div class="file-folder-badge">📂 ${folderName}</div>` : ''}
+                        ${hasThumb ? `<div class="file-thumbnail"><img src="${file.thumbnail}" alt="${file.name}"></div>` : `<span class="file-icon">${getFileIcon(file.type)}</span>`}
+                        <div class="file-name" title="${file.name}">${file.name}</div>
+                        <div class="file-meta">${formatFileSize(file.size)} · ${getFileExtension(file.name)}</div>
+                        ${tagsHtml}
+                    </div>
+                `;
+            }).join('');
+
+            // Update folder counts
+            updateFolderCounts(files);
+            renderFolders();
+            renderTags();
+        }
+
+        function updateFolderCounts(allFiles) {
+            const counts = {};
+            allFiles.forEach(f => {
+                const folder = f.folder || 'all';
+                counts[folder] = (counts[folder] || 0) + 1;
+            });
+            document.getElementById('allFileCount').textContent = allFiles.length;
+        }
+
+        // ---- Folders ----
+        async function renderFolders() {
+            const folders = await dbGetAll(FOLDERS_STORE);
+            const grid = document.getElementById('foldersGrid');
+            const allFiles = await getAllFiles();
+
+            let html = `
+                <div class="folder-item ${currentFolder === 'all' ? 'active' : ''}" data-folder="all" onclick="selectFolder('all')">
+                    📁 <span data-i18n="all_files">All Files</span>
+                    <span class="folder-count">${allFiles.length}</span>
+                </div>
+            `;
+
+            folders.forEach(folder => {
+                const count = allFiles.filter(f => f.folder === folder.id).length;
+                html += `
+                    <div class="folder-item ${currentFolder === folder.id ? 'active' : ''}" data-folder="${folder.id}" onclick="selectFolder('${folder.id}')">
+                        📂 ${folder.name}
+                        <span class="folder-count">${count}</span>
+                        <span class="folder-actions">
+                            <button onclick="event.stopPropagation(); openFolderModal('${folder.id}')" title="Rename">✏️</button>
+                            <button class="delete" onclick="event.stopPropagation(); deleteFolder('${folder.id}')" title="Delete">🗑️</button>
+                        </span>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML = html;
+        }
+
+        function selectFolder(folderId) {
+            currentFolder = folderId;
+            renderFiles();
+        }
+
+        function openFolderModal(editId) {
+            folderEditId = editId || null;
+            const modal = document.getElementById('folderModal');
+            const title = document.getElementById('folderModalTitle');
+            const desc = document.getElementById('folderModalDesc');
+            const input = document.getElementById('folderNameInput');
+            const btn = document.getElementById('confirmFolderBtn');
+
+            if (folderEditId) {
+                dbGet(FOLDERS_STORE, folderEditId).then(folder => {
+                    title.textContent = 'Rename Folder';
+                    desc.textContent = 'Enter a new name for this folder.';
+                    input.value = folder ? folder.name : '';
+                    btn.textContent = 'Rename';
+                });
+            } else {
+                title.textContent = 'Create New Folder';
+                desc.textContent = 'Enter a name for your new folder.';
+                input.value = '';
+                btn.textContent = 'Create';
+            }
+
+            openModal('folderModal');
+            setTimeout(() => input.focus(), 100);
+        }
+
+        async function executeFolderAction() {
+            const name = document.getElementById('folderNameInput').value.trim();
+            if (!name) {
+                showToast('Please enter a folder name', 'error');
                 return;
             }
 
-            grid.style.display = '';
-            emptyState.style.display = 'none';
+            if (folderEditId) {
+                const folder = await dbGet(FOLDERS_STORE, folderEditId);
+                if (folder) {
+                    folder.name = name;
+                    await dbPut(FOLDERS_STORE, folder);
+                    showToast('Folder renamed', 'success');
+                }
+            } else {
+                await dbAdd(FOLDERS_STORE, { id: generateId(), name, created: new Date().toISOString() });
+                showToast('Folder created', 'success');
+            }
 
-            // Sort by date descending
-            files.sort((a, b) => new Date(b.date) - new Date(a.date));
+            closeModal('folderModal');
+            renderFolders();
+        }
 
-            grid.innerHTML = files.map(file => `
-                <div class="file-card" onclick="previewFile('${file.id}')" data-name="${file.name.toLowerCase()}" data-type="${file.type}">
-                    <div class="file-actions">
-                        <button class="file-action-btn" onclick="event.stopPropagation(); downloadFile('${file.id}')" title="Download">📥</button>
-                        <button class="file-action-btn delete" onclick="event.stopPropagation(); confirmDelete('${file.id}')" title="Delete">🗑️</button>
-                    </div>
-                    <span class="file-icon">${getFileIcon(file.type)}</span>
-                    <div class="file-name" title="${file.name}">${file.name}</div>
-                    <div class="file-meta">${formatFileSize(file.size)} · ${getFileExtension(file.name)}</div>
+        async function deleteFolder(id) {
+            // Move files back to "all"
+            const files = await getFilesByFolder(id);
+            for (const file of files) {
+                file.folder = 'all';
+                await dbPut(STORE_NAME, file);
+            }
+            await dbDelete(FOLDERS_STORE, id);
+            if (currentFolder === id) currentFolder = 'all';
+            showToast('Folder deleted, files moved to All Files', 'success');
+            renderFolders();
+            renderFiles();
+        }
+
+        // ---- Tags ----
+        async function renderTags() {
+            const tags = await dbGetAll(TAGS_STORE);
+            const grid = document.getElementById('tagsGrid');
+
+            let html = `
+                <div class="tag-item ${currentTag === 'all' ? 'active' : ''}" data-color="purple" data-tag="all" onclick="filterByTag('all')">
+                    <span data-i18n="all_tags">All Tags</span>
                 </div>
-            `).join('');
-        }
+            `;
 
-        function filterFiles() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const cards = document.querySelectorAll('.file-card');
-
-            cards.forEach(card => {
-                const name = card.dataset.name;
-                const type = card.dataset.type.toLowerCase();
-                const match = name.includes(query) || type.includes(query);
-                card.style.display = match ? '' : 'none';
+            tags.forEach(tag => {
+                html += `
+                    <div class="tag-item ${currentTag === tag.id ? 'active' : ''}" data-color="${tag.color}" data-tag="${tag.id}" onclick="filterByTag('${tag.id}')">
+                        ${tag.name}
+                        <span class="tag-remove" onclick="event.stopPropagation(); deleteTag('${tag.id}')">✕</span>
+                    </div>
+                `;
             });
+
+            html += `<button class="add-tag-btn" onclick="openTagModal()">+ <span data-i18n="new_tag">New Tag</span></button>`;
+            grid.innerHTML = html;
         }
 
+        function filterByTag(tagId) {
+            currentTag = tagId;
+            renderFiles();
+        }
+
+        function openTagModal() {
+            document.getElementById('tagNameInput').value = '';
+            selectedTagColor = 'purple';
+            document.querySelectorAll('.color-option').forEach(c => c.classList.remove('selected'));
+            document.querySelector('.color-option[data-color="purple"]').classList.add('selected');
+            openModal('tagModal');
+            setTimeout(() => document.getElementById('tagNameInput').focus(), 100);
+        }
+
+        function selectTagColor(color) {
+            selectedTagColor = color;
+            document.querySelectorAll('.color-option').forEach(c => c.classList.remove('selected'));
+            document.querySelector(`.color-option[data-color="${color}"]`).classList.add('selected');
+        }
+
+        async function executeCreateTag() {
+            const name = document.getElementById('tagNameInput').value.trim();
+            if (!name) {
+                showToast('Please enter a tag name', 'error');
+                return;
+            }
+            await dbAdd(TAGS_STORE, { id: generateId(), name, color: selectedTagColor, created: new Date().toISOString() });
+            showToast('Tag created', 'success');
+            closeModal('tagModal');
+            renderTags();
+        }
+
+        async function deleteTag(id) {
+            // Remove tag from all files
+            const files = await getAllFiles();
+            for (const file of files) {
+                if (file.tags && file.tags.length) {
+                    file.tags = file.tags.filter(t => t.id !== id);
+                    await dbPut(STORE_NAME, file);
+                }
+            }
+            await dbDelete(TAGS_STORE, id);
+            if (currentTag === id) currentTag = 'all';
+            showToast('Tag removed', 'success');
+            renderTags();
+            renderFiles();
+        }
+
+        // ---- Tag Assignment ----
+        async function openTagAssignModal(fileId) {
+            tagAssignFileId = fileId;
+            const tags = await dbGetAll(TAGS_STORE);
+            const file = await getFileById(fileId);
+            const list = document.getElementById('tagAssignList');
+
+            if (!tags.length) {
+                list.innerHTML = '<p style="color: var(--text-tertiary); font-size: 13px;">No tags yet. Create one first!</p>';
+            } else {
+                list.innerHTML = tags.map(tag => {
+                    const checked = file.tags && file.tags.some(t => t.id === tag.id) ? 'checked' : '';
+                    return `
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 0; cursor: pointer; font-size: 14px;">
+                            <input type="checkbox" value="${tag.id}" ${checked} style="accent-color: var(--accent);">
+                            <span class="tag-item" data-color="${tag.color}" style="font-size: 12px; padding: 4px 10px; border-radius: 9999px; border: none; background: rgba(124,92,252,0.1); color: var(--accent);">
+                                ${tag.name}
+                            </span>
+                        </label>
+                    `;
+                }).join('');
+            }
+
+            openModal('tagAssignModal');
+        }
+
+        async function executeTagAssign() {
+            const file = await getFileById(tagAssignFileId);
+            if (!file) return;
+
+            const checkboxes = document.querySelectorAll('#tagAssignList input[type="checkbox"]:checked');
+            const selectedTags = Array.from(checkboxes).map(cb => {
+                const tagEl = cb.nextElementSibling;
+                const color = tagEl.dataset.color;
+                return { id: cb.value, name: tagEl.textContent.trim(), color };
+            });
+
+            file.tags = selectedTags;
+            await dbPut(STORE_NAME, file);
+
+            showToast('Tags updated', 'success');
+            closeModal('tagAssignModal');
+            renderFiles();
+        }
+
+        // ---- View Toggle ----
         function setView(view) {
             currentView = view;
             const grid = document.getElementById('filesGrid');
@@ -2650,13 +3618,15 @@
             }
         }
 
+        // ---- Search ----
+        function filterFiles() {
+            renderFiles();
+        }
+
         // ---- Upload ----
         function handleFileSelect(event) {
             const files = event.target.files;
-            if (files.length > 0) {
-                processFiles(files);
-            }
-            // Reset input
+            if (files.length > 0) processFiles(files);
             event.target.value = '';
         }
 
@@ -2689,8 +3659,34 @@
                         type: file.type || 'application/octet-stream',
                         size: file.size,
                         data: e.target.result,
-                        date: new Date().toISOString()
+                        date: new Date().toISOString(),
+                        folder: currentFolder === 'all' ? 'all' : currentFolder,
+                        tags: [],
+                        thumbnail: null
                     };
+
+                    // Generate thumbnail for images
+                    if (file.type && file.type.startsWith('image/')) {
+                        try {
+                            const img = new Image();
+                            img.onload = () => {
+                                const canvas = document.createElement('canvas');
+                                const maxSize = 200;
+                                let w = img.width, h = img.height;
+                                if (w > h) { h = h * maxSize / w; w = maxSize; }
+                                else { w = w * maxSize / h; h = maxSize; }
+                                canvas.width = w;
+                                canvas.height = h;
+                                const ctx = canvas.getContext('2d');
+                                ctx.drawImage(img, 0, 0, w, h);
+                                fileObj.thumbnail = canvas.toDataURL('image/jpeg', 0.7);
+                                dbPut(STORE_NAME, fileObj);
+                            };
+                            img.src = e.target.result;
+                        } catch {
+                            // thumbnail generation failed, continue without it
+                        }
+                    }
 
                     try {
                         await addFile(fileObj);
@@ -2698,7 +3694,6 @@
                         progressFill.style.width = ((processed / total) * 100) + '%';
                         progressText.textContent = `${processed} of ${total} uploaded...`;
                     } catch (err) {
-                        console.error('Error adding file:', err);
                         showToast(`Failed to upload ${file.name}`, 'error');
                     }
 
@@ -2723,33 +3718,22 @@
 
         // Drag and Drop
         const uploadZone = document.getElementById('uploadZone');
-
         uploadZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadZone.classList.add('dragover');
         });
-
-        uploadZone.addEventListener('dragleave', () => {
-            uploadZone.classList.remove('dragover');
-        });
-
+        uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
         uploadZone.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadZone.classList.remove('dragover');
-            if (e.dataTransfer.files.length > 0) {
-                processFiles(e.dataTransfer.files);
-            }
+            if (e.dataTransfer.files.length > 0) processFiles(e.dataTransfer.files);
         });
 
         // ---- Download ----
         async function downloadFile(id) {
             try {
                 const file = await getFileById(id);
-                if (!file) {
-                    showToast('File not found', 'error');
-                    return;
-                }
-
+                if (!file) { showToast('File not found', 'error'); return; }
                 const blob = new Blob([file.data], { type: file.type });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -2759,7 +3743,6 @@
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-
                 showToast(`Downloaded ${file.name}`, 'success');
             } catch (err) {
                 showToast('Error downloading file', 'error');
@@ -2769,13 +3752,8 @@
         // ---- Export All ----
         async function exportAllFiles() {
             const files = await getAllFiles();
-            if (files.length === 0) {
-                showToast('No files to export', 'info');
-                return;
-            }
-
+            if (files.length === 0) { showToast('No files to export', 'info'); return; }
             showToast(`Exporting ${files.length} files...`, 'info');
-
             for (const file of files) {
                 const blob = new Blob([file.data], { type: file.type });
                 const url = URL.createObjectURL(blob);
@@ -2786,9 +3764,8 @@
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-                await new Promise(r => setTimeout(r, 200)); // Small delay between downloads
+                await new Promise(r => setTimeout(r, 200));
             }
-
             showToast(`Exported all ${files.length} files!`, 'success');
         }
 
@@ -2804,30 +3781,18 @@
 
         async function executeDelete() {
             if (deleteTargetId) {
-                try {
-                    await deleteFile(deleteTargetId);
-                    showToast('File deleted', 'success');
-                    renderFiles();
-                } catch (err) {
-                    showToast('Error deleting file', 'error');
-                }
+                try { await deleteFile(deleteTargetId); showToast('File deleted', 'success'); renderFiles(); }
+                catch (err) { showToast('Error deleting file', 'error'); }
                 deleteTargetId = null;
             }
             closeModal('deleteModal');
         }
 
-        function confirmClearAll() {
-            openModal('clearAllModal');
-        }
+        function confirmClearAll() { openModal('clearAllModal'); }
 
         async function executeClearAll() {
-            try {
-                await clearAllFiles();
-                showToast('All files cleared', 'success');
-                renderFiles();
-            } catch (err) {
-                showToast('Error clearing files', 'error');
-            }
+            try { await clearAllFiles(); showToast('All files cleared', 'success'); renderFiles(); }
+            catch (err) { showToast('Error clearing files', 'error'); }
             closeModal('clearAllModal');
         }
 
@@ -2838,7 +3803,6 @@
 
             document.getElementById('previewFileName').textContent = file.name;
 
-            // Meta
             const meta = document.getElementById('previewMeta');
             meta.innerHTML = `
                 <div class="preview-meta-item">
@@ -2857,9 +3821,10 @@
                     <span class="preview-meta-label">Uploaded</span>
                     <span class="preview-meta-value">${formatDate(file.date)}</span>
                 </div>
+                ${file.folder && file.folder !== 'all' ? `<div class="preview-meta-item"><span class="preview-meta-label">Folder</span><span class="preview-meta-value">📂 ${file.folder}</span></div>` : ''}
+                ${file.tags && file.tags.length ? `<div class="preview-meta-item"><span class="preview-meta-label">Tags</span><span class="preview-meta-value">${file.tags.map(t => t.name).join(', ')}</span></div>` : ''}
             `;
 
-            // Content
             const content = document.getElementById('previewContent');
             const type = file.type || '';
 
@@ -2877,9 +3842,7 @@
                 content.innerHTML = `<p style="color: var(--text-tertiary); text-align: center; padding: 40px 0;">Preview not available for this file type. Download to view.</p>`;
             }
 
-            // Download button
             document.getElementById('previewDownloadBtn').onclick = () => downloadFile(id);
-
             openModal('previewModal');
         }
 
@@ -2889,15 +3852,708 @@
             return div.innerHTML;
         }
 
+        // ---- Analytics ----
+        async function renderAnalytics() {
+            const files = await getAllFiles();
+            const folders = await dbGetAll(FOLDERS_STORE);
+            const tags = await dbGetAll(TAGS_STORE);
+
+            const totalSize = files.reduce((sum, f) => sum + (f.size || 0), 0);
+
+            // Stats cards
+            document.getElementById('analyticsTotalFiles').textContent = files.length;
+            document.getElementById('analyticsTotalSize').textContent = formatFileSize(totalSize);
+            document.getElementById('analyticsTotalFolders').textContent = folders.length;
+            document.getElementById('analyticsTotalTags').textContent = tags.length;
+
+            // File type breakdown
+            const typeCounts = {};
+            files.forEach(f => {
+                let type = f.type || 'Unknown';
+                if (type.startsWith('image/')) type = 'Images';
+                else if (type.startsWith('video/')) type = 'Videos';
+                else if (type.startsWith('audio/')) type = 'Audio';
+                else if (type.includes('pdf')) type = 'PDF';
+                else if (type.includes('text/') || type.includes('json') || type.includes('xml')) type = 'Text';
+                else if (type.includes('zip') || type.includes('rar') || type.includes('7z')) type = 'Archives';
+                else type = 'Other';
+
+                if (!typeCounts[type]) typeCounts[type] = { count: 0, size: 0 };
+                typeCounts[type].count++;
+                typeCounts[type].size += f.size || 0;
+            });
+
+            const maxTypeCount = Math.max(...Object.values(typeCounts).map(t => t.count), 1);
+            const typeColors = ['#7c5cfc', '#5c8cfc', '#4ade80', '#fbbf24', '#fc5c8c', '#22d3ee', '#a78bfa', '#f472b6'];
+
+            const typeChart = document.getElementById('fileTypeChart');
+            typeChart.innerHTML = Object.entries(typeCounts).map(([type, data], i) => `
+                <div class="analytics-bar-row">
+                    <span class="analytics-bar-label">${type}</span>
+                    <div class="analytics-bar-track">
+                        <div class="analytics-bar-fill" style="width: ${(data.count / maxTypeCount) * 100}%; background: ${typeColors[i % typeColors.length]};"></div>
+                    </div>
+                    <span class="analytics-bar-value">${data.count} (${formatFileSize(data.size)})</span>
+                </div>
+            `).join('') || '<p style="color: var(--text-tertiary); font-size: 13px;">No files yet.</p>';
+
+            // Folder breakdown
+            const folderCounts = {};
+            files.forEach(f => {
+                const folder = f.folder || 'all';
+                folderCounts[folder] = (folderCounts[folder] || 0) + 1;
+            });
+
+            const maxFolderCount = Math.max(...Object.values(folderCounts).map(c => c), 1);
+            const folderChart = document.getElementById('folderChart');
+            folderChart.innerHTML = Object.entries(folderCounts).map(([folder, count], i) => `
+                <div class="analytics-bar-row">
+                    <span class="analytics-bar-label">${folder === 'all' ? '📁 All' : '📂 ' + folder}</span>
+                    <div class="analytics-bar-track">
+                        <div class="analytics-bar-fill" style="width: ${(count / maxFolderCount) * 100}%; background: ${typeColors[i % typeColors.length]};"></div>
+                    </div>
+                    <span class="analytics-bar-value">${count}</span>
+                </div>
+            `).join('') || '<p style="color: var(--text-tertiary); font-size: 13px;">No folders yet.</p>';
+
+            // Tag breakdown
+            const tagCounts = {};
+            files.forEach(f => {
+                if (f.tags) {
+                    f.tags.forEach(t => {
+                        tagCounts[t.name] = (tagCounts[t.name] || 0) + 1;
+                    });
+                }
+            });
+
+            const tagBreakdown = document.getElementById('tagBreakdown');
+            tagBreakdown.innerHTML = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).map(([name, count]) => `
+                <div class="tag-breakdown-item">
+                    <span class="tag-breakdown-name">${name}</span>
+                    <span class="tag-breakdown-count">${count} file${count !== 1 ? 's' : ''}</span>
+                </div>
+            `).join('') || '<p style="color: var(--text-tertiary); font-size: 13px;">No tags yet.</p>';
+
+            // Recent files
+            const recent = [...files].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 8);
+            const recentChart = document.getElementById('recentFilesChart');
+            recentChart.innerHTML = recent.map((file, i) => `
+                <div class="time-bar-row">
+                    <span class="time-bar-label">${formatDate(file.date)}</span>
+                    <div class="time-bar-track">
+                        <div class="time-bar-fill" style="width: ${(1 - i / 8) * 100}%;"></div>
+                    </div>
+                    <span class="time-bar-value">${file.name.length > 12 ? file.name.substring(0, 12) + '...' : file.name}</span>
+                </div>
+            `).join('') || '<p style="color: var(--text-tertiary); font-size: 13px;">No files yet.</p>';
+        }
+
+        // ---- Language (i18n) ----
+        const translations = {
+            en: {
+                hero_badge: "v1.1.0 — Now Live — July 18, 2026",
+                hero_title_1: "Your files,",
+                hero_title_2: "in the shadows.",
+                hero_subtitle: "Umbrafiles is your personal, private file archive. Store, organize, and retrieve your files anytime — all within your browser. No servers. No tracking. Just you and your data.",
+                hero_cta: "Open Your Archive",
+                hero_learn: "Learn More",
+                stat_client: "Client-Side Storage",
+                stat_zero: "Files on Our Servers",
+                stat_infinite: "Your Data, Your Control",
+                features_label: "Why Umbrafiles",
+                features_title: "Built different. Built right.",
+                features_subtitle: "We believe your files should never leave your control. Here's what makes Umbrafiles different.",
+                f1_title: "Zero-Knowledge Privacy",
+                f1_desc: "Your files are stored entirely in your browser using IndexedDB. We never see, touch, or store any of your data. Not even a hash.",
+                f2_title: "Instant Access",
+                f2_desc: "No login walls, no waiting. Open Umbrafiles and your archive is right there. Your files load instantly from local storage.",
+                f3_title: "Any File Type",
+                f3_desc: "Documents, images, videos, code, archives — Umbrafiles accepts any file type. Store it all in one organized place.",
+                f4_title: "Smart Search",
+                f4_desc: "Find your files instantly with our built-in search. Filter by name, type, or date. Your archive, searchable.",
+                f5_title: "Beautiful Interface",
+                f5_desc: "A carefully crafted dark interface that's easy on the eyes. Grid or list view — choose your preferred layout.",
+                f6_title: "Works Offline",
+                f6_desc: "Once loaded, your files are available even without an internet connection. True personal archiving.",
+                archive_title: "Your Archive",
+                export_all: "Export All",
+                clear_all: "Clear All",
+                storage_used: "Storage Used",
+                folders_title: "Folders",
+                new_folder: "New Folder",
+                all_files: "All Files",
+                tags_title: "Tags",
+                new_tag: "New Tag",
+                all_tags: "All Tags",
+                upload_drop: "Drop your files here",
+                upload_browse: "or <span class='browse-link'>browse files</span> to upload",
+                search_placeholder: "Search your files...",
+                empty_title: "Your archive is empty",
+                empty_desc: "Upload your first file to get started. Drag & drop or click the upload zone above.",
+                analytics_label: "Storage Analytics",
+                analytics_title: "Your data at a glance",
+                analytics_subtitle: "Understand how your files are organized and stored.",
+                total_files: "Total Files",
+                total_files_sub: "across all folders",
+                total_size: "Total Size",
+                total_size_sub: "of local storage used",
+                total_folders: "Total Folders",
+                total_folders_sub: "for organization",
+                total_tags: "Total Tags",
+                total_tags_sub: "categories in use",
+                file_types: "File Type Breakdown",
+                folder_breakdown: "Folder Breakdown",
+                tag_breakdown: "Tag Breakdown",
+                recent_files: "Recently Added",
+                about_label: "About Umbrafiles",
+                about_title: 'We believe in <span class="gradient-text">digital sovereignty.</span>',
+                about_desc: "Umbrafiles was born from a simple frustration: every time you want to save a file online, you hand over your data to someone else's server. We built Umbrafiles to change that. Your files belong to you — and they should stay that way.",
+                mission_title: "Our Mission",
+                mission_desc: "To give every internet user a simple, beautiful, and private way to archive their files without compromising their privacy. No sign-ups, no cloud dependency, no compromises.",
+                promise_title: "Our Promise",
+                promise_desc: "We will never store your files on our servers. We will never sell your data. We will never track you. Umbrafiles is a static website — there's nothing to hack, nothing to steal.",
+                tech_title: "Our Technology",
+                tech_desc: "Built entirely with vanilla HTML, CSS, and JavaScript. Your files are stored in your browser's IndexedDB — a powerful, built-in database that works offline and requires no external services.",
+                philosophy_title: "Our Philosophy",
+                philosophy_desc: "The internet was meant to be a place of freedom. Umbrafiles is a small step toward reclaiming that freedom — one file at a time. No corporate agendas, no venture capital, just a tool that works.",
+                name_title: "The Name",
+                name_desc: '"Umbra" refers to the darkest part of a shadow. Just as a shadow is always with you but never intrusive, Umbrafiles is always there for your files — present when you need it, invisible when you don\'t.',
+                v110_desc: "Launched July 18, 2026. This release adds folders, tags, thumbnails, analytics, and multi-language support. More features are on the way — check the updates page for what's coming next.",
+                values_label: "Core Values",
+                values_title: "What drives us",
+                v1_title: "User First",
+                v1_desc: "Every design decision, every line of code — it's all for you. Your privacy and experience come first, always.",
+                v2_title: "Transparency",
+                v2_desc: "Our entire codebase is visible. You can inspect exactly what Umbrafiles does. No hidden scripts, no surprises.",
+                v3_title: "Sustainability",
+                v3_desc: "By storing files locally, we eliminate the energy cost of data centers. Your archive has zero carbon footprint.",
+                v4_title: "Quality Over Quantity",
+                v4_desc: "We'd rather have one feature that works perfectly than ten that are mediocre. Craftsmanship matters.",
+                updates_label: "Changelog",
+                updates_title: "What's new",
+                updates_subtitle: "The story of Umbrafiles, version by version.",
+                v110_changelog: "Major feature release adding organization and intelligence to your archive:",
+                v120_planned: "Here's what we're planning for the near future:",
+                folder_name_placeholder: "Folder name...",
+                total_files_sub_default: "across all folders",
+                total_size_sub_default: "of local storage used",
+                total_folders_sub_default: "for organization",
+                total_tags_sub_default: "categories in use",
+                all_files_sub_default: "across all folders",
+                total_size_sub_default2: "of local storage used",
+                total_folders_sub_default2: "for organization",
+                total_tags_sub_default2: "categories in use"
+            },
+            es: {
+                hero_badge: "v1.1.0 — Ahora disponible — 18 de julio de 2026",
+                hero_title_1: "Tus archivos,",
+                hero_title_2: "en las sombras.",
+                hero_subtitle: "Umbrafiles es tu archivo personal y privado. Almacena, organiza y recupera tus archivos en cualquier momento — todo dentro de tu navegador. Sin servidores. Sin rastreo. Solo tú y tus datos.",
+                hero_cta: "Abrir tu Archivo",
+                hero_learn: "Saber más",
+                stat_client: "Almacenamiento Local",
+                stat_zero: "Archivos en Nuestros Servidores",
+                stat_infinite: "Tus Datos, Tu Control",
+                features_label: "Por qué Umbrafiles",
+                features_title: "Construido diferente. Construido bien.",
+                features_subtitle: "Creemos que tus archivos nunca deben salir de tu control. Esto es lo que hace diferente a Umbrafiles.",
+                f1_title: "Privacidad de Conocimiento Cero",
+                f1_desc: "Tus archivos se almacenan completamente en tu navegador usando IndexedDB. Nunca vemos, tocamos ni almacenamos ningún dato. Ni siquiera un hash.",
+                f2_title: "Acceso Instantáneo",
+                f2_desc: "Sin muros de inicio de sesión, sin esperas. Abre Umbrafiles y tu archivo está ahí. Tus archivos se cargan al instante.",
+                f3_title: "Cualquier Tipo de Archivo",
+                f3_desc: "Documentos, imágenes, videos, código, archivos — Umbrafiles acepta cualquier tipo. Almacénalo todo en un solo lugar.",
+                f4_title: "Búsqueda Inteligente",
+                f4_desc: "Encuentra tus archivos al instante con nuestra búsqueda integrada. Filtra por nombre, tipo o fecha.",
+                f5_title: "Interfaz Hermosa",
+                f5_desc: "Una interfaz oscura cuidadosamente diseñada que es agradable a la vista. Vista de cuadrícula o lista.",
+                f6_title: "Funciona sin Conexión",
+                f6_desc: "Una vez cargado, tus archivos están disponibles incluso sin conexión a internet.",
+                archive_title: "Tu Archivo",
+                export_all: "Exportar Todo",
+                clear_all: "Limpiar Todo",
+                storage_used: "Almacenamiento Usado",
+                folders_title: "Carpetas",
+                new_folder: "Nueva Carpeta",
+                all_files: "Todos los Archivos",
+                tags_title: "Etiquetas",
+                new_tag: "Nueva Etiqueta",
+                all_tags: "Todas las Etiquetas",
+                upload_drop: "Suelta tus archivos aquí",
+                upload_browse: "o <span class='browse-link'>busca archivos</span> para subir",
+                search_placeholder: "Buscar archivos...",
+                empty_title: "Tu archivo está vacío",
+                empty_desc: "Sube tu primer archivo para empezar. Arrastra y suelta o haz clic en la zona de carga.",
+                analytics_label: "Analíticas de Almacenamiento",
+                analytics_title: "Tus datos de un vistazo",
+                analytics_subtitle: "Entiende cómo están organizados y almacenados tus archivos.",
+                total_files: "Total de Archivos",
+                total_files_sub: "en todas las carpetas",
+                total_size: "Tamaño Total",
+                total_size_sub: "de almacenamiento local usado",
+                total_folders: "Total de Carpetas",
+                total_folders_sub: "para organización",
+                total_tags: "Total de Etiquetas",
+                total_tags_sub: "categorías en uso",
+                file_types: "Desglose por Tipo",
+                folder_breakdown: "Desglose por Carpetas",
+                tag_breakdown: "Desglose por Etiquetas",
+                recent_files: "Añadidos Recientemente",
+                about_label: "Sobre Umbrafiles",
+                about_title: 'Creemos en la <span class="gradient-text">soberanía digital.</span>',
+                about_desc: "Umbrafiles nació de una frustración simple: cada vez que quieres guardar un archivo en línea, entregas tus datos al servidor de alguien más.",
+                mission_title: "Nuestra Misión",
+                mission_desc: "Dar a cada usuario de internet una forma simple, hermosa y privada de archivar sus archivos.",
+                promise_title: "Nuestra Promesa",
+                promise_desc: "Nunca almacenaremos tus archivos en nuestros servidores. Nunca venderemos tus datos. Nunca te rastrearemos.",
+                tech_title: "Nuestra Tecnología",
+                tech_desc: "Construido completamente con HTML, CSS y JavaScript nativo. Tus archivos se almacenan en IndexedDB.",
+                philosophy_title: "Nuestra Filosofía",
+                philosophy_desc: "Internet fue meant para ser un lugar de libertad. Umbrafiles es un pequeño paso hacia esa libertad.",
+                name_title: "El Nombre",
+                name_desc: '"Umbra" se refiere a la parte más oscura de una sombra. Umbrafiles está siempre ahí para tus archivos.',
+                v110_desc: "Lanzado el 18 de julio de 2026. Esta versión añade carpetas, etiquetas, miniaturas, analíticas y soporte multiidioma.",
+                values_label: "Valores Fundamentales",
+                values_title: "Lo que nos impulsa",
+                v1_title: "Usuario Primero",
+                v1_desc: "Cada decisión de diseño, cada línea de código — es todo para ti.",
+                v2_title: "Transparencia",
+                v2_desc: "Nuestro código completo es visible. Puedes inspeccionar exactamente lo que hace Umbrafiles.",
+                v3_title: "Sostenibilidad",
+                v3_desc: "Almacenando archivos localmente, eliminamos el costo energético de los centros de datos.",
+                v4_title: "Calidad sobre Cantidad",
+                v4_desc: "Preferimos una función que funcione perfectamente que diez que sean mediocres.",
+                updates_label: "Registro de Cambios",
+                updates_title: "Qué hay de nuevo",
+                updates_subtitle: "La historia de Umbrafiles, versión por versión.",
+                v110_changelog: "Lanzamiento de funciones principales que añaden organización e inteligencia a tu archivo:",
+                v120_planned: "Esto es lo que planeamos para el futuro cercano:",
+                folder_name_placeholder: "Nombre de carpeta...",
+                total_files_sub_default: "en todas las carpetas",
+                total_size_sub_default: "de almacenamiento local usado",
+                total_folders_sub_default: "para organización",
+                total_tags_sub_default: "categorías en uso"
+            },
+            fr: {
+                hero_badge: "v1.1.0 — Maintenant disponible — 18 juillet 2026",
+                hero_title_1: "Vos fichiers,",
+                hero_title_2: "dans l'ombre.",
+                hero_subtitle: "Umbrafiles est votre archive de fichiers personnelle et privée. Stockez, organisez et récupérez vos fichiers à tout moment — tout dans votre navigateur. Aucun serveur. Aucun suivi. Juste vous et vos données.",
+                hero_cta: "Ouvrir votre Archive",
+                hero_learn: "En savoir plus",
+                stat_client: "Stockage Côté Client",
+                stat_zero: "Fichiers sur Nos Serveurs",
+                stat_infinite: "Vos Données, Votre Contrôle",
+                features_label: "Pourquoi Umbrafiles",
+                features_title: "Construit différemment. Bien construit.",
+                features_subtitle: "Nous croyons que vos fichiers ne devraient jamais quitter votre contrôle.",
+                f1_title: "Confidentialité Zéro-Connaissance",
+                f1_desc: "Vos fichiers sont stockés entièrement dans votre navigateur via IndexedDB.",
+                f2_title: "Accès Instantané",
+                f2_desc: "Pas de murs de connexion, pas d'attente. Ouvrez Umbrafiles et votre archive est là.",
+                f3_title: "Tout Type de Fichier",
+                f3_desc: "Documents, images, vidéos, code, archives — Umbrafiles accepte tout type de fichier.",
+                f4_title: "Recherche Intelligente",
+                f4_desc: "Trouvez vos fichiers instantanément avec notre recherche intégrée.",
+                f5_title: "Interface Belle",
+                f5_desc: "Une interface sombre soigneusement conçue. Vue grille ou liste.",
+                f6_title: "Hors Ligne",
+                f6_desc: "Une fois chargé, vos fichiers sont disponibles même sans connexion internet.",
+                archive_title: "Votre Archive",
+                export_all: "Exporter Tout",
+                clear_all: "Tout Effacer",
+                storage_used: "Stockage Utilisé",
+                folders_title: "Dossiers",
+                new_folder: "Nouveau Dossier",
+                all_files: "Tous les Fichiers",
+                tags_title: "Étiquettes",
+                new_tag: "Nouvelle Étiquette",
+                all_tags: "Toutes les Étiquettes",
+                upload_drop: "Déposez vos fichiers ici",
+                upload_browse: "ou <span class='browse-link'>parcourez les fichiers</span> à télécharger",
+                search_placeholder: "Rechercher vos fichiers...",
+                empty_title: "Votre archive est vide",
+                empty_desc: "Téléchargez votre premier fichier pour commencer.",
+                analytics_label: "Analytique de Stockage",
+                analytics_title: "Vos données en un coup d'œil",
+                analytics_subtitle: "Comprenez comment vos fichiers sont organisés et stockés.",
+                total_files: "Total des Fichiers",
+                total_files_sub: "dans tous les dossiers",
+                total_size: "Taille Totale",
+                total_size_sub: "de stockage local utilisé",
+                total_folders: "Total des Dossiers",
+                total_folders_sub: "pour l'organisation",
+                total_tags: "Total des Étiquettes",
+                total_tags_sub: "catégories en usage",
+                file_types: "Répartition par Type",
+                folder_breakdown: "Répartition par Dossiers",
+                tag_breakdown: "Répartition par Étiquettes",
+                recent_files: "Ajoutés Récemment",
+                about_label: "À propos d'Umbrafiles",
+                about_title: 'Nous croyons en la <span class="gradient-text">souveraineté numérique.</span>',
+                about_desc: "Umbrafiles est né d'une frustration simple : chaque fois que vous voulez sauvegarder un fichier en ligne, vous donnez vos données au serveur de quelqu'un d'autre.",
+                mission_title: "Notre Mission",
+                mission_desc: "Donner à chaque utilisateur d'Internet un moyen simple, beau et privé d'archiver ses fichiers.",
+                promise_title: "Notre Promesse",
+                promise_desc: "Nous ne stockerons jamais vos fichiers sur nos serveurs. Nous ne vendrons jamais vos données.",
+                tech_title: "Notre Technologie",
+                tech_desc: "Entièrement construit avec HTML, CSS et JavaScript natif.",
+                philosophy_title: "Notre Philosophie",
+                philosophy_desc: "L'Internet était censé être un lieu de liberté.",
+                name_title: "Le Nom",
+                name_desc: '"Umbra" fait référence à la partie la plus sombre d\'une ombre.',
+                v110_desc: "Lancé le 18 juillet 2026. Cette version ajoute dossiers, étiquettes, miniatures, analytique et support multi-langue.",
+                values_label: "Valeurs Fondamentales",
+                values_title: "Ce qui nous anime",
+                v1_title: "Utilisateur d'Abord",
+                v1_desc: "Chaque décision de design, chaque ligne de code — c'est pour vous.",
+                v2_title: "Transparence",
+                v2_desc: "Notre code entier est visible. Vous pouvez inspecter exactement ce qu'Umbrafiles fait.",
+                v3_title: "Durabilité",
+                v3_desc: "En stockant les fichiers localement, nous éliminons le coût énergétique des centres de données.",
+                v4_title: "Qualité sur Quantité",
+                v4_desc: "Nous préférons une fonction qui fonctionne parfaitement que dix médiocres.",
+                updates_label: "Journal des Modifications",
+                updates_title: "Quoi de neuf",
+                updates_subtitle: "L'histoire d'Umbrafiles, version par version.",
+                v110_changelog: "Lancement de fonctionnalités majeures ajoutant organisation et intelligence :",
+                v120_planned: "Voici ce que nous préparons pour le futur proche :",
+                folder_name_placeholder: "Nom du dossier...",
+                total_files_sub_default: "dans tous les dossiers",
+                total_size_sub_default: "de stockage local utilisé",
+                total_folders_sub_default: "pour l'organisation",
+                total_tags_sub_default: "catégories en usage"
+            },
+            de: {
+                hero_badge: "v1.1.0 — Jetzt verfügbar — 18. Juli 2026",
+                hero_title_1: "Ihre Dateien,",
+                hero_title_2: "im Schatten.",
+                hero_subtitle: "Umbrafiles ist Ihr persönliches, privates Dateiarchiv. Speichern, organisieren und abrufen — alles in Ihrem Browser. Keine Server. Kein Tracking.",
+                hero_cta: "Archiv Öffnen",
+                hero_learn: "Mehr erfahren",
+                stat_client: "Client-seitiger Speicher",
+                stat_zero: "Dateien auf unseren Servern",
+                stat_infinite: "Ihre Daten, Ihre Kontrolle",
+                features_label: "Warum Umbrafiles",
+                features_title: "Unterschiedlich gebaut. Richtig gebaut.",
+                features_subtitle: "Wir glauben, dass Ihre Dateien niemals Ihre Kontrolle verlassen sollten.",
+                f1_title: "Null-Wissen-Datenschutz",
+                f1_desc: "Ihre Dateien werden vollständig in Ihrem Browser gespeichert.",
+                f2_title: "Sofortiger Zugriff",
+                f2_desc: "Keine Login-Schranken, kein Warten. Öffnen Sie Umbrafiles und Ihr Archiv ist da.",
+                f3_title: "Jeder Dateityp",
+                f3_desc: "Dokumente, Bilder, Videos, Code, Archive — Umbrafiles akzeptiert jeden Dateityp.",
+                f4_title: "Intelligente Suche",
+                f4_desc: "Finden Sie Ihre Dateien sofort mit unserer integrierten Suche.",
+                f5_title: "Schöne Oberfläche",
+                f5_desc: "Eine sorgfältig gestaltete dunkle Oberfläche. Raster- oder Listenansicht.",
+                f6_title: "Offline-Fähig",
+                f6_desc: "Einmal geladen, sind Ihre Dateien auch ohne Internet verfügbar.",
+                archive_title: "Ihr Archiv",
+                export_all: "Alles Exportieren",
+                clear_all: "Alles Löschen",
+                storage_used: "Speicher verwendet",
+                folders_title: "Ordner",
+                new_folder: "Neuer Ordner",
+                all_files: "Alle Dateien",
+                tags_title: "Tags",
+                new_tag: "Neuer Tag",
+                all_tags: "Alle Tags",
+                upload_drop: "Dateien hier ablegen",
+                upload_browse: "oder <span class='browse-link'>Dateien durchsuchen</span>",
+                search_placeholder: "Ihre Dateien durchsuchen...",
+                empty_title: "Ihr Archiv ist leer",
+                empty_desc: "Laden Sie Ihre erste Datei hoch, um zu beginnen.",
+                analytics_label: "Speicheranalytik",
+                analytics_title: "Ihre Daten auf einen Blick",
+                analytics_subtitle: "Verstehen Sie, wie Ihre Dateien organisiert und gespeichert sind.",
+                total_files: "Gesamtdateien",
+                total_files_sub: "über alle Ordner",
+                total_size: "Gesamtgröße",
+                total_size_sub: "des lokalen Speichers",
+                total_folders: "Gesamtordner",
+                total_folders_sub: "zur Organisation",
+                total_tags: "Gesamt-Tags",
+                total_tags_sub: "Kategorien im Einsatz",
+                file_types: "Dateityp-Aufschlüsselung",
+                folder_breakdown: "Ordner-Aufschlüsselung",
+                tag_breakdown: "Tag-Aufschlüsselung",
+                recent_files: "Kürzlich Hinzugefügt",
+                about_label: "Über Umbrafiles",
+                about_title: 'Wir glauben an <span class="gradient-text">digitale Souveränität.</span>',
+                about_desc: "Umbrafiles entstand aus einer einfachen Frustration: Jedes Mal, wenn Sie eine Datei online speichern wollen, geben Sie Ihre Daten an den Server eines anderen weiter.",
+                mission_title: "Unsere Mission",
+                mission_desc: "Jedem Internetnutzer einen einfachen, schönen und privaten Weg zu geben, seine Dateien zu archivieren.",
+                promise_title: "Unser Versprechen",
+                promise_desc: "Wir werden Ihre Dateien niemals auf unseren Servern speichern. Wir werden Ihre Daten niemals verkaufen.",
+                tech_title: "Unsere Technologie",
+                tech_desc: "Vollständig mit Vanilla HTML, CSS und JavaScript gebaut.",
+                philosophy_title: "Unsere Philosophie",
+                philosophy_desc: "Das Internet sollte ein Ort der Freiheit sein.",
+                name_title: "Der Name",
+                name_desc: '"Umbra" bezieht sich auf den dunkelsten Teil eines Schattens.',
+                v110_desc: "Gestartet am 18. Juli 2026. Diese Version fügt Ordner, Tags, Miniaturansichten, Analytik und Mehrsprachigkeit hinzu.",
+                values_label: "Kernwerte",
+                values_title: "Was uns antreibt",
+                v1_title: "Benutzer zuerst",
+                v1_desc: "Jede Designentscheidung, jede Codezeile — alles für Sie.",
+                v2_title: "Transparenz",
+                v2_desc: "Unser gesamter Quellcode ist sichtbar.",
+                v3_title: "Nachhaltigkeit",
+                v3_desc: "Durch lokale Speicherung eliminieren wir die Energiekosten von Rechenzentren.",
+                v4_title: "Qualität vor Quantität",
+                v4_desc: "Wir bevorzugen eine perfekt funktionierende Funktion als zehn mittelmäßige.",
+                updates_label: "Änderungsprotokoll",
+                updates_title: "Was gibt's Neues",
+                updates_subtitle: "Die Geschichte von Umbrafiles, Version für Version.",
+                v110_changelog: "Hauptfeature-Release mit Organisation und Intelligenz für Ihr Archiv:",
+                v120_planned: "Das planen wir für die nahe Zukunft:",
+                folder_name_placeholder: "Ordnername...",
+                total_files_sub_default: "über alle Ordner",
+                total_size_sub_default: "des lokalen Speichers",
+                total_folders_sub_default: "zur Organisation",
+                total_tags_sub_default: "Kategorien im Einsatz"
+            },
+            ja: {
+                hero_badge: "v1.1.0 — リリース済み — 2026年7月18日",
+                hero_title_1: "あなたのファイルが、",
+                hero_title_2: "影の中に。",
+                hero_subtitle: "Umbrafilesはあなた自身のプライベートファイルアーカイブです。ブラウザ内でいつでも保存、整理、取得。サーバーなし。追跡なし。あなたとあなたのデータだけ。",
+                hero_cta: "アーカイブを開く",
+                hero_learn: "詳しく見る",
+                stat_client: "クライアント側ストレージ",
+                stat_zero: "サーバー上のファイル",
+                stat_infinite: "あなたのデータ、あなたの管理",
+                features_label: "Umbrafilesの理由",
+                features_title: "違う作り方。正しい作り方。",
+                features_subtitle: "あなたのファイルは決してあなたの管理から離れてはならないと考えます。",
+                f1_title: "ゼロ知識プライバシー",
+                f1_desc: "あなたのファイルはIndexedDBを使用して完全にブラウザに保存されます。",
+                f2_title: "即時アクセス",
+                f2_desc: "ログインの壁なし、待ち時間なし。Umbrafilesを開けばアーカイブがそこにある。",
+                f3_title: "あらゆるファイル形式",
+                f3_desc: "ドキュメント、画像、動画、コード、アーカイブ — すべて対応。",
+                f4_title: "スマート検索",
+                f4_desc: "組み込み検索でファイルを即座に見つけられます。",
+                f5_title: "美しいインターフェース",
+                f5_desc: "目に優しいダークインターフェース。グリッドまたはリストビュー。",
+                f6_title: "オフライン対応",
+                f6_desc: "一度読み込めば、インターネット接続なしでもファイルにアクセス可能。",
+                archive_title: "あなたのアーカイブ",
+                export_all: "すべてエクスポート",
+                clear_all: "すべて消去",
+                storage_used: "ストレージ使用量",
+                folders_title: "フォルダ",
+                new_folder: "新規フォルダ",
+                all_files: "すべてのファイル",
+                tags_title: "タグ",
+                new_tag: "新規タグ",
+                all_tags: "すべてのタグ",
+                upload_drop: "ここにファイルをドロップ",
+                upload_browse: "または<span class='browse-link'>ファイルを参照</span>してアップロード",
+                search_placeholder: "ファイルを検索...",
+                empty_title: "アーカイブが空です",
+                empty_desc: "最初のファイルをアップロードして始めましょう。",
+                analytics_label: "ストレージ分析",
+                analytics_title: "データを一目で",
+                analytics_subtitle: "ファイルがどのように整理・保存されているかを理解しましょう。",
+                total_files: "ファイル総数",
+                total_files_sub: "すべてのフォルダで",
+                total_size: "総サイズ",
+                total_size_sub: "のローカルストレージ使用",
+                total_folders: "フォルダ総数",
+                total_folders_sub: "整理用",
+                total_tags: "タグ総数",
+                total_tags_sub: "使用中のカテゴリ",
+                file_types: "ファイルタイプ別内訳",
+                folder_breakdown: "フォルダ別内訳",
+                tag_breakdown: "タグ別内訳",
+                recent_files: "最近追加",
+                about_label: "Umbrafilesについて",
+                about_title: '<span class="gradient-text">デジタル主権</span>を信じます。',
+                about_desc: "Umbrafilesは単純な不満から生まれました：ファイルをオンラインで保存するたびに、データを他人のサーバーに渡すこと。",
+                mission_title: "私たちのミッション",
+                mission_desc: "すべてのインターネットユーザーに、シンプルで美しく、プライバシーを侵害しないファイルアーカイブ手段を提供すること。",
+                promise_title: "私たちの約束",
+                promise_desc: "あなたのファイルをサーバーに保存することはありません。データを販売することも、追跡することもありません。",
+                tech_title: "テクノロジー",
+                tech_desc: "バニラHTML、CSS、JavaScriptのみで構築。",
+                philosophy_title: "哲学",
+                philosophy_desc: "インターネットは自由の場所であるべきです。",
+                name_title: "名前について",
+                name_desc: '"Umbra"は影の最も暗い部分を指します。',
+                v110_desc: "2026年7月18日リリース。フォルダ、タグ、サムネイル、分析、多言語サポートを追加。",
+                values_label: "中核価値",
+                values_title: "私たちを駆り立てるもの",
+                v1_title: "ユーザーファースト",
+                v1_desc: "すべてのデザイン決定、すべてのコード行 — それはすべてあなたのために。",
+                v2_title: "透明性",
+                v2_desc: "ソースコード全体が公開されています。",
+                v3_title: "持続可能性",
+                v3_desc: "ローカル保存により、データセンターのエネルギーコストをeliminate。",
+                v4_title: "量より質",
+                v4_desc: "完璧に機能する1つの機能こそ、10の中途半端な機能より価値があります。",
+                updates_label: "変更履歴",
+                updates_title: "新着情報",
+                updates_subtitle: "Umbrafilesの物語、バージョンごとに。",
+                v110_changelog: "アーカイブに整理機能とインテリジェンスを追加する主要機能リリース：",
+                v120_planned: "近い未来の計画：",
+                folder_name_placeholder: "フォルダ名...",
+                total_files_sub_default: "すべてのフォルダで",
+                total_size_sub_default: "のローカルストレージ使用",
+                total_folders_sub_default: "整理用",
+                total_tags_sub_default: "使用中のカテゴリ"
+            },
+            zh: {
+                hero_badge: "v1.1.0 — 现已上线 — 2026年7月18日",
+                hero_title_1: "你的文件，",
+                hero_title_2: "在阴影之中。",
+                hero_subtitle: "Umbrafiles 是你的个人私密文件档案库。随时存储、整理和检索你的文件——全部在浏览器内完成。没有服务器。没有追踪。只有你和你的数据。",
+                hero_cta: "打开档案",
+                hero_learn: "了解更多",
+                stat_client: "客户端存储",
+                stat_zero: "我们服务器上的文件",
+                stat_infinite: "你的数据，你的控制",
+                features_label: "为什么选择 Umbrafiles",
+                features_title: "与众不同。做得正确。",
+                features_subtitle: "我们相信你的文件永远不应该离开你的控制。这就是 Umbrafiles 的不同之处。",
+                f1_title: "零知识隐私",
+                f1_desc: "你的文件完全存储在浏览器中，使用 IndexedDB。我们从不查看、接触或存储你的任何数据。",
+                f2_title: "即时访问",
+                f2_desc: "没有登录墙，没有等待。打开 Umbrafiles，你的档案就在眼前。",
+                f3_title: "任意文件类型",
+                f3_desc: "文档、图片、视频、代码、压缩包——Umbrafiles 接受任何文件类型。",
+                f4_title: "智能搜索",
+                f4_desc: "通过内置搜索即时找到你的文件。按名称、类型或日期筛选。",
+                f5_title: "精美界面",
+                f5_desc: "精心打造的暗色界面，护眼舒适。网格或列表视图——由你选择。",
+                f6_title: "离线可用",
+                f6_desc: "加载后，即使没有互联网连接，你的文件也可用。",
+                archive_title: "你的档案",
+                export_all: "导出全部",
+                clear_all: "清空全部",
+                storage_used: "已用存储",
+                folders_title: "文件夹",
+                new_folder: "新建文件夹",
+                all_files: "所有文件",
+                tags_title: "标签",
+                new_tag: "新建标签",
+                all_tags: "所有标签",
+                upload_drop: "将文件拖放到这里",
+                upload_browse: "或<span class='browse-link'>浏览文件</span>上传",
+                search_placeholder: "搜索你的文件...",
+                empty_title: "你的档案为空",
+                empty_desc: "上传你的第一个文件来开始吧。拖放或点击上传区域。",
+                analytics_label: "存储分析",
+                analytics_title: "你的数据一览",
+                analytics_subtitle: "了解你的文件是如何组织和存储的。",
+                total_files: "文件总数",
+                total_files_sub: "所有文件夹中",
+                total_size: "总大小",
+                total_size_sub: "的本地存储使用",
+                total_folders: "文件夹总数",
+                total_folders_sub: "用于组织",
+                total_tags: "标签总数",
+                total_tags_sub: "使用的类别",
+                file_types: "文件类型分布",
+                folder_breakdown: "文件夹分布",
+                tag_breakdown: "标签分布",
+                recent_files: "最近添加",
+                about_label: "关于 Umbrafiles",
+                about_title: '我们坚信<span class="gradient-text">数字主权。</span>',
+                about_desc: "Umbrafiles 源于一个简单的不满：每次你想在线保存文件时，你都在将数据交给别人的服务器。",
+                mission_title: "我们的使命",
+                mission_desc: "为每个互联网用户提供一个简单、美观且私密的方式来归档他们的文件。",
+                promise_title: "我们的承诺",
+                promise_desc: "我们永远不会在你的服务器上存储文件。我们永远不会出售你的数据。我们永远不会追踪你。",
+                tech_title: "我们的技术",
+                tech_desc: "完全使用原生 HTML、CSS 和 JavaScript 构建。",
+                philosophy_title: "我们的理念",
+                philosophy_desc: "互联网本应是一个自由的地方。Umbrafiles 是迈向自由的一小步。",
+                name_title: "名称由来",
+                name_desc: '"Umbra"指的是阴影中最暗的部分。',
+                v110_desc: "2026年7月18日发布。此版本添加文件夹、标签、缩略图、分析功能和多语言支持。",
+                values_label: "核心价值观",
+                values_title: "我们的驱动力",
+                v1_title: "用户优先",
+                v1_desc: "每个设计决策、每行代码——都是为你而做。",
+                v2_title: "透明度",
+                v2_desc: "我们的整个代码库都是可见的。你可以检查 Umbrafiles 具体做了什么。",
+                v3_title: "可持续性",
+                v3_desc: "通过本地存储文件，我们消除了数据中心的能源成本。",
+                v4_title: "质量优于数量",
+                v4_desc: "我们宁愿有一个完美运行的功能，也不要有十个平庸的功能。",
+                updates_label: "更新日志",
+                updates_title: "最新动态",
+                updates_subtitle: "Umbrafiles 的故事，版本记录。",
+                v110_changelog: "主要功能发布，为你的档案添加组织和智能：",
+                v120_planned: "这是我们近期的计划：",
+                folder_name_placeholder: "文件夹名称...",
+                total_files_sub_default: "所有文件夹中",
+                total_size_sub_default: "的本地存储使用",
+                total_folders_sub_default: "用于组织",
+                total_tags_sub_default: "使用的类别"
+            }
+        };
+
+        let currentLang = localStorage.getItem('umbra-lang') || 'en';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('umbra-lang', lang);
+            applyTranslations(lang);
+
+            // Update active state in dropdown
+            document.querySelectorAll('.lang-option').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.lang === lang);
+            });
+
+            // Close dropdown
+            document.getElementById('langDropdown').classList.remove('open');
+        }
+
+        function applyTranslations(lang) {
+            const t = translations[lang] || translations.en;
+
+            // Translate text content
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        // skip, handled by placeholder
+                    } else {
+                        el.innerHTML = t[key];
+                    }
+                }
+            });
+
+            // Translate placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (t[key]) {
+                    el.placeholder = t[key];
+                }
+            });
+        }
+
+        function toggleLangDropdown() {
+            document.getElementById('langDropdown').classList.toggle('open');
+        }
+
+        // Close lang dropdown on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.lang-switcher')) {
+                document.getElementById('langDropdown').classList.remove('open');
+            }
+        });
+
         // ---- Nav Scroll Effect ----
         window.addEventListener('scroll', () => {
-            const nav = document.getElementById('nav');
-            nav.classList.toggle('scrolled', window.scrollY > 20);
+            document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
         });
 
         // ---- Keyboard Shortcuts ----
         document.addEventListener('keydown', (e) => {
-            // Escape closes modals
             if (e.key === 'Escape') {
                 document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
             }
@@ -2907,7 +4563,7 @@
         async function init() {
             try {
                 await openDB();
-                console.log('Umbrafiles initialized — IndexedDB ready');
+                console.log('Umbrafiles v1.1.0 initialized — IndexedDB ready');
             } catch (err) {
                 console.error('Failed to initialize IndexedDB:', err);
                 showToast('Storage initialization failed. Please use a modern browser.', 'error');
@@ -2916,10 +4572,12 @@
             // Set initial theme
             setTheme(getTheme());
 
+            // Set initial language
+            setLanguage(currentLang);
+
             // Handle initial route
             handleRoute();
 
-            // If no hash, set home
             if (!window.location.hash) {
                 navigateTo('home');
             }
